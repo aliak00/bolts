@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url><loc>http://127.0.0.1/index.html</loc></url>
+<url><loc>http://127.0.0.1/bolts/meta.html</loc></url>
+<url><loc>http://127.0.0.1/bolts/meta/FlattenRanges.html</loc></url>
+<url><loc>http://127.0.0.1/bolts/meta/TypesOf.html</loc></url>
+<url><loc>http://127.0.0.1/bolts/range.html</loc></url>
+<url><loc>http://127.0.0.1/bolts/range/isSortedRange.html</loc></url>
+<url><loc>http://127.0.0.1/bolts/range/sortingPredicate.html</loc></url>
+<url><loc>http://127.0.0.1/bolts/traits.html</loc></url>
+<url><loc>http://127.0.0.1/bolts/traits/areCombinable.html</loc></url>
+<url><loc>http://127.0.0.1/bolts/traits/CommonTypeOfRanges.html</loc></url>
+<url><loc>http://127.0.0.1/bolts/traits/hasProperty.html</loc></url>
+<url><loc>http://127.0.0.1/bolts/traits/isBinaryOver.html</loc></url>
+<url><loc>http://127.0.0.1/bolts/traits/isKeySubstitutableWith.html</loc></url>
+<url><loc>http://127.0.0.1/bolts/traits/isManifestAssignable.html</loc></url>
+<url><loc>http://127.0.0.1/bolts/traits/isNullType.html</loc></url>
+<url><loc>http://127.0.0.1/bolts/traits/isUnaryOver.html</loc></url>
+<url><loc>http://127.0.0.1/bolts/traits/memberFunctions.html</loc></url>
+<url><loc>http://127.0.0.1/bolts/traits/propertySemantics.html</loc></url>
+</urlset>
