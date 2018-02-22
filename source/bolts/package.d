@@ -1,6 +1,6 @@
 module bolts;
 
-public  {
+public {
     import bolts.traits;
     import bolts.meta;
 	import bolts.range;
