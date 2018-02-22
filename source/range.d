@@ -23,6 +23,7 @@ unittest {
     static assert(isSortedRange!(typeof([0, 1, 2])) == false);
     static assert(isSortedRange!(typeof([0, 1, 2].sort)) == true);
     static assert(isSortedRange!(typeof([0, 1, 2].assumeSorted)) == true);
+    static assert(isSortedRange!int == false);
 }
 
 /**
