@@ -1,5 +1,7 @@
 ## Bolts Meta Poragmming Utility Library
 
+[![Build Status](https://travis-ci.org/aliak00/bolts.svg?branch=master)](https://travis-ci.org/aliak00/bolts) [![codecov](https://codecov.io/gh/aliak00/bolts/branch/master/graph/badge.svg)](https://codecov.io/gh/aliak00/bolts)
+
 Full API docs available [here](https://aliak00.github.io/bolts/)
 
 Bolts is a utility library for the D programming language that provides templates and compilet time functions that are not available in D's std.traits and/or std.meta packages.
