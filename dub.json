@@ -5,6 +5,6 @@
 	],
 	"description": "Utility library for meta programming",
 	"copyright": "Copyright © 2018, Ali Akhtarzada",
-	"license": "BSD-3",
+	"license": "MIT",
 	"targetPath": "bin"
 }
