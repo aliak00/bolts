@@ -3,7 +3,7 @@
 */
 module bolts.traits;
 
-import common;
+import bolts.internal;
 
 /// Trus if B can be used as an associated array key in place of A.
 template isKeySubstitutableWith(A, B) {

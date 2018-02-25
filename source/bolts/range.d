@@ -3,7 +3,7 @@
 */
 module bolts.range;
 
-import common;
+import bolts.internal;
 
 /**
     True if R is a `SortedRange`
