@@ -1,8 +1,34 @@
 language: d
-d:
- - dmd-2.078.0
 
-script:
- - dub test -b unittest-cov --compiler=${DC}
-after_success:
- - bash <(curl -s https://codecov.io/bash)
+matrix:
+  include:
+    - d: dmd
+      script:
+        - dub test -b unittest-cov
+        - git clone https://github.com/aliak00/ddox-dark-theme.git
+        - mv ddox-dark-theme/docs .
+        - dub build -b ddox
+      addons:
+        apt:
+          packages:
+          - libevent-dev
+          - libssl-dev
+          - pkg-config
+          - zlib1g-dev
+      after_success: bash <(curl -s https://codecov.io/bash)
+
+      deploy:
+        local_dir: docs
+        provider: pages
+        skip_cleanup: true
+        github_token: $GITHUB_TOKEN
+        on:
+          branch: master
+
+      cache:
+        directories:
+          - $HOME/.dub
+
+    - d: dmd
+      os: osx
+    - d: ldc

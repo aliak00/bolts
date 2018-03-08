@@ -12,4 +12,5 @@ bolts-test-*
 *.obj
 *.lst
 bin/
+docs/
 dub.selections.json
