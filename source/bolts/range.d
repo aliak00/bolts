@@ -54,3 +54,18 @@ unittest {
     assert(sortingPredicate!(typeof([1].sort!((a, b) => a > b)))(1, 2) == false);
     assert(sortingPredicate!(int[])(1, 2) == true);
 }
+
+/// Finds the CommonType of a list of ranges
+template CommonTypeOfRanges(Rs...) if (from!"std.meta".allSatisfy!(from!"std.range".isInputRange, Rs)) {
+    import std.traits: CommonType;
+    import std.meta: staticMap;
+    import std.range: ElementType;
+    alias CommonTypeOfRanges = CommonType!(staticMap!(ElementType, Rs));
+}
+
+///
+unittest {
+    auto a = [1, 2];
+    auto b = [1.0, 2.0];
+    static assert(is(CommonTypeOfRanges!(typeof(a), typeof(b)) == double));
+}

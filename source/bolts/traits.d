@@ -147,21 +147,6 @@ unittest {
     static assert(memberFunctions!B == ["f"]);
 }
 
-/// Finds the CommonType of a list of ranges
-template CommonTypeOfRanges(Rs...) if (from!"std.meta".allSatisfy!(from!"std.range".isInputRange, Rs)) {
-    import std.traits: CommonType;
-    import std.meta: staticMap;
-    import std.range: ElementType;
-    alias CommonTypeOfRanges = CommonType!(staticMap!(ElementType, Rs));
-}
-
-///
-unittest {
-    auto a = [1, 2];
-    auto b = [1.0, 2.0];
-    static assert(is(CommonTypeOfRanges!(typeof(a), typeof(b)) == double));
-}
-
 /**
     Tells you if a list of types, which are composed of ranges and non ranges,
     share a common type after flattening the ranges (i.e. `ElementType`)
