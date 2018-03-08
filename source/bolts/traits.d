@@ -277,3 +277,32 @@ unittest {
     static assert( isManifestAssignable!(A, "e"));
     static assert( isManifestAssignable!(A, "sim"));
 }
+
+/**
+    Returns true if T has a symbol called `name` that is publicly accessible
+*/
+template hasPubliclyAccessibleMember(T, string name) {
+    static if (__traits(hasMember, T, name)
+        && __traits(getProtection, __traits(getMember, T, name)) == "public")
+    {
+        enum hasPubliclyAccessibleMember = true;
+    }
+    else
+    {
+        enum hasPubliclyAccessibleMember = false;
+    }
+}
+
+///
+unittest {
+    struct S {
+        public int m0;
+        protected int m1;
+        private int m2;
+    }
+
+    static assert( hasPubliclyAccessibleMember!(S, "m0"));
+    static assert(!hasPubliclyAccessibleMember!(S, "m1"));
+    static assert(!hasPubliclyAccessibleMember!(S, "m2"));
+    static assert(!hasPubliclyAccessibleMember!(S, "na"));
+}
