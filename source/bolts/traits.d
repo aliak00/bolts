@@ -281,9 +281,13 @@ unittest {
 /**
     Used to check if T has a member with a specific trait
 
+    Available member traits:
+        $(LI `withProtection`)
+
     Params:
         T = type to check
         name = name of field in type
+
 */
 template hasMember(T, string name) {
     enum yesMember = __traits(hasMember, T, name);
@@ -305,6 +309,7 @@ template hasMember(T, string name) {
 ///
 unittest {
     struct S {
+        int i;
         public int m0;
         protected int m1;
         private int m2;
@@ -313,6 +318,7 @@ unittest {
     import std.meta: AliasSeq;
     static foreach (T; AliasSeq!(S, S*))
     {
+        static assert( hasMember!(T, "i").withProtection!"public");
         static assert( hasMember!(T, "m0").withProtection!"public");
         static assert(!hasMember!(T, "m0").withProtection!"protected");
         static assert( hasMember!(T, "m1").withProtection!"protected");

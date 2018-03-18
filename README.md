@@ -4,7 +4,7 @@
 
 Full API docs available [here](https://aliak00.github.io/bolts/)
 
-Bolts is a utility library for the D programming language that provides templates and compilet time functions that are not available in D's std.traits and/or std.meta packages.
+Bolts is a utility library for the D programming language that provides templates and compile time functions that are not available in D's std.traits and/or std.meta packages.
 
 E.g.
 ```d
@@ -15,9 +15,19 @@ struct S {
     @property void wp(int) {}
 }
 
+// Check if something is a property
 static assert( hasProperty!(S, "rp"));
+
+// Check if a range is sprted
 static assert(!isSortedRange!S);
+
+// Get a list of member functions
 static assert(memberFunctions!S == ["f", "sf"]);
+
+// Check properties of a member funciton
+static assert(hasMember!(S, "f).withProtection!"public");
+
+// Provides some meta capabilities as wel...
 
 alias R1 = typeof([1, 2, 3].filter!"true");
 alias R2 = typeof([1.0, 2.0, 3.0]);
