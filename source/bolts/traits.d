@@ -279,17 +279,26 @@ unittest {
 }
 
 /**
-    Returns true if T has a symbol called `name` that is publicly accessible
+    Used to check if T has a member with a specific trait
+
+    Params:
+        T = type to check
+        name = name of field in type
 */
-template hasPubliclyAccessibleMember(T, string name) {
-    static if (__traits(hasMember, T, name)
-        && __traits(getProtection, __traits(getMember, T, name)) == "public")
-    {
-        enum hasPubliclyAccessibleMember = true;
-    }
-    else
-    {
-        enum hasPubliclyAccessibleMember = false;
+template hasMember(T, string name) {
+    enum yesMember = __traits(hasMember, T, name);
+    /**
+        Check if the member has the required access level
+    */
+    template withProtection(string level) {
+        static if (yesMember && __traits(getProtection, __traits(getMember, T, name)) == level)
+        {
+            enum withProtection = true;
+        }
+        else
+        {
+            enum withProtection = false;
+        }
     }
 }
 
@@ -301,8 +310,15 @@ unittest {
         private int m2;
     }
 
-    static assert( hasPubliclyAccessibleMember!(S, "m0"));
-    static assert(!hasPubliclyAccessibleMember!(S, "m1"));
-    static assert(!hasPubliclyAccessibleMember!(S, "m2"));
-    static assert(!hasPubliclyAccessibleMember!(S, "na"));
+    import std.meta: AliasSeq;
+    static foreach (T; AliasSeq!(S, S*))
+    {
+        static assert( hasMember!(T, "m0").withProtection!"public");
+        static assert(!hasMember!(T, "m0").withProtection!"protected");
+        static assert( hasMember!(T, "m1").withProtection!"protected");
+        static assert(!hasMember!(T, "m1").withProtection!"public");
+        static assert( hasMember!(T, "m2").withProtection!"private");
+        static assert(!hasMember!(T, "m2").withProtection!"public");
+        static assert(!hasMember!(T, "na").withProtection!"public");
+    }
 }
