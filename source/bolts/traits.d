@@ -328,3 +328,26 @@ unittest {
         static assert(!hasMember!(T, "na").withProtection!"public");
     }
 }
+
+/**
+    Returns true of T can be set to null
+*/
+template isNullable(T) {
+    enum isNullable = __traits(compiles, { T t = null; t = null; });
+}
+
+///
+unittest {
+    class C {}
+    struct S {}
+    struct S1 {
+        this(typeof(null)) {}
+        void opAssign(typeof(null)) {}
+    }
+
+    static assert( isNullable!C);
+    static assert(!isNullable!S);
+    static assert( isNullable!S1);
+    static assert( isNullable!(int *));
+    static assert(!isNullable!(int));
+}
