@@ -1,5 +1,5 @@
 /**
-    Meta utilityes for ranges
+    Static introspection utilties for ranges
 */
 module bolts.range;
 

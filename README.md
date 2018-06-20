@@ -2,7 +2,7 @@
 
 [![Latest version](https://img.shields.io/dub/v/bolts.svg)](http://code.dlang.org/packages/bolts) [![Build Status](https://travis-ci.org/aliak00/bolts.svg?branch=master)](https://travis-ci.org/aliak00/bolts) [![codecov](https://codecov.io/gh/aliak00/bolts/branch/master/graph/badge.svg)](https://codecov.io/gh/aliak00/bolts) [![license](https://img.shields.io/github/license/aliak00/bolts.svg)](https://github.com/aliak00/bolts/blob/master/LICENSE)
 
-Full API docs available [here](https://aliak00.github.io/bolts/)
+Full API docs available [here](https://aliak00.github.io/bolts/bolts.html)
 
 Bolts is a utility library for the D programming language that provides templates and compile time functions that are not available in D's std.traits and/or std.meta packages.
 

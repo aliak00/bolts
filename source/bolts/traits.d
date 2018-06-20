@@ -1,5 +1,5 @@
 /**
-    Provides utilites that allow you to determine compile time traits
+    Provides utilites that allow you to determine type traits
 */
 module bolts.traits;
 
@@ -40,7 +40,7 @@ unittest {
     static assert(isNullType!f == false);
 }
 
-/// Trus if pred is a unary function over T
+/// True if pred is a unary function over T0, false if there're more than one T
 template isUnaryOver(alias pred, T...) {
     import std.functional: unaryFun;
     import std.traits: isExpressions;
@@ -74,7 +74,7 @@ unittest {
     static assert(!isUnaryOver!("a", 3));
 }
 
-/// True if pred is a binary function of (T, U) or (T, T)
+/// True if pred is a binary function of (T0, T1) or (T0, T0). False if there's more than 2 Ts
 template isBinaryOver(alias pred, T...) {
     import std.functional: binaryFun;
     import std.traits: isExpressions;
@@ -113,38 +113,6 @@ unittest {
     static assert(!isBinaryOver!("a > b", 3));
     static assert(!isBinaryOver!("a > b", 3, 3));
     static assert(!isBinaryOver!("a > b", 3, int));
-}
-
-/// Returns a list of member functions of T
-auto memberFunctions(T)() {
-    import std.traits: isFunction;
-    string[] strings;
-    foreach (member; __traits(allMembers, T)) {
-        static if (is(typeof(mixin("T." ~ member)) F))
-        {
-            if (isFunction!F) {
-                strings ~= member;
-            }
-        }
-    }
-    return strings;
-}
-
-///
-unittest {
-    struct A {
-        void opCall() {}
-        void g() {}
-    }
-
-    struct B {
-        int m;
-        A a;
-        alias a this;
-        void f() {}
-    }
-
-    static assert(memberFunctions!B == ["f"]);
 }
 
 /**
