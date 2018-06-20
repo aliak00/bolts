@@ -80,14 +80,14 @@ unittest {
 /**
     Can be used to construct a meta function that checks if a symbol is of a type.
 */
-template typeOf(T) {
-    auto typeOf(U)(U) { return is(U == T); }
-    enum typeOf(alias a) = typeOf!T(a);
+template isType(T) {
+    auto isType(U)(U) { return is(U == T); }
+    enum isType(alias a) = isType!T(a);
 }
 
 ///
 unittest {
     import std.meta: allSatisfy, AliasSeq;
-    static assert(typeOf!int(3));
-    static assert(allSatisfy!(typeOf!int, 3));
+    static assert(isType!int(3));
+    static assert(allSatisfy!(isType!int, 3));
 }
