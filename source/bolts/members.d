@@ -66,6 +66,7 @@ unittest {
     static assert(is(typeof(aliases) == AliasSeq!(typeof(B.f0), typeof(B.f1))));
 }
 
+/// Returns a list of all the static members of a type
 template staticMembers(T) {
     // https://forum.dlang.org/post/duvxnpwnuphuxlrkjplh@forum.dlang.org
     import std.meta: Filter, AliasSeq, ApplyLeft;
@@ -83,6 +84,7 @@ template staticMembers(T) {
     alias aliases = GetMembersAsAliases!(T, staticMembers!T.tuple);
 }
 
+///
 unittest {
     import std.meta: AliasSeq, Alias;
     import bolts.meta: TypesOf;

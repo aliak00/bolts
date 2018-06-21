@@ -12,17 +12,39 @@ $(TR
         $(DDOX_NAMED_REF bolts.members.memberFunctions, `memberFunctions`)
         )
     $(TD)
-    $(TD Returns an array of all member functions of a class or struct)
+    $(TD Returns a list of all member functions)
     )
 $(TR
-    $(TD `algorithm.compact`)
+    $(TD `bolts.members`)
     $(TD
-        $(DDOX_NAMED_REF algorithm.compact.compact, `compact`)<br>
-        $(DDOX_NAMED_REF algorithm.compact.compactBy, `compactBy`)<br>
-        $(DDOX_NAMED_REF algorithm.compact.compactValues, `compactValues`)<br>
+        $(DDOX_NAMED_REF bolts.members.staticMembers, `staticMembers`)
         )
     $(TD)
-    $(TD Creates a range or associative array with all null/predicate values removed.)
+    $(TD Returns a list of of all static members)
+    )
+$(TR
+    $(TD `bolts.meta`)
+    $(TD
+        $(DDOX_NAMED_REF bolts.meta.FlattenRanges, `FlattenRanges`)
+        )
+    $(TD)
+    $(TD Takes a list of ranges and non ranges and returns a list of types of the ranges and types of the non ranges)
+    )
+$(TR
+    $(TD `bolts.meta`)
+    $(TD
+        $(DDOX_NAMED_REF bolts.meta.TypesOf, `TypesOf`)
+        )
+    $(TD)
+    $(TD Returns a list of the types of all values given - values can be types of expressions)
+    )
+$(TR
+    $(TD `bolts.meta`)
+    $(TD
+        $(DDOX_NAMED_REF bolts.meta.isType, `isType`)
+        )
+    $(TD)
+    $(TD Meta function that can be used in algos to check if passed in argument is a certain type)
     )
 )
 */
