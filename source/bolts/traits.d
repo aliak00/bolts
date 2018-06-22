@@ -5,9 +5,12 @@ module bolts.traits;
 
 import bolts.internal;
 
-/// Trus if B can be used as an associated array key in place of A.
-template isKeySubstitutableWith(A, B) {
-    enum isKeySubstitutableWith = __traits(compiles, { int[A] aa; aa[B.init] = 0; });
+/**
+    Gives you information about keys in associative arrays
+*/
+template isKey(A) {
+    /// Tells you if key of type B can be used in place of a key of type A
+    enum SubstitutableWith(B) = __traits(compiles, { int[A] aa; aa[B.init] = 0; });
 }
 
 ///
@@ -15,29 +18,10 @@ unittest {
     struct A {}
     struct B { A a; alias a this; }
 
-    static assert(isKeySubstitutableWith!(A, B));
-    static assert(!isKeySubstitutableWith!(B, A));
-    static assert(isKeySubstitutableWith!(int, long));
-    static assert(!isKeySubstitutableWith!(int, float));
-}
-
-/// Trus if a is of type null
-template isNullType(alias a) {
-    enum isNullType = is(typeof(a) == typeof(null));
-}
-
-///
-unittest {
-    int a;
-    int *b = null;
-    struct C {}
-    C c;
-    void f() {}
-    static assert(isNullType!null);
-    static assert(isNullType!a == false);
-    static assert(isNullType!b == false);
-    static assert(isNullType!c == false);
-    static assert(isNullType!f == false);
+    static assert( isKey!A.SubstitutableWith!B);
+    static assert(!isKey!B.SubstitutableWith!A);
+    static assert( isKey!int.SubstitutableWith!long);
+    static assert(!isKey!int.SubstitutableWith!(float));
 }
 
 /// True if pred is a unary function over T0, false if there're more than one T
@@ -119,11 +103,11 @@ unittest {
     Tells you if a list of types, which are composed of ranges and non ranges,
     share a common type after flattening the ranges (i.e. `ElementType`)
 
-    This basically answers the question: $(I Can I combine these ranges and values
+    This basically answers the question: $(Can I combine these ranges and values
     into a single range of a common type?)
 
     See_also:
-        `meta.FlattenRanges`
+        `bolts.meta.FlattenRanges`
 */
 template areCombinable(Values...) {
     import std.traits: CommonType;
@@ -295,6 +279,40 @@ unittest {
         static assert(!hasMember!(T, "m2").withProtection!"public");
         static assert(!hasMember!(T, "na").withProtection!"public");
     }
+}
+
+/**
+    Can be used to construct a meta function that checks if a symbol is of a type.
+*/
+template isType(T) {
+    auto isType(U)(U) { return is(U == T); }
+    enum isType(alias a) = isType!T(a);
+}
+
+///
+unittest {
+    import std.meta: allSatisfy, AliasSeq;
+    static assert(isType!int(3));
+    static assert(allSatisfy!(isType!int, 3));
+}
+
+/// True if a is of type null
+template isNullType(alias a) {
+    enum isNullType = is(typeof(a) == typeof(null));
+}
+
+///
+unittest {
+    int a;
+    int *b = null;
+    struct C {}
+    C c;
+    void f() {}
+    static assert(isNullType!null);
+    static assert(isNullType!a == false);
+    static assert(isNullType!b == false);
+    static assert(isNullType!c == false);
+    static assert(isNullType!f == false);
 }
 
 /**

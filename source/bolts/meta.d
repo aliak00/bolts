@@ -76,18 +76,3 @@ unittest {
     import std.meta: AliasSeq;
     static assert(is(TypesOf!("hello", 1, 2, 3.0, real) == AliasSeq!(string, int, int, double, real)));
 }
-
-/**
-    Can be used to construct a meta function that checks if a symbol is of a type.
-*/
-template isType(T) {
-    auto isType(U)(U) { return is(U == T); }
-    enum isType(alias a) = isType!T(a);
-}
-
-///
-unittest {
-    import std.meta: allSatisfy, AliasSeq;
-    static assert(isType!int(3));
-    static assert(allSatisfy!(isType!int, 3));
-}
