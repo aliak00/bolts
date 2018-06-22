@@ -96,6 +96,11 @@ $(TR
     $(TD $(DDOX_NAMED_REF bolts.traits.isNullable, `isNullable`))
     $(TD if null can be assigned to an instance of type T)
     )
+$(TR
+    $(TD `bolts.doth`)
+    $(TD $(DDOX_NAMED_REF bolts.doth.doth, `doth`))
+    $(TD Allows you to query a type of alias)
+    )
 )
 */
 module bolts;
