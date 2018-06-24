@@ -55,3 +55,37 @@ unittest {
     static assert( doth!null.nullType);
     static assert( doth!(typeof(null)).nullType);
 }
+
+unittest {
+    class C {}
+    struct S {}
+    struct S1 {
+        this(typeof(null)) {}
+        void opAssign(typeof(null)) {}
+    }
+
+    static assert( doth!C.nullable);
+    static assert(!doth!S.nullable);
+    static assert( doth!S1.nullable);
+    static assert( doth!(int *).nullable);
+    static assert(!doth!(int).nullable);
+}
+
+unittest {
+    int a;
+    int *b = null;
+    struct C {}
+    C c;
+    void f() {}
+    static assert( doth!null.nullType);
+    static assert(!doth!a.nullType);
+    static assert(!doth!b.nullType);
+    static assert(!doth!c.nullType);
+    static assert(!doth!f.nullType);
+}
+
+unittest {
+    import std.meta: allSatisfy, AliasSeq;
+    static assert(doth!int.of!3);
+    static assert(allSatisfy!(doth!int.of, 3));
+}
