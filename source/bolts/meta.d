@@ -49,24 +49,26 @@ unittest {
 /**
     Returns the types of all values given.
 
-    If a T is an expression it is resolved with `typeof` else it is just appended
+    $(OD isFunction!T then the typeof the address is taken)
+    $(OD If typeof(T) can be taken it is)
+    $(OD Else it is appended on as is)
 
     Returns:
         AliasSeq of the resulting types
 */
 template TypesOf(Values...) {
     import std.meta: AliasSeq;
-    import std.traits: isExpressions;
-    static if (Values.length)
-    {
-        static if (isExpressions!(Values[0]))
+    import std.traits: isExpressions, isFunction;
+    static if (Values.length) {
+        static if (isFunction!(Values[0])) {
+            alias T = typeof(&Values[0]);
+        } else static if (is(typeof(Values[0]))) {
             alias T = typeof(Values[0]);
-        else
+        } else {
             alias T = Values[0];
+        }
         alias TypesOf = AliasSeq!(T, TypesOf!(Values[1..$]));
-    }
-    else
-    {
+    } else {
         alias TypesOf = AliasSeq!();
     }
 }
@@ -75,4 +77,12 @@ template TypesOf(Values...) {
 unittest {
     import std.meta: AliasSeq;
     static assert(is(TypesOf!("hello", 1, 2, 3.0, real) == AliasSeq!(string, int, int, double, real)));
+}
+
+unittest {
+    import std.meta: AliasSeq;
+    static void f0() {}
+    void f1() {}
+    struct S { void f2() {} }
+    static assert(is(TypesOf!(f0, f1, S.f2) == AliasSeq!(typeof(&f0), typeof(&f1), typeof(&S.f2))));
 }

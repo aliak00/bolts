@@ -280,3 +280,61 @@ unittest {
         static assert(!hasMember!(T, "na").withProtection!"public");
     }
 }
+
+
+/**
+    Can be used to construct a meta function that checks if a symbol is of a type.
+*/
+template isType(T) {
+    auto isType(U)(U) { return is(U == T); }
+    enum isType(alias a) = isType!T(a);
+}
+
+///
+unittest {
+    import std.meta: allSatisfy, AliasSeq;
+    static assert(isType!int(3));
+    static assert(allSatisfy!(isType!int, 3));
+}
+
+/// True if a is of type null
+template isNullType(alias a) {
+    enum isNullType = is(typeof(a) == typeof(null));
+}
+
+///
+unittest {
+    int a;
+    int *b = null;
+    struct C {}
+    C c;
+    void f() {}
+    static assert(isNullType!null);
+    static assert(isNullType!a == false);
+    static assert(isNullType!b == false);
+    static assert(isNullType!c == false);
+    static assert(isNullType!f == false);
+}
+
+/**
+    Returns true of T can be set to null
+*/
+template isNullable(T) {
+    enum isNullable = __traits(compiles, { T t = null; t = null; });
+}
+
+///
+unittest {
+    class C {}
+    struct S {}
+    struct S1 {
+        this(typeof(null)) {}
+        void opAssign(typeof(null)) {}
+    }
+
+    static assert( isNullable!C);
+    static assert(!isNullable!S);
+    static assert( isNullable!S1);
+    static assert( isNullable!(int *));
+    static assert(!isNullable!(int));
+}
