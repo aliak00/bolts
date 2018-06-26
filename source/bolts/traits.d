@@ -298,8 +298,10 @@ unittest {
 }
 
 /// True if a is of type null
-template isNullType(alias a) {
-    enum isNullType = is(typeof(a) == typeof(null));
+template isNullType(T...) if (T.length == 1) {
+    import bolts.meta: TypesOf;
+    alias U = TypesOf!T[0];
+    enum isNullType = is(U == typeof(null));
 }
 
 ///
@@ -319,8 +321,10 @@ unittest {
 /**
     Returns true of T can be set to null
 */
-template isNullable(T) {
-    enum isNullable = __traits(compiles, { T t = null; t = null; });
+template isNullable(T...) if (T.length == 1) {
+    import bolts.meta: TypesOf;
+    alias U = TypesOf!T[0];
+    enum isNullable = __traits(compiles, { U u = null; u = null; });
 }
 
 ///

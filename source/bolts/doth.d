@@ -5,9 +5,6 @@ module bolts.doth;
 
 import bolts.internal;
 
-import std.traits;
-import std.meta;
-
 /**
     Doth is a helper template that allows you to inspect a type or an alias.
 
