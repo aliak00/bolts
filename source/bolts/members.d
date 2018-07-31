@@ -66,13 +66,17 @@ unittest {
     static assert(is(typeof(aliases) == AliasSeq!(typeof(B.f0), typeof(B.f1))));
 }
 
-/// Returns a list of all the static members of a type
+/**
+    Returns a list of all the static members of a type
+
+    SeeAlso:
+     - https://forum.dlang.org/post/duvxnpwnuphuxlrkjplh@forum.dlang.org
+*/
 template staticMembers(T) {
-    // https://forum.dlang.org/post/duvxnpwnuphuxlrkjplh@forum.dlang.org
     import std.meta: Filter, AliasSeq, ApplyLeft;
     import std.traits: hasStaticMember;
 
-    alias FilterMembers(T, alias Fn) = Filter!(ApplyLeft!(Fn, T), __traits(allMembers, T));
+    alias FilterMembers(U, alias Fn) = Filter!(ApplyLeft!(Fn, U), __traits(allMembers, U));
 
     /// Get as array of immutable strings
     immutable array = [AliasSeq!(staticMembers!T.tuple)];

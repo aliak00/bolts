@@ -24,7 +24,7 @@ unittest {
 /**
     Returns the types of all values given.
 
-    $(OD isFunction!T then the typeof the address is taken)
+    $(OD isFunction!T then the typeof the address is taken if possible)
     $(OD If typeof(T) can be taken it is)
     $(OD Else it is appended on as is)
 
@@ -35,8 +35,8 @@ template TypesOf(Values...) {
     import std.meta: AliasSeq;
     import std.traits: isExpressions, isFunction;
     static if (Values.length) {
-        static if (isFunction!(Values[0])) {
-            alias T = typeof(&Values[0]);
+        static if (isFunction!(Values[0]) && is(typeof(&Values[0]) F)) {
+            alias T = F;
         } else static if (is(typeof(Values[0]))) {
             alias T = typeof(Values[0]);
         } else {
@@ -46,6 +46,26 @@ template TypesOf(Values...) {
     } else {
         alias TypesOf = AliasSeq!();
     }
+}
+
+///
+unittest {
+    import std.meta: AliasSeq;
+    static assert(is(TypesOf!("hello", 1, 2, 3.0, real) == AliasSeq!(string, int, int, double, real)));
+}
+
+unittest {
+    import std.meta: AliasSeq;
+    static void f0() {}
+    void f1() {}
+    struct S { void f2() {} }
+    static assert(is(TypesOf!(f0, f1, S.f2) == AliasSeq!(typeof(&f0), typeof(&f1), typeof(&S.f2))));
+}
+
+unittest {
+    import std.meta: AliasSeq;
+    int f(int p) { return 3; }
+    static assert(is(TypesOf!(typeof(f)) == AliasSeq!(typeof(f))));
 }
 
 /**
@@ -65,13 +85,58 @@ unittest {
     static assert(!isKey!B.SubstitutableWith!A);
     static assert( isKey!int.SubstitutableWith!long);
     static assert(!isKey!int.SubstitutableWith!(float));
+    
 }
 
+template isFunctionOver(T...) {
+    import std.traits: isSomeFunction, Parameters;
+    import bolts.traits: TypesOf;
+    alias Types = TypesOf!T;
+    static if (Types.length >= 1 && isSomeFunction!(Types[0])) {
+        alias Params = Parameters!(Types[0]);
+
+        import std.meta;
+
+        // pragma(msg, Params);
+
+        // pragma(msg, ApplyLeft((Types[1 .. $]), ))
+
+        enum isFunctionOver = true;
+    } else {
+        enum isFunctionOver = false;
+    }
+}
+
+unittest {
+    void f0() {}
+    void f1(int a) {}
+
+    // pragma(msg, isFunctionOver!(f0));
+    // pragma(msg, isFunctionOver!(f1, int));
+}
+
+
 /// True if pred is a unary function over T0, false if there're more than one T
-template isUnaryOver(alias pred, T...) {
-    import std.functional: unaryFun;
-    import std.traits: isExpressions;
-    enum isUnaryOver = T.length == 1 && !isExpressions!T && is(typeof(unaryFun!pred(T.init)));
+template isUnaryOver(T...) {
+    static if (T.length == 2) {
+        import std.traits: isNarrowString, isExpressions, Parameters;
+        import bolts.traits: TypesOf;
+        import std.functional: unaryFun;
+
+        alias Types = TypesOf!(T);
+        alias F = Types[0];
+
+        static if (!isNarrowString!F && is(Parameters!F Params) && Params.length == 1) {
+            import std.traits: isSomeFunction;
+            enum isUnaryOver = isSomeFunction!F && is(Types[1] : Params[0]);
+        } else static if (is(typeof(unaryFun!(T[0])(T[1].init)))) {
+            enum isUnaryOver = true;
+        } else {
+            enum isUnaryOver = false;    
+        }
+    } else {
+        enum isUnaryOver = false;
+    }
 }
 
 ///
@@ -97,8 +162,12 @@ unittest {
     static assert( isUnaryOver!(ceil, double));
     static assert(!isUnaryOver!(ceil, double, double));
 
-    static assert(!isUnaryOver!(f1, 3));
-    static assert(!isUnaryOver!("a", 3));
+    static assert( isUnaryOver!(f1, 3));
+    static assert(!isUnaryOver!(f1, "ff"));
+    static assert( isUnaryOver!("a", 3));
+    static assert(!isUnaryOver!(f1, 3, 4));
+    static assert( isUnaryOver!(typeof(f1), 3));
+    static assert(!isUnaryOver!(typeof(f1), "ff"));
 }
 
 /// True if pred is a binary function of (T0, T1) or (T0, T0). False if there's more than 2 Ts
@@ -122,24 +191,24 @@ unittest {
 
     import std.traits: isExpressions;
 
-    static assert(!isBinaryOver!("a", int));
-    static assert(!isBinaryOver!("a > a", int));
-    static assert( isBinaryOver!("a > b", int));
-    static assert(!isBinaryOver!(null, int));
-    static assert(!isBinaryOver!((a => a), int));
-    static assert( isBinaryOver!((a, b) => a + b, int));
+    // static assert(!isBinaryOver!("a", int));
+    // static assert(!isBinaryOver!("a > a", int));
+    // static assert( isBinaryOver!("a > b", int));
+    // static assert(!isBinaryOver!(null, int));
+    // static assert(!isBinaryOver!((a => a), int));
+    // static assert( isBinaryOver!((a, b) => a + b, int));
 
-    static assert(!isBinaryOver!(v, int));
-    static assert(!isBinaryOver!(f0, int));
-    static assert(!isBinaryOver!(f1, int));
-    static assert( isBinaryOver!(f2, int));
-    static assert( isBinaryOver!(f2, int, int));
-    static assert(!isBinaryOver!(f2, int, string));
-    static assert(!isBinaryOver!(f2, int, int, int));
+    // static assert(!isBinaryOver!(v, int));
+    // static assert(!isBinaryOver!(f0, int));
+    // static assert(!isBinaryOver!(f1, int));
+    // static assert( isBinaryOver!(f2, int));
+    // static assert( isBinaryOver!(f2, int, int));
+    // static assert(!isBinaryOver!(f2, int, string));
+    // static assert(!isBinaryOver!(f2, int, int, int));
 
-    static assert(!isBinaryOver!("a > b", 3));
-    static assert(!isBinaryOver!("a > b", 3, 3));
-    static assert(!isBinaryOver!("a > b", 3, int));
+    // static assert(!isBinaryOver!("a > b", 3));
+    // static assert(!isBinaryOver!("a > b", 3, 3));
+    // static assert(!isBinaryOver!("a > b", 3, int));
 }
 
 /**
@@ -316,16 +385,77 @@ template isNullable(T...) if (T.length == 1) {
     enum isNullable = __traits(compiles, { U u = null; u = null; });
 }
 
-///
-unittest {
-    import std.meta: AliasSeq;
-    static assert(is(TypesOf!("hello", 1, 2, 3.0, real) == AliasSeq!(string, int, int, double, real)));
+
+/**
+    Returns true if a and b are the same thing, or false if not. Both a and b can be types, literals, or symbols.
+
+    $(LI If both are types: `is(a == b)`)
+    $(LI If both are literals: `a == b`)
+    $(LI Else: `__traits(isSame, a, b)`)
+*/
+template isSame(ab...) if (ab.length == 2) {
+
+    private static template expectType(T) {}
+    private static template expectBool(bool b) {}
+
+    static if (__traits(compiles, expectType!(ab[0]), expectType!(ab[1]))) {
+        enum isSame = is(ab[0] == ab[1]);
+    } else static if (!__traits(compiles, expectType!(ab[0]))
+        && !__traits(compiles, expectType!(ab[1]))
+        &&  __traits(compiles, expectBool!(ab[0] == ab[1]))
+    ) {
+        static if (!__traits(compiles, &ab[0]) || !__traits(compiles, &ab[1]))
+            enum isSame = (ab[0] == ab[1]);
+        else
+            enum isSame = __traits(isSame, ab[0], ab[1]);
+    } else {
+        enum isSame = __traits(isSame, ab[0], ab[1]);
+    }
 }
 
+///
 unittest {
-    import std.meta: AliasSeq;
-    static void f0() {}
-    void f1() {}
-    struct S { void f2() {} }
-    static assert(is(TypesOf!(f0, f1, S.f2) == AliasSeq!(typeof(&f0), typeof(&f1), typeof(&S.f2))));
+    static assert( isSame!(int, int));
+    static assert(!isSame!(int, short));
+
+    enum a = 1, b = 1, c = 2, s = "a", t = "a";
+    static assert( isSame!(1, 1));
+    static assert( isSame!(a, 1));
+    static assert( isSame!(a, b));
+    static assert(!isSame!(b, c));
+    static assert( isSame!("a", "a"));
+    static assert( isSame!(s, "a"));
+    static assert( isSame!(s, t));
+    static assert(!isSame!(s, "g"));
+    static assert(!isSame!(1, "1"));
+    static assert(!isSame!(a, "a"));
+    static assert( isSame!(isSame, isSame));
+    static assert(!isSame!(isSame, a));
+
+    static assert(!isSame!(byte, a));
+    static assert(!isSame!(short, isSame));
+    static assert(!isSame!(a, int));
+    static assert(!isSame!(long, isSame));
+
+    static immutable X = 1, Y = 1, Z = 2;
+    static assert( isSame!(X, X));
+    static assert(!isSame!(X, Y));
+    static assert(!isSame!(Y, Z));
+
+    int  foo();
+    int  bar();
+    real baz(int);
+    static assert( isSame!(foo, foo));
+    static assert(!isSame!(foo, bar));
+    static assert(!isSame!(bar, baz));
+    static assert( isSame!(baz, baz));
+    static assert(!isSame!(foo, 0));
+
+    int  x, y;
+    real z;
+    static assert( isSame!(x, x));
+    static assert(!isSame!(x, y));
+    static assert(!isSame!(y, z));
+    static assert( isSame!(z, z));
+    static assert(!isSame!(x, 0));
 }
