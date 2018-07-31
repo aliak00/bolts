@@ -5,6 +5,49 @@ module bolts.traits;
 
 import bolts.internal;
 
+///
+unittest {
+    class C {}
+    struct S {}
+    struct S1 {
+        this(typeof(null)) {}
+        void opAssign(typeof(null)) {}
+    }
+
+    static assert( isNullable!C);
+    static assert(!isNullable!S);
+    static assert( isNullable!S1);
+    static assert( isNullable!(int *));
+    static assert(!isNullable!(int));
+}
+
+/**
+    Returns the types of all values given.
+
+    $(OD isFunction!T then the typeof the address is taken)
+    $(OD If typeof(T) can be taken it is)
+    $(OD Else it is appended on as is)
+
+    Returns:
+        AliasSeq of the resulting types
+*/
+template TypesOf(Values...) {
+    import std.meta: AliasSeq;
+    import std.traits: isExpressions, isFunction;
+    static if (Values.length) {
+        static if (isFunction!(Values[0])) {
+            alias T = typeof(&Values[0]);
+        } else static if (is(typeof(Values[0]))) {
+            alias T = typeof(Values[0]);
+        } else {
+            alias T = Values[0];
+        }
+        alias TypesOf = AliasSeq!(T, TypesOf!(Values[1..$]));
+    } else {
+        alias TypesOf = AliasSeq!();
+    }
+}
+
 /**
     Gives you information about keys in associative arrays
 */
@@ -138,13 +181,10 @@ unittest {
 */
 auto hasProperty(T, string name)() {
     import std.traits: hasMember;
-    static if (hasMember!(T, name))
-    {
+    static if (hasMember!(T, name)) {
         return !is(typeof(__traits(getMember, T, name)) == function)
 		    && __traits(getOverloads, T, name).length;
-    }
-    else
-    {
+    } else {
         return false;
     }
 }
@@ -231,58 +271,6 @@ unittest {
 }
 
 /**
-    Used to check if T has a member with a specific trait
-
-    Available member traits:
-        $(LI `withProtection`)
-
-    Params:
-        T = type to check
-        name = name of field in type
-
-*/
-template hasMember(T, string name) {
-    enum yesMember = __traits(hasMember, T, name);
-    /**
-        Check if the member has the required access level
-    */
-    template withProtection(string level) {
-        static if (yesMember && __traits(getProtection, __traits(getMember, T, name)) == level)
-        {
-            enum withProtection = true;
-        }
-        else
-        {
-            enum withProtection = false;
-        }
-    }
-}
-
-///
-unittest {
-    struct S {
-        int i;
-        public int m0;
-        protected int m1;
-        private int m2;
-    }
-
-    import std.meta: AliasSeq;
-    static foreach (T; AliasSeq!(S, S*))
-    {
-        static assert( hasMember!(T, "i").withProtection!"public");
-        static assert( hasMember!(T, "m0").withProtection!"public");
-        static assert(!hasMember!(T, "m0").withProtection!"protected");
-        static assert( hasMember!(T, "m1").withProtection!"protected");
-        static assert(!hasMember!(T, "m1").withProtection!"public");
-        static assert( hasMember!(T, "m2").withProtection!"private");
-        static assert(!hasMember!(T, "m2").withProtection!"public");
-        static assert(!hasMember!(T, "na").withProtection!"public");
-    }
-}
-
-
-/**
     Can be used to construct a meta function that checks if a symbol is of a type.
 */
 template isType(T) {
@@ -295,11 +283,12 @@ unittest {
     import std.meta: allSatisfy, AliasSeq;
     static assert(isType!int(3));
     static assert(allSatisfy!(isType!int, 3));
+    static assert(allSatisfy!(isType!int, 3));
 }
 
 /// True if a is of type null
 template isNullType(T...) if (T.length == 1) {
-    import bolts.meta: TypesOf;
+    import bolts.traits: TypesOf;
     alias U = TypesOf!T[0];
     enum isNullType = is(U == typeof(null));
 }
@@ -322,23 +311,21 @@ unittest {
     Returns true of T can be set to null
 */
 template isNullable(T...) if (T.length == 1) {
-    import bolts.meta: TypesOf;
+    import bolts.traits: TypesOf;
     alias U = TypesOf!T[0];
     enum isNullable = __traits(compiles, { U u = null; u = null; });
 }
 
 ///
 unittest {
-    class C {}
-    struct S {}
-    struct S1 {
-        this(typeof(null)) {}
-        void opAssign(typeof(null)) {}
-    }
+    import std.meta: AliasSeq;
+    static assert(is(TypesOf!("hello", 1, 2, 3.0, real) == AliasSeq!(string, int, int, double, real)));
+}
 
-    static assert( isNullable!C);
-    static assert(!isNullable!S);
-    static assert( isNullable!S1);
-    static assert( isNullable!(int *));
-    static assert(!isNullable!(int));
+unittest {
+    import std.meta: AliasSeq;
+    static void f0() {}
+    void f1() {}
+    struct S { void f2() {} }
+    static assert(is(TypesOf!(f0, f1, S.f2) == AliasSeq!(typeof(&f0), typeof(&f1), typeof(&S.f2))));
 }

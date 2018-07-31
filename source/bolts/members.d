@@ -87,7 +87,7 @@ template staticMembers(T) {
 ///
 unittest {
     import std.meta: AliasSeq, Alias;
-    import bolts.meta: TypesOf;
+    import bolts.traits: TypesOf;
     struct S {
         static void s0() {}
         static int s1 = 3;
@@ -107,4 +107,51 @@ unittest {
     static assert(is(typeof(array) == immutable string[]));
     static assert(is(typeof(tuple) == AliasSeq!(string, string, string)));
     static assert(is(typeof(aliases) == AliasSeq!(typeof(S.s0), typeof(S.s1), typeof(S.s2))));
+}
+
+/**
+    Used to check if T has a member with a specific trait
+
+    Available member traits:
+        $(LI `withProtection`)
+
+    Params:
+        T = type to check
+        name = name of field in type
+
+*/
+template hasMember(T, string name) {
+    enum yesMember = __traits(hasMember, T, name);
+    /**
+        Check if the member has the required access level
+    */
+    template withProtection(string level) {
+        static if (yesMember && __traits(getProtection, __traits(getMember, T, name)) == level) {
+            enum withProtection = true;
+        } else {
+            enum withProtection = false;
+        }
+    }
+}
+
+///
+unittest {
+    struct S {
+        int i;
+        public int m0;
+        protected int m1;
+        private int m2;
+    }
+
+    import std.meta: AliasSeq;
+    static foreach (T; AliasSeq!(S, S*)) {
+        static assert( hasMember!(T, "i").withProtection!"public");
+        static assert( hasMember!(T, "m0").withProtection!"public");
+        static assert(!hasMember!(T, "m0").withProtection!"protected");
+        static assert( hasMember!(T, "m1").withProtection!"protected");
+        static assert(!hasMember!(T, "m1").withProtection!"public");
+        static assert( hasMember!(T, "m2").withProtection!"private");
+        static assert(!hasMember!(T, "m2").withProtection!"public");
+        static assert(!hasMember!(T, "na").withProtection!"public");
+    }
 }

@@ -17,14 +17,14 @@ $(TR
     $(TD Returns a list of of all static members)
     )
 $(TR
-    $(TD `bolts.meta`)
-    $(TD $(DDOX_NAMED_REF bolts.meta.FlattenRanges, `FlattenRanges`))
-    $(TD Takes a list of ranges and non ranges and returns a list of types of the ranges and types of the non ranges)
+    $(TD `bolts.members`)
+    $(TD $(DDOX_NAMED_REF bolts.members.hasMember, `hasMember`))
+    $(TD If a type has a member with certain attributes)
     )
 $(TR
     $(TD `bolts.meta`)
-    $(TD $(DDOX_NAMED_REF bolts.meta.TypesOf, `TypesOf`))
-    $(TD Returns a list of the types of all values given - values can be types of expressions)
+    $(TD $(DDOX_NAMED_REF bolts.meta.FlattenRanges, `FlattenRanges`))
+    $(TD Takes a list of ranges and non ranges and returns a list of types of the ranges and types of the non ranges)
     )
 $(TR
     $(TD `bolts.range`)
@@ -40,6 +40,11 @@ $(TR
     $(TD `bolts.range`)
     $(TD $(DDOX_NAMED_REF bolts.range.CommonTypeOfRanges, `CommonTypeOfRanges`))
     $(TD Finds the common type from a list of ranges)
+    )
+$(TR
+    $(TD `bolts.traits`)
+    $(TD $(DDOX_NAMED_REF bolts.traits.TypesOf, `TypesOf`))
+    $(TD Returns a list of the types of all values given - values can be types of expressions)
     )
 $(TR
     $(TD `bolts.traits`)
@@ -78,11 +83,6 @@ $(TR
     )
 $(TR
     $(TD `bolts.traits`)
-    $(TD $(DDOX_NAMED_REF bolts.traits.hasMember, `hasMember`))
-    $(TD If a type has a member with certain attributes)
-    )
-$(TR
-    $(TD `bolts.traits`)
     $(TD $(DDOX_NAMED_REF bolts.traits.isType, `isType`))
     $(TD If a type is of another type)
     )
@@ -99,7 +99,7 @@ $(TR
 $(TR
     $(TD `bolts.doth`)
     $(TD $(DDOX_NAMED_REF bolts.doth.doth, `doth`))
-    $(TD Allows you to query a type of alias)
+    $(TD Allows you to query a type or alias with a nicer syntax, i.e. `isNullable!T` == `doth!T.nullable`)
     )
 )
 */

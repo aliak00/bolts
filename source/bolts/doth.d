@@ -33,7 +33,7 @@ import bolts.internal;
         - https://dlang.org/spec/template.html#variadic-templates
 */
 template doth(Types...) if (Types.length == 1) {
-    import bolts.meta: TypesOf;
+    import bolts.traits: TypesOf;
     alias T = TypesOf!Types[0];
 
     /// See: `bolts.traits.isNullable`
