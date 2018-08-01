@@ -69,7 +69,7 @@ unittest {
 /**
     Returns a list of all the static members of a type
 
-    SeeAlso:
+    See_Also:
      - https://forum.dlang.org/post/duvxnpwnuphuxlrkjplh@forum.dlang.org
 */
 template staticMembers(T) {
@@ -91,7 +91,7 @@ template staticMembers(T) {
 ///
 unittest {
     import std.meta: AliasSeq, Alias;
-    import bolts.traits: TypesOf;
+    import bolts.meta: TypesOf;
     struct S {
         static void s0() {}
         static int s1 = 3;

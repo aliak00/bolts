@@ -4,35 +4,38 @@
 
 Full API docs available [here](https://aliak00.github.io/bolts/bolts.html)
 
-Bolts is a utility library for the D programming language that provides templates and compile time functions that are not available in D's std.traits and/or std.meta packages.
+Bolts is a utility library for the D programming language which contains a number of static reflection utilties that query compile time entities (traits) or transform them (meta). General utilties are in the modules `traits` and `meta`, and more specific ones are in dedicated modules (i.e. `bolts.members` provides utilities over a type's members).
 
-E.g.
+## Modules:
+
+* **meta**: has functions that result in compile time entity transofrmations, including:
+    * `TypesOf`, `Flatten`, `AliasPack`, `staticZip`
+* **traits**: has general utitlites that can query compile time entities. including:
+    * `isFunctionOver`, `isUnaryOver`, `isBinaryOver`, `hasProperty`, `propertySemantics`, `areCombinable`, `isManifestAssignable`, `isOf`, `isSame`, `isNullType`, `isNullable`
+* **members**: has functions that allow you to query about the members of types
+    * `staticMembers`, `memberFunction`, `hasMember` (not eponymous)
+* **range**: query ranges
+    * `isSortedRange`, `sortingPredicate`, `CommonTypeOfRanges`
+* **aa**: has functions that act on associative arrays
+    * `isKey` (not eponymous)
+* **doth**: super non-eponymous template that provides a lot of the functionality that's in the traits module with a different sytax that allows their usage in meta functions as well.
+
+Most functions here operate on any compile time entity. For example `isUnaryOver` works in both these situatons:
+
 ```d
-struct S {
-    void f() {}
-    static void sf() {}
-    @property int rp() { return m; }
-    @property void wp(int) {}
-}
+int i;
+void f(int) {}
+isFunctionOver!(f, int);
+isFunctionOver!(f, 3);
+isFunctionOver!(f, i);
+```
 
-// Check if something is a property
-static assert( hasProperty!(S, "rp"));
+## Doth super template
 
-// Check if a range is sprted
-static assert(!isSortedRange!S);
+The `doth` super template. Has a lot of the traits on types encapulated in one place. So if there's a trait that tells you something about a compile time entity, chances are `doth` will have it. E.g:
 
-// Get a list of member functions
-static assert(memberFunctions!S == ["f", "sf"]);
-
-// Check properties of a member funciton
-static assert(hasMember!(S, "f).withProtection!"public");
-
-// Provides some meta capabilities as wel...
-
-alias R1 = typeof([1, 2, 3].filter!"true");
-alias R2 = typeof([1.0, 2.0, 3.0]);
-
-static assert(is(FlattenRanges!(int, R1, R2) == AliasSeq!(int, int, double)));
-
-static assert(is(TypesOf!("hello", 1, 2, 3.0, real) == AliasSeq!(string, int, int, double, real)));
+```d
+void f(int, float, string) {}
+doth!f.unaryOver!(int, float, string);
+doth!f.unaryOver!(3, float, "");
 ```

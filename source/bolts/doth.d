@@ -25,7 +25,7 @@ import bolts.internal;
         )
     $(TR
         $(TD $(DDOX_NAMED_REF bolts.doth.doth.nullable, `nullable`))
-        $(TD True if the resolved type nullable)
+        $(TD True if the resolved type is nullable)
         )
     $(TR
         $(TD $(DDOX_NAMED_REF bolts.doth.doth.nullType, `nullType`))
@@ -40,13 +40,18 @@ import bolts.internal;
         $(TD True if the resolved type a binary funtion over some other types)
         )
     )
-    
+
     See_also:
         - https://dlang.org/spec/template.html#variadic-templates
 */
 template doth(Alises...) if (Alises.length == 1) {
-    import bolts.traits: TypesOf;
+    import bolts.meta: TypesOf;
     alias T = TypesOf!Alises[0];
+
+    /// True if the resolved type is the same as another resolved type
+    static template of(Other...) if (Other.length == 1) {
+        enum of = from!"bolts.traits".isOf!(Alises[0], Other[0]);
+    }
 
     /// See: `bolts.traits.isNullable`
     enum nullable = from!"bolts.traits".isNullable!T;
@@ -54,56 +59,63 @@ template doth(Alises...) if (Alises.length == 1) {
     /// See: `bolts.traits.isNullType`
     enum nullType = from!"bolts.traits".isNullType!T;
 
-    /// True if the resolved type is the same as another resolved type
-    static template of(Other...) if (Other.length == 1) {
-        alias U = TypesOf!Other[0];
-        enum of = is(T == U);
-    }
-
     /// See: `bolts.traits.isSame`
     static template sameAs(Other...) if (Other.length == 1) {
         import bolts.traits: isSame;
-        enum sameAs = isSame(Alises[0], Other[0]);
+        enum sameAs = from!"bolts.traits".isSame!(Alises[0], Other[0]);
+    }
+
+    /// See: `bolts.traits.isFunctionOver`
+    static template functionOver(U...) {
+        enum functionOver = from!"bolts.traits".isFunctionOver!(Alises[0], U);
     }
 
     /// See: `bolts.traits.isUnaryOver`
-    static template unaryOver(U) {
+    static template unaryOver(U...) {
         enum unaryOver = from!"bolts.traits".isUnaryOver!(Alises[0], U);
     }
 
-    // /// See: `bolts.traits.isBinaryOver`
-    // static template binaryOver(U, V = U) {
-    //     enum unaryOver = from!"bolts.traits".isBinaryOver!(T, U, V);
-    // }
+    /// See: `bolts.traits.isUnaryOver`
+    static template binaryOver(U...) {
+        enum binaryOver = from!"bolts.traits".isBinaryOver!(Alises[0], U);
+    }
 }
 
 ///
 unittest {
     int i = 3;
+    int j = 4;
     int *pi = null;
 
-    // Is the alias or type the same type as another alias or type
+    // Is it resolved to the same type as another?
     static assert( doth!i.of!int);
     static assert(!doth!i.of!(int*));
-    static assert( doth!int.of!i);
+    static assert( doth!3.of!i);
     static assert(!doth!int.of!pi);
 
-    // Is the alias or type nullable?
+    // Is it the same as another?
+    static assert( doth!i.sameAs!i);
+    static assert(!doth!i.sameAs!j);
+    static assert( doth!1.sameAs!1);
+    static assert(!doth!1.sameAs!2);
+
+    // Is it nullable?
     static assert( doth!pi.nullable);
     static assert( doth!(char*).nullable);
     static assert(!doth!i.nullable);
     static assert(!doth!int.nullable);
 
-    // Is the alias or type a typeof(null)
+    // Is it typeof(null)?
     static assert(!doth!int.nullType);
     static assert( doth!null.nullType);
     static assert( doth!(typeof(null)).nullType);
 
     // Using std.meta algorithm with doth
     import std.meta: allSatisfy, AliasSeq;
-    static assert(doth!int.of!3);
-    static assert(allSatisfy!(doth!int.of, 3));
+    static assert(allSatisfy!(doth!int.of, 3, 4, int, i));
 
-    // Is
-    // static assert( doth!(a => a).unaryOver!int);
+    /// Is it a function over
+    static assert( doth!(a => a).unaryOver!int);
+    static assert( doth!((a, b) => a).binaryOver!(int, int));
+    static assert( doth!((a, b, c, d) => a).functionOver!(int, int, int, int));
 }

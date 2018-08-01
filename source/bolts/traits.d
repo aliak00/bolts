@@ -5,53 +5,6 @@ module bolts.traits;
 
 import bolts.internal;
 
-/**
-    Returns the types of all values given.
-
-    $(OD isFunction!T then the typeof the address is taken if possible)
-    $(OD If typeof(T) can be taken it is)
-    $(OD Else it is appended on as is)
-
-    Returns:
-        AliasSeq of the resulting types
-*/
-template TypesOf(Values...) {
-    import std.meta: AliasSeq;
-    import std.traits: isExpressions, isFunction;
-    static if (Values.length) {
-        static if (isFunction!(Values[0]) && is(typeof(&Values[0]) F)) {
-            alias T = F;
-        } else static if (is(typeof(Values[0]))) {
-            alias T = typeof(Values[0]);
-        } else {
-            alias T = Values[0];
-        }
-        alias TypesOf = AliasSeq!(T, TypesOf!(Values[1..$]));
-    } else {
-        alias TypesOf = AliasSeq!();
-    }
-}
-
-///
-unittest {
-    import std.meta: AliasSeq;
-    static assert(is(TypesOf!("hello", 1, 2, 3.0, real) == AliasSeq!(string, int, int, double, real)));
-}
-
-unittest {
-    import std.meta: AliasSeq;
-    static void f0() {}
-    void f1() {}
-    struct S { void f2() {} }
-    static assert(is(TypesOf!(f0, f1, S.f2) == AliasSeq!(typeof(&f0), typeof(&f1), typeof(&S.f2))));
-}
-
-unittest {
-    import std.meta: AliasSeq;
-    int f(int p) { return 3; }
-    static assert(is(TypesOf!(typeof(f)) == AliasSeq!(typeof(f))));
-}
-
 ///
 unittest {
     class C {}
@@ -69,15 +22,14 @@ unittest {
 }
 
 /**
-    Returns true if the first argument is a n-ary function over the next n parameter arguments
+    Returns true if the passed in function is an n-ary function over the next n parameter arguments
 
-    Parameter arguments can be any compile time entity that can be typed
+    Parameter arguments can be any compile time entity that can be typed. The first
 */
 template isFunctionOver(T...) {
     import std.meta: staticMap, Alias;
     import std.traits: isSomeFunction, Parameters;
-    import bolts.meta: AliasPack, staticZip;
-    import bolts.traits: TypesOf;
+    import bolts.meta: AliasPack, staticZip, TypesOf;
 
     alias Types = TypesOf!T;
 
@@ -91,8 +43,9 @@ template isFunctionOver(T...) {
                 } else {
                     import std.meta: allSatisfy;
                     alias Pairs = staticZip!(ExpectedParams, DesiredParams);
-                    enum AreSame(alias pair) = is(pair.expand[0] == pair.expand[1]);
-                    enum isFunctionOver = allSatisfy!(AreSame, Pairs.expand);
+                    // If is(DesiredType : ExpectedType)
+                    enum AreSame(alias Pair) = is(Pair.Unpack[1] : Pair.Unpack[0]);
+                    enum isFunctionOver = allSatisfy!(AreSame, Pairs.Unpack);
                 }
             } else {
                 enum isFunctionOver = false;
@@ -103,7 +56,7 @@ template isFunctionOver(T...) {
             // params works
             alias F = T[0];
             alias Val(T) = Alias!(T.init);
-            enum isFunctionOver = __traits(compiles, { F(staticMap!(Val, DesiredParams.expand)); });
+            enum isFunctionOver = __traits(compiles, { F(staticMap!(Val, DesiredParams.Unpack)); });
         } else {
             enum isFunctionOver = false;
         }
@@ -114,7 +67,8 @@ template isFunctionOver(T...) {
 
 ///
 unittest {
-    int v;
+    int i;
+    float f;
     void f0() {}
     void f1(int a) {}
     void f2(int a, string b) {}
@@ -125,72 +79,85 @@ unittest {
 
     static assert(!isFunctionOver!(f1, string));
     static assert( isFunctionOver!(f1, int));
+    static assert( isFunctionOver!(f1, i));
+    static assert(!isFunctionOver!(f1, f));
 
     static assert(!isFunctionOver!(f2, int));
     static assert( isFunctionOver!(f2, int, string));
     static assert(!isFunctionOver!(f2, int, float));
     static assert(!isFunctionOver!(f2, int, float, string));
 
+    static assert( isFunctionOver!(f3, int, string, float));
     static assert(!isFunctionOver!(f3, int, float, string));
     static assert(!isFunctionOver!(f3, int, float));
     static assert(!isFunctionOver!(f3, int));
     static assert(!isFunctionOver!(f3));
-    static assert( isFunctionOver!(f3, int, string, float));
 
-    struct A {}
     static assert(!isFunctionOver!(a => a, float, int));
     static assert( isFunctionOver!(a => a, float));
     static assert( isFunctionOver!(a => a, int));
+    static assert( isFunctionOver!((int a) => a, short));
     static assert(!isFunctionOver!((int a) => a, float));
     static assert(!isFunctionOver!(a => a));
     static assert( isFunctionOver!((a, b) => a + b, float, int));
+
+    struct A {}
     static assert(!isFunctionOver!((a, b) => a + b, A, int));
     static assert( isFunctionOver!((a, b, c, d) => a+b+c+d, int, int, int ,int));
+
+    import std.functional: unaryFun;
+    static assert( isFunctionOver!(unaryFun!"a", int));
+    static assert(!isFunctionOver!(unaryFun!"a", int, int));
+
+    import std.functional: binaryFun;
+    static assert(!isFunctionOver!(binaryFun!"a", int));
+    static assert( isFunctionOver!(binaryFun!"a", int, int));
+    static assert( isFunctionOver!(binaryFun!"a > b", int, int));
+    static assert(!isFunctionOver!(binaryFun!"a > b", int, int, int));
+
+    class C {}
+    class D : C {}
+    void fc(C) {}
+    void fd(D) {}
+    static assert( isFunctionOver!(fc, C));
+    static assert( isFunctionOver!(fc, D));
+    static assert(!isFunctionOver!(fd, C));
+    static assert( isFunctionOver!(fd, D));
+
+    import std.math: ceil;
+    static assert( isFunctionOver!(ceil, double));
+    static assert(!isFunctionOver!(ceil, double, double));
+
+    static assert(!isFunctionOver!(i));
+    static assert(!isFunctionOver!(i, int));
 }
 
 
 /**
-    Returns true if the first argument is a unary function over the next parameter arguments
+    Returns true if the first argument is a unary function over the next parameter argument
 
     Parameter arguments can be any compile time entity that can be typed
-
-    It uses `std.function.unaryFun` so it can take a string representation of a function as well
 */
 template isUnaryOver(T...) {
-    import std.functional: unaryFun;
-    static if (T.length == 2) {
-        enum isUnaryOver = isFunctionOver!T || is(typeof(unaryFun!(T[0])(T[1].init)));
-    } else {
-        enum isUnaryOver = false;
-    }
+    enum isUnaryOver = T.length == 2 && isFunctionOver!T;
 }
 
 ///
 unittest {
-    int v;
     void f0() {}
     void f1(int a) {}
     void f2(int a, int b) {}
 
-    static assert( isUnaryOver!("a", int));
-    static assert( isUnaryOver!("a > a", int));
-    static assert(!isUnaryOver!("a > b", int));
     static assert(!isUnaryOver!(null, int));
     static assert( isUnaryOver!((a => a), int));
     static assert(!isUnaryOver!((a, b) => a + b, int));
 
-    static assert(!isUnaryOver!(v, int));
     static assert(!isUnaryOver!(f0, int));
     static assert( isUnaryOver!(f1, int));
     static assert(!isUnaryOver!(f2, int));
 
-    import std.math: ceil;
-    static assert( isUnaryOver!(ceil, double));
-    static assert(!isUnaryOver!(ceil, double, double));
-
     static assert( isUnaryOver!(f1, 3));
     static assert(!isUnaryOver!(f1, "ff"));
-    static assert( isUnaryOver!("a", 3));
     static assert(!isUnaryOver!(f1, 3, 4));
     static assert( isUnaryOver!(typeof(f1), 3));
     static assert(!isUnaryOver!(typeof(f1), "ff"));
@@ -200,36 +167,22 @@ unittest {
     Returns true if the first argument is a binary function over the next two parameter arguments
 
     Parameter arguments can be any compile time entity that can be typed
-
-    It uses `std.function.binaryFun` as well so it can take a string representation of a function as well
 */
 template isBinaryOver(T...) {
-    import std.functional: binaryFun;
-    static if (T.length == 3) {
-        enum isBinaryOver = isFunctionOver!T || is(typeof(binaryFun!(T[0])(T[1].init, T[2].init)));
-    } else {
-        enum isBinaryOver = false;
-    }
+    enum isBinaryOver = T.length == 3 && isFunctionOver!T;
 }
 
 ///
 unittest {
-    int v;
     void f0() {}
     void f1(int a) {}
     void f2(int a, int b) {}
 
-    import std.functional: binaryFun;
-
-    static assert(!isBinaryOver!("a", int));
-    static assert(!isBinaryOver!("a > a", int));
-    static assert(!isBinaryOver!("a > b", int));
     static assert(!isBinaryOver!(null, int));
     static assert(!isBinaryOver!((a => a), int));
     static assert(!isBinaryOver!((a, b) => a + b, int));
     static assert( isBinaryOver!((a, b) => a + b, int, int));
 
-    static assert(!isBinaryOver!(v, int));
     static assert(!isBinaryOver!(f0, int));
     static assert(!isBinaryOver!(f1, int));
     static assert(!isBinaryOver!(f2, int));
@@ -237,9 +190,9 @@ unittest {
     static assert(!isBinaryOver!(f2, int, string));
     static assert(!isBinaryOver!(f2, int, int, int));
 
-    static assert(!isBinaryOver!("a > b", 3));
-    static assert( isBinaryOver!("a > b", 3, 3));
-    static assert( isBinaryOver!("a > b", 3, int));
+    static assert(!isBinaryOver!(f2, 3));
+    static assert( isBinaryOver!(f2, 3, 3));
+    static assert( isBinaryOver!(f2, 3, int));
 }
 
 /**
@@ -250,12 +203,12 @@ unittest {
     into a single range of a common type?)
 
     See_also:
-        `bolts.meta.FlattenRanges`
+        `bolts.meta.Flatten`
 */
 template areCombinable(Values...) {
     import std.traits: CommonType;
-    import bolts.meta: FlattenRanges;
-    enum areCombinable = !is(CommonType!(FlattenRanges!Values) == void);
+    import bolts.meta: Flatten;
+    enum areCombinable = !is(CommonType!(Flatten!Values) == void);
 }
 
 ///
@@ -371,24 +324,27 @@ unittest {
 }
 
 /**
-    Can be used to construct a meta function that checks if a symbol is of a type.
+    Checks if the resolved type of one thing is the same as the resolved type of another thing
 */
-template isType(T) {
-    auto isType(U)(U) { return is(U == T); }
-    enum isType(alias a) = isType!T(a);
+template isOf(ab...) if (ab.length == 2) {
+    import bolts.meta: TypesOf;
+    alias Ts = TypesOf!ab;
+    enum isOf = is(Ts[0] == Ts[1]);
 }
 
 ///
 unittest {
-    import std.meta: allSatisfy, AliasSeq;
-    static assert(isType!int(3));
-    static assert(allSatisfy!(isType!int, 3));
-    static assert(allSatisfy!(isType!int, 3));
+    static assert( isOf!(int, 3));
+    static assert( isOf!(7, 3));
+    static assert( isOf!(3, int));
+    static assert(!isOf!(float, 3));
+    static assert(!isOf!(float, string));
+    static assert(!isOf!(string, 3));
 }
 
 /// True if a is of type null
 template isNullType(T...) if (T.length == 1) {
-    import bolts.traits: TypesOf;
+    import bolts.meta: TypesOf;
     alias U = TypesOf!T[0];
     enum isNullType = is(U == typeof(null));
 }
@@ -411,7 +367,7 @@ unittest {
     Returns true of T can be set to null
 */
 template isNullable(T...) if (T.length == 1) {
-    import bolts.traits: TypesOf;
+    import bolts.meta: TypesOf;
     alias U = TypesOf!T[0];
     enum isNullable = __traits(compiles, { U u = null; u = null; });
 }

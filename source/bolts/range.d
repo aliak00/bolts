@@ -8,7 +8,7 @@ import bolts.internal;
 /**
     True if R is a `SortedRange`
 
-    SeeAlso:
+    See_Also:
         `std.range.SortedRange`
 */
 template isSortedRange(R) {
