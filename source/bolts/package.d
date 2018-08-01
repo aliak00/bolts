@@ -145,4 +145,6 @@ public {
     import bolts.meta;
     import bolts.range;
     import bolts.members;
+    import bolts.doth;
+    import bolts.aa;
 }
