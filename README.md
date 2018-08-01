@@ -36,6 +36,6 @@ The `doth` super template. Has a lot of the traits on types encapulated in one p
 
 ```d
 void f(int, float, string) {}
-doth!f.unaryOver!(int, float, string);
-doth!f.unaryOver!(3, float, "");
+doth!f.functionOver!(int, float, string);
+doth!f.functionOver!(3, float, "");
 ```
