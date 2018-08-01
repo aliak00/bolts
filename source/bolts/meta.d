@@ -44,17 +44,13 @@ unittest {
     Same as an AliasSeq that does not auto expand.
 
     You can get to the provided compile time sequence by accessing the `.expand` member.
-    And if you want a recursive expandion there's `expandDeep` for that. Also a convenience
+    And if you want a recursive expansion there's `expandDeep` for that. Also a convenience
     `.equals!(otherAliasPack)` is provided.
 
     SeeAlso:
         - https://forum.dlang.org/post/mnobngrzdmqbxomulpts@forum.dlang.org
 */
 template AliasPack(T...) {
-    import std.meta: AliasSeq, staticMap;
-    import std.traits: isInstanceOf;
-    import bolts.traits: isSame;;
-
     alias expand = T;
     enum length = expand.length;
 
@@ -78,10 +74,12 @@ template AliasPack(T...) {
 
     template equals(U...) {
         static if (T.length == U.length) {
-            static if (T.length == 0)
+            static if (T.length == 0) {
                 enum equals = true;
-            else
+            } else {
+                import bolts.traits: isSame;
                 enum equals = isSame!(T[0], U[0]) && AliasPack!(T[1 .. $]).equals!(U[1 .. $]);
+            }
         } else {
             enum equals = false;
         }
@@ -124,7 +122,7 @@ unittest {
 */
 template staticZip(Seqs...) {
     import std.traits: isInstanceOf;
-    import std.meta: allSatisfy, AliasSeq, staticMap;
+    import std.meta: allSatisfy, staticMap;
 
     private enum isPack(alias T) = isInstanceOf!(AliasPack, T);
 

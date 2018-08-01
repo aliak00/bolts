@@ -85,54 +85,93 @@ unittest {
     static assert(!isKey!B.SubstitutableWith!A);
     static assert( isKey!int.SubstitutableWith!long);
     static assert(!isKey!int.SubstitutableWith!(float));
-    
+
 }
 
 template isFunctionOver(T...) {
+    import std.meta: staticMap, Alias;
     import std.traits: isSomeFunction, Parameters;
+    import bolts.meta: AliasPack, staticZip;
     import bolts.traits: TypesOf;
+
     alias Types = TypesOf!T;
-    static if (Types.length >= 1 && isSomeFunction!(Types[0])) {
-        alias Params = Parameters!(Types[0]);
 
-        import std.meta;
-
-        // pragma(msg, Params);
-
-        // pragma(msg, ApplyLeft((Types[1 .. $]), ))
-
-        enum isFunctionOver = true;
+    static if (Types.length >= 1) {
+        alias DesiredParams = AliasPack!(Types[1 .. $]);
+        static if (isSomeFunction!(Types[0])) {
+            alias ExpectedParams = AliasPack!(Parameters!(Types[0]));
+            static if (DesiredParams.length == ExpectedParams.length) {
+                static if (DesiredParams.length == 0) {
+                    enum isFunctionOver = true;
+                } else {
+                    import std.meta: allSatisfy;
+                    alias Pairs = staticZip!(ExpectedParams, DesiredParams);
+                    enum AreSame(alias pair) = is(pair.expand[0] == pair.expand[1]);
+                    enum isFunctionOver = allSatisfy!(AreSame, Pairs.expand);
+                }
+            } else {
+                enum isFunctionOver = false;
+            }
+        } else static if (is(Types[0] == void)) {
+            // We're going to assume the first arg is a function literal ala lambda
+            // And try and see if calling it with the init values of the desired
+            // params works
+            alias F = T[0];
+            alias Val(T) = Alias!(T.init);
+            enum isFunctionOver = __traits(compiles, { F(staticMap!(Val, DesiredParams.expand)); });
+        } else {
+            enum isFunctionOver = false;
+        }
     } else {
         enum isFunctionOver = false;
     }
 }
 
+///
 unittest {
+    int v;
     void f0() {}
     void f1(int a) {}
+    void f2(int a, string b) {}
+    void f3(int a, string b, float c) {}
 
-    // pragma(msg, isFunctionOver!(f0));
-    // pragma(msg, isFunctionOver!(f1, int));
+    static assert( isFunctionOver!(f0));
+    static assert(!isFunctionOver!(f0, int));
+
+    static assert(!isFunctionOver!(f1, string));
+    static assert( isFunctionOver!(f1, int));
+
+    static assert(!isFunctionOver!(f2, int));
+    static assert( isFunctionOver!(f2, int, string));
+    static assert(!isFunctionOver!(f2, int, float));
+    static assert(!isFunctionOver!(f2, int, float, string));
+
+    static assert(!isFunctionOver!(f3, int, float, string));
+    static assert(!isFunctionOver!(f3, int, float));
+    static assert(!isFunctionOver!(f3, int));
+    static assert(!isFunctionOver!(f3));
+    static assert( isFunctionOver!(f3, int, string, float));
+
+    struct A {}
+    static assert(!isFunctionOver!(a => a, float, int));
+    static assert( isFunctionOver!(a => a, float));
+    static assert(!isFunctionOver!(a => a));
+    static assert( isFunctionOver!((a, b) => a + b, float, int));
+    static assert(!isFunctionOver!((a, b) => a + b, A, int));
+    static assert( isFunctionOver!((a, b, c, d) => a+b+c+d, int, int, int ,int));
 }
 
 
 /// True if pred is a unary function over T0, false if there're more than one T
 template isUnaryOver(T...) {
     static if (T.length == 2) {
-        import std.traits: isNarrowString, isExpressions, Parameters;
-        import bolts.traits: TypesOf;
         import std.functional: unaryFun;
-
-        alias Types = TypesOf!(T);
-        alias F = Types[0];
-
-        static if (!isNarrowString!F && is(Parameters!F Params) && Params.length == 1) {
-            import std.traits: isSomeFunction;
-            enum isUnaryOver = isSomeFunction!F && is(Types[1] : Params[0]);
+        static if (isFunctionOver!T) {
+            enum isUnaryOver = true;
         } else static if (is(typeof(unaryFun!(T[0])(T[1].init)))) {
             enum isUnaryOver = true;
         } else {
-            enum isUnaryOver = false;    
+            enum isUnaryOver = false;
         }
     } else {
         enum isUnaryOver = false;
