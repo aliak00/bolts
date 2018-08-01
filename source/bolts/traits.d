@@ -68,6 +68,11 @@ unittest {
     static assert(!isNullable!(int));
 }
 
+/**
+    Returns true if the first argument is a n-ary function over the next n parameter arguments
+
+    Parameter arguments can be any compile time entity that can be typed
+*/
 template isFunctionOver(T...) {
     import std.meta: staticMap, Alias;
     import std.traits: isSomeFunction, Parameters;
@@ -135,6 +140,8 @@ unittest {
     struct A {}
     static assert(!isFunctionOver!(a => a, float, int));
     static assert( isFunctionOver!(a => a, float));
+    static assert( isFunctionOver!(a => a, int));
+    static assert(!isFunctionOver!((int a) => a, float));
     static assert(!isFunctionOver!(a => a));
     static assert( isFunctionOver!((a, b) => a + b, float, int));
     static assert(!isFunctionOver!((a, b) => a + b, A, int));
@@ -142,17 +149,17 @@ unittest {
 }
 
 
-/// True if pred is a unary function over T0, false if there're more than one T
+/**
+    Returns true if the first argument is a unary function over the next parameter arguments
+
+    Parameter arguments can be any compile time entity that can be typed
+
+    It uses `std.function.unaryFun` so it can take a string representation of a function as well
+*/
 template isUnaryOver(T...) {
+    import std.functional: unaryFun;
     static if (T.length == 2) {
-        import std.functional: unaryFun;
-        static if (isFunctionOver!T) {
-            enum isUnaryOver = true;
-        } else static if (is(typeof(unaryFun!(T[0])(T[1].init)))) {
-            enum isUnaryOver = true;
-        } else {
-            enum isUnaryOver = false;
-        }
+        enum isUnaryOver = isFunctionOver!T || is(typeof(unaryFun!(T[0])(T[1].init)));
     } else {
         enum isUnaryOver = false;
     }
@@ -189,15 +196,19 @@ unittest {
     static assert(!isUnaryOver!(typeof(f1), "ff"));
 }
 
-/// True if pred is a binary function of (T0, T1) or (T0, T0). False if there's more than 2 Ts
-template isBinaryOver(alias pred, T...) {
+/**
+    Returns true if the first argument is a binary function over the next two parameter arguments
+
+    Parameter arguments can be any compile time entity that can be typed
+
+    It uses `std.function.binaryFun` as well so it can take a string representation of a function as well
+*/
+template isBinaryOver(T...) {
     import std.functional: binaryFun;
-    import std.traits: isExpressions;
-    import std.meta: anySatisfy;
-    static if (T.length == 1) {
-        enum isBinaryOver = !isUnaryOver!(pred, T) && isBinaryOver!(pred, T, T);
+    static if (T.length == 3) {
+        enum isBinaryOver = isFunctionOver!T || is(typeof(binaryFun!(T[0])(T[1].init, T[2].init)));
     } else {
-        enum isBinaryOver = T.length == 2 && !anySatisfy!(isExpressions, T) && is(typeof(binaryFun!pred(T[0].init, T[1].init)));
+        enum isBinaryOver = false;
     }
 }
 
@@ -208,26 +219,27 @@ unittest {
     void f1(int a) {}
     void f2(int a, int b) {}
 
-    import std.traits: isExpressions;
+    import std.functional: binaryFun;
 
-    // static assert(!isBinaryOver!("a", int));
-    // static assert(!isBinaryOver!("a > a", int));
-    // static assert( isBinaryOver!("a > b", int));
-    // static assert(!isBinaryOver!(null, int));
-    // static assert(!isBinaryOver!((a => a), int));
-    // static assert( isBinaryOver!((a, b) => a + b, int));
+    static assert(!isBinaryOver!("a", int));
+    static assert(!isBinaryOver!("a > a", int));
+    static assert(!isBinaryOver!("a > b", int));
+    static assert(!isBinaryOver!(null, int));
+    static assert(!isBinaryOver!((a => a), int));
+    static assert(!isBinaryOver!((a, b) => a + b, int));
+    static assert( isBinaryOver!((a, b) => a + b, int, int));
 
-    // static assert(!isBinaryOver!(v, int));
-    // static assert(!isBinaryOver!(f0, int));
-    // static assert(!isBinaryOver!(f1, int));
-    // static assert( isBinaryOver!(f2, int));
-    // static assert( isBinaryOver!(f2, int, int));
-    // static assert(!isBinaryOver!(f2, int, string));
-    // static assert(!isBinaryOver!(f2, int, int, int));
+    static assert(!isBinaryOver!(v, int));
+    static assert(!isBinaryOver!(f0, int));
+    static assert(!isBinaryOver!(f1, int));
+    static assert(!isBinaryOver!(f2, int));
+    static assert( isBinaryOver!(f2, int, int));
+    static assert(!isBinaryOver!(f2, int, string));
+    static assert(!isBinaryOver!(f2, int, int, int));
 
-    // static assert(!isBinaryOver!("a > b", 3));
-    // static assert(!isBinaryOver!("a > b", 3, 3));
-    // static assert(!isBinaryOver!("a > b", 3, int));
+    static assert(!isBinaryOver!("a > b", 3));
+    static assert( isBinaryOver!("a > b", 3, 3));
+    static assert( isBinaryOver!("a > b", 3, int));
 }
 
 /**
