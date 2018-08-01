@@ -1,6 +1,6 @@
 ## Bolts Meta Poragmming Utility Library
 
-[![Latest version](https://img.shields.io/dub/v/bolts.svg)](http://code.dlang.org/packages/bolts) [![Build Status](https://travis-ci.org/aliak00/bolts.svg?branch=master)](https://travis-ci.org/aliak00/bolts) [![codecov](https://codecov.io/gh/aliak00/bolts/branch/master/graph/badge.svg)](https://codecov.io/gh/aliak00/bolts) [![license](https://img.shields.io/github/license/aliak00/bolts.svg)](https://github.com/aliak00/bolts/blob/master/LICENSE)
+[![Latest version](https://img.shields.io/dub/v/bolts.svg)](https://code.dlang.org/packages/bolts) [![Build Status](https://travis-ci.org/aliak00/bolts.svg?branch=master)](https://travis-ci.org/aliak00/bolts) [![codecov](https://codecov.io/gh/aliak00/bolts/branch/master/graph/badge.svg)](https://codecov.io/gh/aliak00/bolts) [![license](https://img.shields.io/github/license/aliak00/bolts.svg)](https://github.com/aliak00/bolts/blob/master/LICENSE)
 
 Full API docs available [here](https://aliak00.github.io/bolts/bolts.html)
 
