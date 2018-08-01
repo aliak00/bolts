@@ -22,124 +22,177 @@ unittest {
 }
 
 /**
-    Returns the types of all values given.
+    Returns true if the passed in function is an n-ary function over the next n parameter arguments
 
-    $(OD isFunction!T then the typeof the address is taken)
-    $(OD If typeof(T) can be taken it is)
-    $(OD Else it is appended on as is)
-
-    Returns:
-        AliasSeq of the resulting types
+    Parameter arguments can be any compile time entity that can be typed. The first
 */
-template TypesOf(Values...) {
-    import std.meta: AliasSeq;
-    import std.traits: isExpressions, isFunction;
-    static if (Values.length) {
-        static if (isFunction!(Values[0])) {
-            alias T = typeof(&Values[0]);
-        } else static if (is(typeof(Values[0]))) {
-            alias T = typeof(Values[0]);
+template isFunctionOver(T...) {
+    import std.meta: staticMap, Alias;
+    import std.traits: isSomeFunction, Parameters;
+    import bolts.meta: AliasPack, staticZip, TypesOf;
+
+    alias Types = TypesOf!T;
+
+    static if (Types.length >= 1) {
+        alias DesiredParams = AliasPack!(Types[1 .. $]);
+        static if (isSomeFunction!(Types[0])) {
+            alias ExpectedParams = AliasPack!(Parameters!(Types[0]));
+            static if (DesiredParams.length == ExpectedParams.length) {
+                static if (DesiredParams.length == 0) {
+                    enum isFunctionOver = true;
+                } else {
+                    import std.meta: allSatisfy;
+                    alias Pairs = staticZip!(ExpectedParams, DesiredParams);
+                    // If is(DesiredType : ExpectedType)
+                    enum AreSame(alias Pair) = is(Pair.Unpack[1] : Pair.Unpack[0]);
+                    enum isFunctionOver = allSatisfy!(AreSame, Pairs.Unpack);
+                }
+            } else {
+                enum isFunctionOver = false;
+            }
+        } else static if (is(Types[0] == void)) {
+            // We're going to assume the first arg is a function literal ala lambda
+            // And try and see if calling it with the init values of the desired
+            // params works
+            alias F = T[0];
+            alias Val(T) = Alias!(T.init);
+            enum isFunctionOver = __traits(compiles, { F(staticMap!(Val, DesiredParams.Unpack)); });
         } else {
-            alias T = Values[0];
+            enum isFunctionOver = false;
         }
-        alias TypesOf = AliasSeq!(T, TypesOf!(Values[1..$]));
     } else {
-        alias TypesOf = AliasSeq!();
+        enum isFunctionOver = false;
     }
 }
 
-/**
-    Gives you information about keys in associative arrays
-*/
-template isKey(A) {
-    /// Tells you if key of type B can be used in place of a key of type A
-    enum SubstitutableWith(B) = __traits(compiles, { int[A] aa; aa[B.init] = 0; });
-}
-
 ///
 unittest {
+    int i;
+    float f;
+    void f0() {}
+    void f1(int a) {}
+    void f2(int a, string b) {}
+    void f3(int a, string b, float c) {}
+
+    static assert( isFunctionOver!(f0));
+    static assert(!isFunctionOver!(f0, int));
+
+    static assert(!isFunctionOver!(f1, string));
+    static assert( isFunctionOver!(f1, int));
+    static assert( isFunctionOver!(f1, i));
+    static assert(!isFunctionOver!(f1, f));
+
+    static assert(!isFunctionOver!(f2, int));
+    static assert( isFunctionOver!(f2, int, string));
+    static assert(!isFunctionOver!(f2, int, float));
+    static assert(!isFunctionOver!(f2, int, float, string));
+
+    static assert( isFunctionOver!(f3, int, string, float));
+    static assert(!isFunctionOver!(f3, int, float, string));
+    static assert(!isFunctionOver!(f3, int, float));
+    static assert(!isFunctionOver!(f3, int));
+    static assert(!isFunctionOver!(f3));
+
+    static assert(!isFunctionOver!(a => a, float, int));
+    static assert( isFunctionOver!(a => a, float));
+    static assert( isFunctionOver!(a => a, int));
+    static assert( isFunctionOver!((int a) => a, short));
+    static assert(!isFunctionOver!((int a) => a, float));
+    static assert(!isFunctionOver!(a => a));
+    static assert( isFunctionOver!((a, b) => a + b, float, int));
+
     struct A {}
-    struct B { A a; alias a this; }
+    static assert(!isFunctionOver!((a, b) => a + b, A, int));
+    static assert( isFunctionOver!((a, b, c, d) => a+b+c+d, int, int, int ,int));
 
-    static assert( isKey!A.SubstitutableWith!B);
-    static assert(!isKey!B.SubstitutableWith!A);
-    static assert( isKey!int.SubstitutableWith!long);
-    static assert(!isKey!int.SubstitutableWith!(float));
+    import std.functional: unaryFun;
+    static assert( isFunctionOver!(unaryFun!"a", int));
+    static assert(!isFunctionOver!(unaryFun!"a", int, int));
+
+    import std.functional: binaryFun;
+    static assert(!isFunctionOver!(binaryFun!"a", int));
+    static assert( isFunctionOver!(binaryFun!"a", int, int));
+    static assert( isFunctionOver!(binaryFun!"a > b", int, int));
+    static assert(!isFunctionOver!(binaryFun!"a > b", int, int, int));
+
+    class C {}
+    class D : C {}
+    void fc(C) {}
+    void fd(D) {}
+    static assert( isFunctionOver!(fc, C));
+    static assert( isFunctionOver!(fc, D));
+    static assert(!isFunctionOver!(fd, C));
+    static assert( isFunctionOver!(fd, D));
+
+    import std.math: ceil;
+    static assert( isFunctionOver!(ceil, double));
+    static assert(!isFunctionOver!(ceil, double, double));
+
+    static assert(!isFunctionOver!(i));
+    static assert(!isFunctionOver!(i, int));
 }
 
-/// True if pred is a unary function over T0, false if there're more than one T
-template isUnaryOver(alias pred, T...) {
-    import std.functional: unaryFun;
-    import std.traits: isExpressions;
-    enum isUnaryOver = T.length == 1 && !isExpressions!T && is(typeof(unaryFun!pred(T.init)));
+
+/**
+    Returns true if the first argument is a unary function over the next parameter argument
+
+    Parameter arguments can be any compile time entity that can be typed
+*/
+template isUnaryOver(T...) {
+    enum isUnaryOver = T.length == 2 && isFunctionOver!T;
 }
 
 ///
 unittest {
-    int v;
     void f0() {}
     void f1(int a) {}
     void f2(int a, int b) {}
 
-    static assert( isUnaryOver!("a", int));
-    static assert( isUnaryOver!("a > a", int));
-    static assert(!isUnaryOver!("a > b", int));
     static assert(!isUnaryOver!(null, int));
     static assert( isUnaryOver!((a => a), int));
     static assert(!isUnaryOver!((a, b) => a + b, int));
 
-    static assert(!isUnaryOver!(v, int));
     static assert(!isUnaryOver!(f0, int));
     static assert( isUnaryOver!(f1, int));
     static assert(!isUnaryOver!(f2, int));
 
-    import std.math: ceil;
-    static assert( isUnaryOver!(ceil, double));
-    static assert(!isUnaryOver!(ceil, double, double));
-
-    static assert(!isUnaryOver!(f1, 3));
-    static assert(!isUnaryOver!("a", 3));
+    static assert( isUnaryOver!(f1, 3));
+    static assert(!isUnaryOver!(f1, "ff"));
+    static assert(!isUnaryOver!(f1, 3, 4));
+    static assert( isUnaryOver!(typeof(f1), 3));
+    static assert(!isUnaryOver!(typeof(f1), "ff"));
 }
 
-/// True if pred is a binary function of (T0, T1) or (T0, T0). False if there's more than 2 Ts
-template isBinaryOver(alias pred, T...) {
-    import std.functional: binaryFun;
-    import std.traits: isExpressions;
-    import std.meta: anySatisfy;
-    static if (T.length == 1) {
-        enum isBinaryOver = !isUnaryOver!(pred, T) && isBinaryOver!(pred, T, T);
-    } else {
-        enum isBinaryOver = T.length == 2 && !anySatisfy!(isExpressions, T) && is(typeof(binaryFun!pred(T[0].init, T[1].init)));
-    }
+/**
+    Returns true if the first argument is a binary function over the next two parameter arguments
+
+    Parameter arguments can be any compile time entity that can be typed
+*/
+template isBinaryOver(T...) {
+    enum isBinaryOver = T.length == 3 && isFunctionOver!T;
 }
 
 ///
 unittest {
-    int v;
     void f0() {}
     void f1(int a) {}
     void f2(int a, int b) {}
 
-    import std.traits: isExpressions;
-
-    static assert(!isBinaryOver!("a", int));
-    static assert(!isBinaryOver!("a > a", int));
-    static assert( isBinaryOver!("a > b", int));
     static assert(!isBinaryOver!(null, int));
     static assert(!isBinaryOver!((a => a), int));
-    static assert( isBinaryOver!((a, b) => a + b, int));
+    static assert(!isBinaryOver!((a, b) => a + b, int));
+    static assert( isBinaryOver!((a, b) => a + b, int, int));
 
-    static assert(!isBinaryOver!(v, int));
     static assert(!isBinaryOver!(f0, int));
     static assert(!isBinaryOver!(f1, int));
-    static assert( isBinaryOver!(f2, int));
+    static assert(!isBinaryOver!(f2, int));
     static assert( isBinaryOver!(f2, int, int));
     static assert(!isBinaryOver!(f2, int, string));
     static assert(!isBinaryOver!(f2, int, int, int));
 
-    static assert(!isBinaryOver!("a > b", 3));
-    static assert(!isBinaryOver!("a > b", 3, 3));
-    static assert(!isBinaryOver!("a > b", 3, int));
+    static assert(!isBinaryOver!(f2, 3));
+    static assert( isBinaryOver!(f2, 3, 3));
+    static assert( isBinaryOver!(f2, 3, int));
 }
 
 /**
@@ -150,12 +203,12 @@ unittest {
     into a single range of a common type?)
 
     See_also:
-        `bolts.meta.FlattenRanges`
+        `bolts.meta.Flatten`
 */
 template areCombinable(Values...) {
     import std.traits: CommonType;
-    import bolts.meta: FlattenRanges;
-    enum areCombinable = !is(CommonType!(FlattenRanges!Values) == void);
+    import bolts.meta: Flatten;
+    enum areCombinable = !is(CommonType!(Flatten!Values) == void);
 }
 
 ///
@@ -271,24 +324,27 @@ unittest {
 }
 
 /**
-    Can be used to construct a meta function that checks if a symbol is of a type.
+    Checks if the resolved type of one thing is the same as the resolved type of another thing
 */
-template isType(T) {
-    auto isType(U)(U) { return is(U == T); }
-    enum isType(alias a) = isType!T(a);
+template isOf(ab...) if (ab.length == 2) {
+    import bolts.meta: TypesOf;
+    alias Ts = TypesOf!ab;
+    enum isOf = is(Ts[0] == Ts[1]);
 }
 
 ///
 unittest {
-    import std.meta: allSatisfy, AliasSeq;
-    static assert(isType!int(3));
-    static assert(allSatisfy!(isType!int, 3));
-    static assert(allSatisfy!(isType!int, 3));
+    static assert( isOf!(int, 3));
+    static assert( isOf!(7, 3));
+    static assert( isOf!(3, int));
+    static assert(!isOf!(float, 3));
+    static assert(!isOf!(float, string));
+    static assert(!isOf!(string, 3));
 }
 
 /// True if a is of type null
 template isNullType(T...) if (T.length == 1) {
-    import bolts.traits: TypesOf;
+    import bolts.meta: TypesOf;
     alias U = TypesOf!T[0];
     enum isNullType = is(U == typeof(null));
 }
@@ -311,21 +367,81 @@ unittest {
     Returns true of T can be set to null
 */
 template isNullable(T...) if (T.length == 1) {
-    import bolts.traits: TypesOf;
+    import bolts.meta: TypesOf;
     alias U = TypesOf!T[0];
     enum isNullable = __traits(compiles, { U u = null; u = null; });
 }
 
-///
-unittest {
-    import std.meta: AliasSeq;
-    static assert(is(TypesOf!("hello", 1, 2, 3.0, real) == AliasSeq!(string, int, int, double, real)));
+/**
+    Returns true if a and b are the same thing, or false if not. Both a and b can be types, literals, or symbols.
+
+    $(LI If both are types: `is(a == b)`)
+    $(LI If both are literals: `a == b`)
+    $(LI Else: `__traits(isSame, a, b)`)
+*/
+template isSame(ab...) if (ab.length == 2) {
+
+    private static template expectType(T) {}
+    private static template expectBool(bool b) {}
+
+    static if (__traits(compiles, expectType!(ab[0]), expectType!(ab[1]))) {
+        enum isSame = is(ab[0] == ab[1]);
+    } else static if (!__traits(compiles, expectType!(ab[0]))
+        && !__traits(compiles, expectType!(ab[1]))
+        &&  __traits(compiles, expectBool!(ab[0] == ab[1]))
+    ) {
+        static if (!__traits(compiles, &ab[0]) || !__traits(compiles, &ab[1]))
+            enum isSame = (ab[0] == ab[1]);
+        else
+            enum isSame = __traits(isSame, ab[0], ab[1]);
+    } else {
+        enum isSame = __traits(isSame, ab[0], ab[1]);
+    }
 }
 
+///
 unittest {
-    import std.meta: AliasSeq;
-    static void f0() {}
-    void f1() {}
-    struct S { void f2() {} }
-    static assert(is(TypesOf!(f0, f1, S.f2) == AliasSeq!(typeof(&f0), typeof(&f1), typeof(&S.f2))));
+    static assert( isSame!(int, int));
+    static assert(!isSame!(int, short));
+
+    enum a = 1, b = 1, c = 2, s = "a", t = "a";
+    static assert( isSame!(1, 1));
+    static assert( isSame!(a, 1));
+    static assert( isSame!(a, b));
+    static assert(!isSame!(b, c));
+    static assert( isSame!("a", "a"));
+    static assert( isSame!(s, "a"));
+    static assert( isSame!(s, t));
+    static assert(!isSame!(s, "g"));
+    static assert(!isSame!(1, "1"));
+    static assert(!isSame!(a, "a"));
+    static assert( isSame!(isSame, isSame));
+    static assert(!isSame!(isSame, a));
+
+    static assert(!isSame!(byte, a));
+    static assert(!isSame!(short, isSame));
+    static assert(!isSame!(a, int));
+    static assert(!isSame!(long, isSame));
+
+    static immutable X = 1, Y = 1, Z = 2;
+    static assert( isSame!(X, X));
+    static assert(!isSame!(X, Y));
+    static assert(!isSame!(Y, Z));
+
+    int  foo();
+    int  bar();
+    real baz(int);
+    static assert( isSame!(foo, foo));
+    static assert(!isSame!(foo, bar));
+    static assert(!isSame!(bar, baz));
+    static assert( isSame!(baz, baz));
+    static assert(!isSame!(foo, 0));
+
+    int  x, y;
+    real z;
+    static assert( isSame!(x, x));
+    static assert(!isSame!(x, y));
+    static assert(!isSame!(y, z));
+    static assert( isSame!(z, z));
+    static assert(!isSame!(x, 0));
 }

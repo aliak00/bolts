@@ -1,6 +1,6 @@
 module bolts.internal;
 
-template from(string moduleName) {
+package template from(string moduleName) {
     mixin("import from = " ~ moduleName ~ ";");
 }
 
