@@ -136,10 +136,12 @@ unittest {
 /**
     Returns true if the first argument is a unary function over the next parameter argument
 
-    Parameter arguments can be any compile time entity that can be typed
+    Parameter arguments can be any compile time entity that can be typed. And the first argument can be a string
+    that is also accpeted by `std.functional.binaryFun` in Phobos
 */
 template isUnaryOver(T...) {
-    enum isUnaryOver = T.length == 2 && isFunctionOver!T;
+    import std.functional: unaryFun;
+    enum isUnaryOver = T.length == 2 && (isFunctionOver!T || is(typeof(unaryFun!(T[0])(T[1].init))));
 }
 
 ///
@@ -164,12 +166,20 @@ unittest {
 }
 
 /**
-    Returns true if the first argument is a binary function over the next two parameter arguments
+    Returns true if the first argument is a binary function over the next one OR two parameter arguments
 
-    Parameter arguments can be any compile time entity that can be typed
+    If one parameter is provided then it's duplicated.
+
+    Parameter arguments can be any compile time entity that can be typed. And the first argument can be a string
+    that is also accpeted by `std.functional.binaryFun` in Phobos
 */
 template isBinaryOver(T...) {
-    enum isBinaryOver = T.length == 3 && isFunctionOver!T;
+    import std.functional: binaryFun;
+    static if (T.length == 2) {
+        enum isBinaryOver = isBinaryOver!(T[0], T[1], T[1]);
+    } else {
+        enum isBinaryOver = T.length == 3 && (isFunctionOver!T || is(typeof(binaryFun!(T[0])(T[1].init, T[2].init))));
+    }
 }
 
 ///
@@ -180,17 +190,17 @@ unittest {
 
     static assert(!isBinaryOver!(null, int));
     static assert(!isBinaryOver!((a => a), int));
-    static assert(!isBinaryOver!((a, b) => a + b, int));
+    static assert( isBinaryOver!((a, b) => a + b, int));
     static assert( isBinaryOver!((a, b) => a + b, int, int));
 
     static assert(!isBinaryOver!(f0, int));
     static assert(!isBinaryOver!(f1, int));
-    static assert(!isBinaryOver!(f2, int));
+    static assert( isBinaryOver!(f2, int));
     static assert( isBinaryOver!(f2, int, int));
     static assert(!isBinaryOver!(f2, int, string));
     static assert(!isBinaryOver!(f2, int, int, int));
 
-    static assert(!isBinaryOver!(f2, 3));
+    static assert( isBinaryOver!(f2, 3));
     static assert( isBinaryOver!(f2, 3, 3));
     static assert( isBinaryOver!(f2, 3, int));
 }
