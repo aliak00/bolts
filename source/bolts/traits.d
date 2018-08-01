@@ -5,22 +5,6 @@ module bolts.traits;
 
 import bolts.internal;
 
-///
-unittest {
-    class C {}
-    struct S {}
-    struct S1 {
-        this(typeof(null)) {}
-        void opAssign(typeof(null)) {}
-    }
-
-    static assert( isNullable!C);
-    static assert(!isNullable!S);
-    static assert( isNullable!S1);
-    static assert( isNullable!(int *));
-    static assert(!isNullable!(int));
-}
-
 /**
     Returns the types of all values given.
 
@@ -68,24 +52,20 @@ unittest {
     static assert(is(TypesOf!(typeof(f)) == AliasSeq!(typeof(f))));
 }
 
-/**
-    Gives you information about keys in associative arrays
-*/
-template isKey(A) {
-    /// Tells you if key of type B can be used in place of a key of type A
-    enum SubstitutableWith(B) = __traits(compiles, { int[A] aa; aa[B.init] = 0; });
-}
-
 ///
 unittest {
-    struct A {}
-    struct B { A a; alias a this; }
+    class C {}
+    struct S {}
+    struct S1 {
+        this(typeof(null)) {}
+        void opAssign(typeof(null)) {}
+    }
 
-    static assert( isKey!A.SubstitutableWith!B);
-    static assert(!isKey!B.SubstitutableWith!A);
-    static assert( isKey!int.SubstitutableWith!long);
-    static assert(!isKey!int.SubstitutableWith!(float));
-
+    static assert( isNullable!C);
+    static assert(!isNullable!S);
+    static assert( isNullable!S1);
+    static assert( isNullable!(int *));
+    static assert(!isNullable!(int));
 }
 
 template isFunctionOver(T...) {
@@ -423,7 +403,6 @@ template isNullable(T...) if (T.length == 1) {
     alias U = TypesOf!T[0];
     enum isNullable = __traits(compiles, { U u = null; u = null; });
 }
-
 
 /**
     Returns true if a and b are the same thing, or false if not. Both a and b can be types, literals, or symbols.

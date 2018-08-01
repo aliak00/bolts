@@ -27,29 +27,24 @@ $(TR
     $(TD Takes a list of ranges and non ranges and returns a list of types of the ranges and types of the non ranges)
     )
 $(TR
-    $(TD `bolts.range`)
-    $(TD $(DDOX_NAMED_REF bolts.range.isSortedRange, `isSortedRange`))
-    $(TD Tells you if a range is sorted)
+    $(TD `bolts.meta`)
+    $(TD $(DDOX_NAMED_REF bolts.meta.AliasPack, `AliasPack`))
+    $(TD Represents an AliasSeq that is not auto expanded)
     )
 $(TR
-    $(TD `bolts.range`)
-    $(TD $(DDOX_NAMED_REF bolts.range.sortingPredicate, `sortingPredicate`))
-    $(TD Can be used to extract the sorting predicate for a range)
+    $(TD `bolts.meta`)
+    $(TD $(DDOX_NAMED_REF bolts.meta.staticZip, `staticZip`))
+    $(TD Zip m n-tuple `AliasPack`s together to form n m-tuple AliasPacks)
     )
 $(TR
-    $(TD `bolts.range`)
-    $(TD $(DDOX_NAMED_REF bolts.range.CommonTypeOfRanges, `CommonTypeOfRanges`))
-    $(TD Finds the common type from a list of ranges)
-    )
-$(TR
-    $(TD `bolts.traits`)
-    $(TD $(DDOX_NAMED_REF bolts.traits.TypesOf, `TypesOf`))
-    $(TD Returns a list of the types of all values given - values can be types of expressions)
+    $(TD `bolts.meta`)
+    $(TD $(DDOX_NAMED_REF bolts.meta.TypesOf, `TypesOf`))
+    $(TD Returns an AliasSeq of the types of all values given - values can be types or expressions)
     )
 $(TR
     $(TD `bolts.traits`)
-    $(TD $(DDOX_NAMED_REF bolts.traits.isKey, `isKey`))
-    $(TD Traits for a type of key used in an associative array)
+    $(TD $(DDOX_NAMED_REF bolts.traits.isFunctionOver, `isFunctionOver`))
+    $(TD Checks if a function is n-ary over the passed in types)
     )
 $(TR
     $(TD `bolts.traits`)
@@ -100,6 +95,26 @@ $(TR
     $(TD `bolts.doth`)
     $(TD $(DDOX_NAMED_REF bolts.doth.doth, `doth`))
     $(TD Allows you to query a type or alias with a nicer syntax, i.e. `isNullable!T` == `doth!T.nullable`)
+    )
+$(TR
+    $(TD `bolts.range`)
+    $(TD $(DDOX_NAMED_REF bolts.range.isSortedRange, `isSortedRange`))
+    $(TD Tells you if a range is sorted)
+    )
+$(TR
+    $(TD `bolts.range`)
+    $(TD $(DDOX_NAMED_REF bolts.range.sortingPredicate, `sortingPredicate`))
+    $(TD Can be used to extract the sorting predicate for a range)
+    )
+$(TR
+    $(TD `bolts.range`)
+    $(TD $(DDOX_NAMED_REF bolts.range.CommonTypeOfRanges, `CommonTypeOfRanges`))
+    $(TD Finds the common type from a list of ranges)
+    )
+$(TR
+    $(TD `bolts.aa`)
+    $(TD $(DDOX_NAMED_REF bolts.aa.isKey, `isKey`))
+    $(TD Traits for a type of key used in an associative array)
     )
 )
 */

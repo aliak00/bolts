@@ -1,5 +1,5 @@
 /**
-    Provides utilities that can return members of certain qualities
+    Provides compile time utilities that can query a type's members
 */
 module bolts.members;
 
