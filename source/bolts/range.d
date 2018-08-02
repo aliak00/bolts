@@ -11,9 +11,11 @@ import bolts.internal;
     See_Also:
         `std.range.SortedRange`
 */
-template isSortedRange(R) {
+template isSortedRange(R...) if (R.length == 1) {
     import std.range: SortedRange;
-    enum isSortedRange = is(R : SortedRange!U, U...);
+    import bolts.meta: TypesOf;
+    alias T = TypesOf!R[0];
+    enum isSortedRange = is(T : SortedRange!U, U...);
 }
 
 ///
@@ -21,7 +23,7 @@ unittest {
     import std.algorithm: sort;
     import std.range: assumeSorted;
     static assert(isSortedRange!(typeof([0, 1, 2])) == false);
-    static assert(isSortedRange!(typeof([0, 1, 2].sort)) == true);
+    static assert(isSortedRange!([0, 1, 2].sort) == true);
     static assert(isSortedRange!(typeof([0, 1, 2].assumeSorted)) == true);
     static assert(isSortedRange!int == false);
 }
