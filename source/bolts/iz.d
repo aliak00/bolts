@@ -39,6 +39,10 @@ import bolts.internal;
         $(TD $(DDOX_NAMED_REF bolts.iz.iz.binaryOver, `binaryOver`))
         $(TD True if the resolved type a binary funtion over some other types)
         )
+    $(TR
+        $(TD $(DDOX_NAMED_REF bolts.iz.iz.functionOver, `functionOver`))
+        $(TD True if the resolved type an n-ary funtion over n types)
+        )
     )
 
     See_also:
@@ -75,7 +79,7 @@ template iz(Alises...) if (Alises.length == 1) {
         enum unaryOver = from!"bolts.traits".isUnaryOver!(Alises[0], U);
     }
 
-    /// See: `bolts.traits.isUnaryOver`
+    /// See: `bolts.traits.isBinaryOver`
     static template binaryOver(U...) {
         enum binaryOver = from!"bolts.traits".isBinaryOver!(Alises[0], U);
     }
