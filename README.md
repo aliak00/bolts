@@ -18,7 +18,7 @@ Bolts is a utility library for the D programming language which contains a numbe
     * `isSortedRange`, `sortingPredicate`, `CommonTypeOfRanges`
 * **aa**: has functions that act on associative arrays
     * `isKey` (not eponymous)
-* **doth**: super non-eponymous template that provides a lot of the functionality that's in the traits module with a different sytax that allows their usage in meta functions as well.
+* **iz**: super non-eponymous template that provides a lot of the functionality that's in the traits module with a different sytax that allows their usage in meta functions as well.
 
 Most functions here operate on any compile time entity. For example `isUnaryOver` works in both these situatons:
 
@@ -30,12 +30,12 @@ isFunctionOver!(f, 3);
 isFunctionOver!(f, i);
 ```
 
-## Doth super template
+## Iz super template
 
-The `doth` super template. Has a lot of the traits on types encapulated in one place. So if there's a trait that tells you something about a compile time entity, chances are `doth` will have it. E.g:
+The `iz` super template. Has a lot of the traits on types encapulated in one place. So if there's a trait that tells you something about a compile time entity, chances are `iz` will have it. E.g:
 
 ```d
 void f(int, float, string) {}
-doth!f.functionOver!(int, float, string);
-doth!f.functionOver!(3, float, "");
+iz!f.functionOver!(int, float, string);
+iz!f.functionOver!(3, float, "");
 ```

@@ -1,12 +1,12 @@
 /**
-    Doth is doth is is - reason for choosing doth is because is is a keyword
+    Iz is is - reason for choosing iz is because is is a keyword
 */
-module bolts.doth;
+module bolts.iz;
 
 import bolts.internal;
 
 /**
-    Doth is a helper template that allows you to inspect a type or an alias.
+    `Iz` is a helper template that allows you to inspect a type or an alias.
 
     It takes a single element as an argument. The reason the template parameters is
     types as a variable arg sequence is becure if D does not allow to say "I want either
@@ -16,27 +16,27 @@ import bolts.internal;
     $(TABLE
     $(TR $(TH method) $(TH Description))
     $(TR
-        $(TD $(DDOX_NAMED_REF bolts.doth.doth.of, `of`))
+        $(TD $(DDOX_NAMED_REF bolts.iz.iz.of, `of`))
         $(TD True if the resolved type is the same as another resolved type)
         )
     $(TR
-        $(TD $(DDOX_NAMED_REF bolts.doth.doth.sameAs, `sameAs`))
+        $(TD $(DDOX_NAMED_REF bolts.iz.iz.sameAs, `sameAs`))
         $(TD True if T and U are the same "thing" (type, alias, literal value))
         )
     $(TR
-        $(TD $(DDOX_NAMED_REF bolts.doth.doth.nullable, `nullable`))
+        $(TD $(DDOX_NAMED_REF bolts.iz.iz.nullable, `nullable`))
         $(TD True if the resolved type is nullable)
         )
     $(TR
-        $(TD $(DDOX_NAMED_REF bolts.doth.doth.nullType, `nullType`))
+        $(TD $(DDOX_NAMED_REF bolts.iz.iz.nullType, `nullType`))
         $(TD True if the resolved type is typeof(null))
         )
     $(TR
-        $(TD $(DDOX_NAMED_REF bolts.doth.doth.unaryOver, `unaryOver`))
+        $(TD $(DDOX_NAMED_REF bolts.iz.iz.unaryOver, `unaryOver`))
         $(TD True if the resolved type a unary funtion over some other types)
         )
     $(TR
-        $(TD $(DDOX_NAMED_REF bolts.doth.doth.binaryOver, `binaryOver`))
+        $(TD $(DDOX_NAMED_REF bolts.iz.iz.binaryOver, `binaryOver`))
         $(TD True if the resolved type a binary funtion over some other types)
         )
     )
@@ -44,7 +44,7 @@ import bolts.internal;
     See_also:
         - https://dlang.org/spec/template.html#variadic-templates
 */
-template doth(Alises...) if (Alises.length == 1) {
+template iz(Alises...) if (Alises.length == 1) {
     import bolts.meta: TypesOf;
     alias T = TypesOf!Alises[0];
 
@@ -88,34 +88,34 @@ unittest {
     int *pi = null;
 
     // Is it resolved to the same type as another?
-    static assert( doth!i.of!int);
-    static assert(!doth!i.of!(int*));
-    static assert( doth!3.of!i);
-    static assert(!doth!int.of!pi);
+    static assert( iz!i.of!int);
+    static assert(!iz!i.of!(int*));
+    static assert( iz!3.of!i);
+    static assert(!iz!int.of!pi);
 
     // Is it the same as another?
-    static assert( doth!i.sameAs!i);
-    static assert(!doth!i.sameAs!j);
-    static assert( doth!1.sameAs!1);
-    static assert(!doth!1.sameAs!2);
+    static assert( iz!i.sameAs!i);
+    static assert(!iz!i.sameAs!j);
+    static assert( iz!1.sameAs!1);
+    static assert(!iz!1.sameAs!2);
 
     // Is it nullable?
-    static assert( doth!pi.nullable);
-    static assert( doth!(char*).nullable);
-    static assert(!doth!i.nullable);
-    static assert(!doth!int.nullable);
+    static assert( iz!pi.nullable);
+    static assert( iz!(char*).nullable);
+    static assert(!iz!i.nullable);
+    static assert(!iz!int.nullable);
 
     // Is it typeof(null)?
-    static assert(!doth!int.nullType);
-    static assert( doth!null.nullType);
-    static assert( doth!(typeof(null)).nullType);
+    static assert(!iz!int.nullType);
+    static assert( iz!null.nullType);
+    static assert( iz!(typeof(null)).nullType);
 
-    // Using std.meta algorithm with doth
+    // Using std.meta algorithm with iz
     import std.meta: allSatisfy, AliasSeq;
-    static assert(allSatisfy!(doth!int.of, 3, 4, int, i));
+    static assert(allSatisfy!(iz!int.of, 3, 4, int, i));
 
     /// Is it a function over
-    static assert( doth!(a => a).unaryOver!int);
-    static assert( doth!((a, b) => a).binaryOver!(int, int));
-    static assert( doth!((a, b, c, d) => a).functionOver!(int, int, int, int));
+    static assert( iz!(a => a).unaryOver!int);
+    static assert( iz!((a, b) => a).binaryOver!(int, int));
+    static assert( iz!((a, b, c, d) => a).functionOver!(int, int, int, int));
 }

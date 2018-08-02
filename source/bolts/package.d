@@ -12,14 +12,14 @@
     isFunctionOver!(f, i);
     ---
 
-    Doth_Super_Template:
+    Iz_Super_Template:
 
-    The $(DDOX_NAMED_REF bolts.doth.doth, `doth`) super template. Has a lot of the traits on types encapulated in one place. So
-    if there's a trait that tells you something about a compile time entity, chances are `doth` will have it. E.g:
+    The $(DDOX_NAMED_REF bolts.iz.iz, `iz`) super template. Has a lot of the traits on types encapulated in one place. So
+    if there's a trait that tells you something about a compile time entity, chances are `iz` will have it. E.g:
     ---
     void f(int, float, string) {}
-    doth!f.unaryOver!(int, float, string);
-    doth!f.unaryOver!(3, float, "");
+    iz!f.unaryOver!(int, float, string);
+    iz!f.unaryOver!(3, float, "");
     ---
 
 All_the_things:
@@ -132,9 +132,9 @@ $(TR
     $(TD Traits for a type of key used in an associative array)
     )
 $(TR
-    $(TD `bolts.doth`)
-    $(TD $(DDOX_NAMED_REF bolts.doth.doth, `doth`))
-    $(TD Allows you to query a type or alias with a nicer syntax, i.e. `isNullable!T` == `doth!T.nullable`)
+    $(TD `bolts.iz`)
+    $(TD $(DDOX_NAMED_REF bolts.iz.iz, `iz`))
+    $(TD Allows you to query a type or alias with a nicer syntax, i.e. `isNullable!T` == `iz!T.nullable`)
     )
 )
 */
@@ -145,6 +145,6 @@ public {
     import bolts.meta;
     import bolts.range;
     import bolts.members;
-    import bolts.doth;
+    import bolts.iz;
     import bolts.aa;
 }
