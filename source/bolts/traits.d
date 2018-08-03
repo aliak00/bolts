@@ -379,7 +379,28 @@ unittest {
 template isNullable(T...) if (T.length == 1) {
     import bolts.meta: TypesOf;
     alias U = TypesOf!T[0];
-    enum isNullable = __traits(compiles, { U u = null; u = null; });
+    enum isNullable = __traits(compiles, { U u = U.init; u = null; });
+}
+
+///
+unittest {
+    class C {}
+    struct S1 {
+        void opAssign(int*) {}
+    }
+    static assert(isNullable!S1);
+    static assert(isNullable!C);
+    static assert(isNullable!(int*));
+
+    struct S2 {}
+    static assert(!isNullable!S2);
+    static assert(!isNullable!int);
+
+    struct S3 {
+        @disable this();
+        void opAssign(int*) {}
+    }
+    static assert(isNullable!S3);
 }
 
 /**
