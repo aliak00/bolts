@@ -36,24 +36,37 @@ unittest {
         Range = the range to extract the predicate from
         fallbackPred = the sorting predicate to fallback to if `Range` is not a `SortedRange`
 */
-template sortingPredicate(Range, alias fallbackPred = "a < b")
-if (from!"std.range".isInputRange!Range)
-{
+template sortingPredicate(Args...)
+if ((Args.length == 1 || Args.length == 2) && from!"std.range".isInputRange!(from!"bolts.meta".TypesOf!Args[0])) {
+    import bolts.meta: TypesOf;
     import std.range: SortedRange;
     import std.functional: binaryFun;
-    static if (is(Range : SortedRange!P, P...))
+    alias R = TypesOf!Args[0];
+    static if (is(R : SortedRange!P, P...)) {
         alias sortingPredicate = binaryFun!(P[1]);
-    else
-        alias sortingPredicate = binaryFun!fallbackPred;
+    } else {
+        static if (Args.length == 2) {
+            alias pred = binaryFun!(Args[1]);
+        } else {
+            alias pred = (a, b) => a < b;
+        }
+        alias sortingPredicate = pred;
+    }
 }
 
 ///
 unittest {
     import std.algorithm: sort;
+
+    // As a type
     assert(sortingPredicate!(typeof([1].sort!"a < b"))(1, 2) == true);
-    assert(sortingPredicate!(typeof([1].sort!"a > b"))(1, 2) == false);
-    assert(sortingPredicate!(typeof([1].sort!((a, b) => a < b)))(1, 2) == true);
     assert(sortingPredicate!(typeof([1].sort!((a, b) => a > b)))(1, 2) == false);
+
+    // As a value
+    assert(sortingPredicate!([1].sort!"a > b")(1, 2) == false);
+    assert(sortingPredicate!([1].sort!((a, b) => a < b))(1, 2) == true);
+
+    // Default predicate
     assert(sortingPredicate!(int[])(1, 2) == true);
 }
 
