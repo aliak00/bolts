@@ -33,8 +33,8 @@ unittest {
     that was used to create the `SortedRange`
 
     Params:
-        Range = the range to extract the predicate from
-        fallbackPred = the sorting predicate to fallback to if `Range` is not a `SortedRange`
+        Args[0] = the range to extract the predicate from
+        Args[1] = the sorting predicate to fallback to if `Range` is not a `SortedRange`
 */
 template sortingPredicate(Args...)
 if ((Args.length == 1 || Args.length == 2) && from!"std.range".isInputRange!(from!"bolts.meta".TypesOf!Args[0])) {
