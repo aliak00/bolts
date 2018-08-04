@@ -476,3 +476,67 @@ unittest {
     static assert( isSame!(z, z));
     static assert(!isSame!(x, 0));
 }
+
+/**
+    Returns a stringof another template with it's real and non-mangled types
+
+    You may also customize the format in the case of templates:
+
+    ---
+    struct S(T, U) {}
+    StringOf!(S!(int, int)).writeln; // "S!(int, int)"
+    StringOf!(S!(int, int), "...", "<", ">").writeln; // "S<int...int>"
+    ---
+
+    Params:
+        T = the type you want to stringize
+        sep = in case of a template, what's the deperator between types
+        beg = in case of a template, what token marks the beginnig of the template arguments
+        end = in case of a template, what token marks the end of the template arguments
+
+    See_Also:
+        - https://forum.dlang.org/post/iodgpllgtcefcncoghri@forum.dlang.org
+*/
+string StringOf(alias T, string sep = ", ", string beg = "!(", string end = ")")() {
+    static string StringOfImpl(U...)() {
+        import std.traits: TemplateOf;
+        static if (!is(TemplateOf!U == void)) {
+            import std.traits: TemplateArgsOf;
+            import std.string: indexOf;
+            import std.conv: text;
+            import std.meta: AliasSeq, staticMap;
+            alias Tmp = TemplateOf!U;
+            alias Args = TemplateArgsOf!U;
+            enum tmpFullName = Tmp.stringof;
+            enum tmpName = tmpFullName[0..tmpFullName.indexOf('(')];
+
+            alias AddCommas(U...) = AliasSeq!(U, sep);
+            alias ArgNames = staticMap!(StringOfImpl, Args);
+            alias SeparatedArgNames = staticMap!(AddCommas, ArgNames)[0 .. $-1];
+            return text(tmpName, beg, SeparatedArgNames, end);
+        } else {
+            return U[0].stringof;
+        }
+    }
+    return StringOfImpl!T();
+}
+
+/// Ditto
+string StringOf(T, string sep = ", ", string beg = "!(", string end = ")")() if (is(from!"std.traits".TemplateOf!T == void)) {
+    return T.stringof;
+}
+
+///
+unittest {
+    template A(T...) {}
+    struct B {}
+    struct C {}
+    alias T = A!(A!(B, C));
+    assert(StringOf!T == "A!(A!(B, C))");
+
+    struct S(T) {}
+    assert(StringOf!(S!int) == "S!(int)");
+    assert(StringOf!(A!(A!(B, S!int))) == "A!(A!(B, S!(int)))");
+
+    assert(StringOf!int == "int");
+}

@@ -112,6 +112,16 @@ $(TR
     $(TD if null can be assigned to an instance of type T)
     )
 $(TR
+    $(TD)
+    $(TD $(DDOX_NAMED_REF bolts.traits.StringOf, `StringOf`))
+    $(TD Stringifies a type, unlike `.stringof` this version doesn't spit out mangled gibberish)
+    )
+$(TR
+    $(TD)
+    $(TD $(DDOX_NAMED_REF bolts.traits.isSame, `isSame`))
+    $(TD Returns true if a and b are the same thing - same type, same literal value, or same symbol)
+    )
+$(TR
     $(TD `bolts.range`)
     $(TD $(DDOX_NAMED_REF bolts.range.isSortedRange, `isSortedRange`))
     $(TD Tells you if a range is sorted)
