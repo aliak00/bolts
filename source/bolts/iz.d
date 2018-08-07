@@ -43,6 +43,14 @@ import bolts.internal;
         $(TD $(DDOX_NAMED_REF bolts.iz.iz.functionOver, `functionOver`))
         $(TD True if the resolved type an n-ary funtion over n types)
         )
+    $(TR
+        $(TD $(DDOX_NAMED_REF bolts.iz.iz.refType, `refType`))
+        $(TD True if the resolved type a reference type)
+        )
+    $(TR
+        $(TD $(DDOX_NAMED_REF bolts.iz.iz.isValueType, `isValueType`))
+        $(TD True if the resolved type a value type)
+        )
     )
 
     See_also:
