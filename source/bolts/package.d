@@ -122,6 +122,16 @@ $(TR
     $(TD Returns true if a and b are the same thing - same type, same literal value, or same symbol)
     )
 $(TR
+    $(TD)
+    $(TD $(DDOX_NAMED_REF bolts.traits.isRefType, `isRefType`))
+    $(TD Checks if a compile time entity is a reference type)
+    )
+$(TR
+    $(TD)
+    $(TD $(DDOX_NAMED_REF bolts.traits.isValueType, `isValueType`))
+    $(TD Checks if a compile time entity is a value type)
+    )
+$(TR
     $(TD `bolts.range`)
     $(TD $(DDOX_NAMED_REF bolts.range.isSortedRange, `isSortedRange`))
     $(TD Tells you if a range is sorted)

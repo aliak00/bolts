@@ -540,3 +540,36 @@ unittest {
 
     assert(StringOf!int == "int");
 }
+
+/**
+    Checks if a compile time entity is a reference type.
+*/
+template isRefType(T...) if (T.length == 1) {
+    import bolts.meta: TypesOf;
+    alias U = TypesOf!T[0];
+    enum isRefType = is(U == class) || is(U == interface);
+}
+
+///
+unittest {
+    struct S {}
+    class C {}
+    static assert(!isRefType!S);
+    static assert(!isRefType!int);
+    static assert( isRefType!C);
+}
+
+/**
+    Checks if a compile time entity is a value type
+*/
+enum isValueType(T...) = !isRefType!T;
+
+///
+unittest {
+    struct S {}
+    class C {}
+    static assert( isValueType!int);
+    static assert( isValueType!(int*));
+    static assert( isValueType!S);
+    static assert(!isValueType!C);
+}

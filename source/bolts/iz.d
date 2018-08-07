@@ -52,7 +52,7 @@ template iz(Alises...) if (Alises.length == 1) {
     import bolts.meta: TypesOf;
     alias T = TypesOf!Alises[0];
 
-    /// True if the resolved type is the same as another resolved type
+    /// See: `bolts.traits.isOf`
     static template of(Other...) if (Other.length == 1) {
         enum of = from!"bolts.traits".isOf!(Alises[0], Other[0]);
     }
@@ -83,6 +83,12 @@ template iz(Alises...) if (Alises.length == 1) {
     static template binaryOver(U...) {
         enum binaryOver = from!"bolts.traits".isBinaryOver!(Alises[0], U);
     }
+
+    /// See: `bolts.traits.isRefType`
+    enum refType = from!"bolts.traits".isRefType!T;
+
+    /// See: `bolts.traits.isValueType`
+    enum valueType = from!"bolts.traits".isValueType!T;
 }
 
 ///
@@ -122,4 +128,12 @@ unittest {
     static assert( iz!(a => a).unaryOver!int);
     static assert( iz!((a, b) => a).binaryOver!(int, int));
     static assert( iz!((a, b, c, d) => a).functionOver!(int, int, int, int));
+
+    // Is this thing a value or reference type?
+    struct S {}
+    class C {}
+    static assert( iz!S.valueType);
+    static assert(!iz!C.valueType);
+    static assert(!iz!S.refType);
+    static assert( iz!C.refType);
 }
