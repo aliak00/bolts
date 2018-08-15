@@ -93,6 +93,8 @@ unittest {
     static assert(!isFunctionOver!(f3, int));
     static assert(!isFunctionOver!(f3));
 
+    static assert( isFunctionOver!(() => 3));
+    static assert(!isFunctionOver!(() => 3, int));
     static assert(!isFunctionOver!(a => a, float, int));
     static assert( isFunctionOver!(a => a, float));
     static assert( isFunctionOver!(a => a, int));
