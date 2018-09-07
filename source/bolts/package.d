@@ -167,4 +167,5 @@ public {
     import bolts.members;
     import bolts.iz;
     import bolts.aa;
+    import bolts.assume;
 }
