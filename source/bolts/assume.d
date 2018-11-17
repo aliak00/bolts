@@ -8,7 +8,9 @@ import bolts.internal;
 
 /**
     `assume` is a helper template that allows you to cast functions and types to make
-    the compile assume they are something they are not.
+    the compiler assume they are something they are not. This can get very useful for debugging.
+
+    They are all marked @safe as well.
 
     E.g. cast a non pure function to a pure function or a non-nogc function to a nogc one
 
@@ -26,8 +28,8 @@ import bolts.internal;
 */
 template assume(alias fun) {
     import std.traits: FunctionAttribute, SetFunctionAttributes, functionLinkage, functionAttributes;
-    private auto ref assumeAttribute(FunctionAttribute assumedAttr, T)(auto ref T t) {
-        enum attrs = functionAttributes!T | assumedAttr;
+    private auto ref assumeAttribute(FunctionAttribute assumedAttr, T)(return auto ref T t) @trusted {
+        enum attrs = assumedAttr;
         return cast(SetFunctionAttributes!(T, functionLinkage!T, attrs)) t;
     }
     private static funcCastImpl(string attr) {
@@ -50,36 +52,59 @@ template assume(alias fun) {
     }
 
     /// calls the alias as nogc with the passed in args
-    auto ref nogc_(Args...)(auto ref Args args) {
-        mixin(funcCastImpl("FunctionAttribute.nogc"));
+    auto ref nogc_(Args...)(auto ref Args args) @safe {
+        mixin(funcCastImpl("FunctionAttribute.nogc | FunctionAttribute.safe"));
     }
     /// calls the alias as pure with the passed in args
-    auto ref pure_(Args...)(auto ref Args args) {
-        mixin(funcCastImpl("FunctionAttribute.pure_"));
+    auto ref pure_(Args...)(auto ref Args args) @safe {
+        mixin(funcCastImpl("FunctionAttribute.pure_ | FunctionAttribute.safe"));
+    }
+}
+
+version (unittest) {
+    private auto allocates(int i) @system {
+        static struct S {}
+        auto x = new S();
+        return i;
+    }
+
+    private static int thing = 0;
+    private immutable impureResult = 10;
+    private auto impure() {
+        auto x = impureResult - thing;
+        return x + thing;
     }
 }
 
 ///
 @nogc unittest {
-    static b = [1];
-    auto allocates() {
-        return [1];
-    }
-    auto a = assume!allocates.nogc_();
-    assert(a == b);
-
-    auto something(int a) {
-        allocates;
-    }
-    assume!something.nogc_(3);
+    assert(assume!allocates.nogc_(3) == 3);
+    static assert(!__traits(compiles, { allocates(a[0]); }));
 }
 
 ///
-unittest {
-    static int thing = 0;
-    alias lambda = () => thing++;
-    () pure {
-        cast(void)assume!lambda.pure_();
-    }();
-    assert(thing == 1);
+pure unittest {
+    assert(assume!impure.pure_() == impureResult);
+    static assert(!__traits(compiles, { impure(); }));
+}
+
+@safe @nogc unittest {
+    static struct Wrapper {
+        template func0() {
+            auto func0() {
+                return assume!allocates.nogc_(7);
+            }
+        }
+        template func1() {
+            auto func1() {
+                int[] x;
+                debug {
+                    x = allocates(7);
+                }
+                return x;
+            }
+        }
+    }
+    assert(Wrapper().func0!() == 7);
+    static assert(!__traits(compiles, { int x = Wrapper().func1!(); } ));
 }
