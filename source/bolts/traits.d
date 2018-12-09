@@ -628,3 +628,25 @@ unittest {
     static assert( isValueType!S);
     static assert(!isValueType!C);
 }
+
+/**
+    Checks if an alias is a literal of some type
+*/
+template isLiteralOf(ab...) {
+    enum isLiteralOf = !is(typeof(&ab[0]))
+        && is(typeof(ab[0]))
+        && is(typeof(ab[0]) == ab[1]);
+}
+
+///
+unittest {
+    static assert( isLiteralOf!("hi", string));
+    static assert(!isLiteralOf!(3, string));
+    static assert( isLiteralOf!(3, int));
+
+    int a;
+    static assert(!isLiteralOf!(a, int));
+
+    void f() {}
+    static assert(!isLiteralOf!(f, string));
+}

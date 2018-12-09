@@ -51,18 +51,22 @@ import bolts.internal;
         $(TD $(DDOX_NAMED_REF bolts.iz.iz.valueType, `valueType`))
         $(TD True if the resolved type a value type)
         )
+    $(TR
+        $(TD $(DDOX_NAMED_REF bolts.iz.iz.literalOf, `literalOf`))
+        $(TD True if the alias is a literal of a type of T)
+        )
     )
 
     See_also:
         - https://dlang.org/spec/template.html#variadic-templates
 */
-template iz(Alises...) if (Alises.length == 1) {
+template iz(Aliases...) if (Aliases.length == 1) {
     import bolts.meta: TypesOf;
-    alias T = TypesOf!Alises[0];
+    alias T = TypesOf!Aliases[0];
 
     /// See: `bolts.traits.isOf`
     static template of(Other...) if (Other.length == 1) {
-        enum of = from!"bolts.traits".isOf!(Alises[0], Other[0]);
+        enum of = from!"bolts.traits".isOf!(Aliases[0], Other[0]);
     }
 
     /// See: `bolts.traits.isNullable`
@@ -74,29 +78,26 @@ template iz(Alises...) if (Alises.length == 1) {
     /// See: `bolts.traits.isSame`
     static template sameAs(Other...) if (Other.length == 1) {
         import bolts.traits: isSame;
-        enum sameAs = from!"bolts.traits".isSame!(Alises[0], Other[0]);
+        enum sameAs = isSame!(Aliases[0], Other[0]);
     }
 
     /// See: `bolts.traits.isFunctionOver`
-    static template functionOver(U...) {
-        enum functionOver = from!"bolts.traits".isFunctionOver!(Alises[0], U);
-    }
+    enum functionOver(U...) = from!"bolts.traits".isFunctionOver!(Aliases[0], U);
 
     /// See: `bolts.traits.isUnaryOver`
-    static template unaryOver(U...) {
-        enum unaryOver = from!"bolts.traits".isUnaryOver!(Alises[0], U);
-    }
+    enum unaryOver(U...) = from!"bolts.traits".isUnaryOver!(Aliases[0], U);
 
     /// See: `bolts.traits.isBinaryOver`
-    static template binaryOver(U...) {
-        enum binaryOver = from!"bolts.traits".isBinaryOver!(Alises[0], U);
-    }
+    enum binaryOver(U...) = from!"bolts.traits".isBinaryOver!(Aliases[0], U);
 
     /// See: `bolts.traits.isRefType`
     enum refType = from!"bolts.traits".isRefType!T;
 
     /// See: `bolts.traits.isValueType`
     enum valueType = from!"bolts.traits".isValueType!T;
+
+    /// See: `bolts.traits.isLiteralOf`
+    enum literalOf(T) = from!"bolts.traits".isLiteralOf!(Aliases[0], T);
 }
 
 ///
@@ -144,4 +145,7 @@ unittest {
     static assert(!iz!C.valueType);
     static assert(!iz!S.refType);
     static assert( iz!C.refType);
+
+    static assert( iz!"hello".literalOf!string);
+    static assert(!iz!3.literalOf!string);
 }
