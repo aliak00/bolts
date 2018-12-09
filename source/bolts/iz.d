@@ -48,7 +48,7 @@ import bolts.internal;
         $(TD True if the resolved type a reference type)
         )
     $(TR
-        $(TD $(DDOX_NAMED_REF bolts.iz.iz.isValueType, `isValueType`))
+        $(TD $(DDOX_NAMED_REF bolts.iz.iz.valueType, `valueType`))
         $(TD True if the resolved type a value type)
         )
     )
