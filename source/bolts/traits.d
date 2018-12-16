@@ -552,28 +552,29 @@ unittest {
     See_Also:
         - https://forum.dlang.org/post/iodgpllgtcefcncoghri@forum.dlang.org
 */
-string StringOf(alias T, string sep = ", ", string beg = "!(", string end = ")")() {
-    static string StringOfImpl(U...)() {
-        import std.traits: TemplateOf;
-        static if (!is(TemplateOf!U == void)) {
-            import std.traits: TemplateArgsOf;
-            import std.string: indexOf;
-            import std.conv: text;
-            import std.meta: AliasSeq, staticMap;
-            alias Tmp = TemplateOf!U;
-            alias Args = TemplateArgsOf!U;
-            enum tmpFullName = Tmp.stringof;
-            enum tmpName = tmpFullName[0..tmpFullName.indexOf('(')];
+template StringOf(alias U, string sep = ", ", string beg = "!(", string end = ")") {
+    import std.traits: TemplateOf;
+    static if (__traits(compiles, TemplateOf!U) && !is(TemplateOf!U == void)) {
+        import std.traits: TemplateArgsOf;
+        import std.string: indexOf;
+        import std.conv: text;
+        import std.meta: AliasSeq, staticMap;
+        alias Tmp = TemplateOf!U;
+        alias Args = TemplateArgsOf!U;
+        enum tmpFullName = Tmp.stringof;
+        enum tmpName = tmpFullName[0..tmpFullName.indexOf('(')];
 
-            alias AddCommas(U...) = AliasSeq!(U, sep);
-            alias ArgNames = staticMap!(StringOfImpl, Args);
-            alias SeparatedArgNames = staticMap!(AddCommas, ArgNames)[0 .. $-1];
-            return text(tmpName, beg, SeparatedArgNames, end);
+        alias AddCommas(U...) = AliasSeq!(U, sep);
+        alias ArgNames = staticMap!(.StringOf, Args);
+        alias SeparatedArgNames = staticMap!(AddCommas, ArgNames)[0 .. $-1];
+        immutable StringOf = text(tmpName, beg, SeparatedArgNames, end);
+    } else {
+        static if (__traits(compiles, U.stringof)) {
+            immutable StringOf = U.stringof;
         } else {
-            return U[0].stringof;
+            immutable StringOf = typeof(U).stringof;
         }
     }
-    return StringOfImpl!T();
 }
 
 /// Ditto
@@ -594,6 +595,11 @@ unittest {
     assert(StringOf!(A!(A!(B, S!int))) == "A!(A!(B, S!(int)))");
 
     assert(StringOf!int == "int");
+    assert(StringOf!3 == "3");
+
+    void f(int a, int b) {}
+    import std.algorithm: canFind;
+    assert(StringOf!(f).canFind("void(int a, int b)"));
 }
 
 /**
