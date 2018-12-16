@@ -53,7 +53,11 @@ import bolts.internal;
         )
     $(TR
         $(TD $(DDOX_NAMED_REF bolts.iz.iz.literalOf, `literalOf`))
-        $(TD True if the alias is a literal of a type of T)
+        $(TD True if the resolved type is a literal of a type of T)
+        )
+    $(TR
+        $(TD $(DDOX_NAMED_REF bolts.iz.iz.literal, `literal`))
+        $(TD True if the resolved type is a literal)
         )
     )
 
@@ -98,6 +102,9 @@ template iz(Aliases...) if (Aliases.length == 1) {
 
     /// See: `bolts.traits.isLiteralOf`
     enum literalOf(T) = from!"bolts.traits".isLiteralOf!(Aliases[0], T);
+
+    /// See: `bolts.traits.isLiteral`
+    enum literal = from!"bolts.traits".isLiteral!(Aliases[0]);
 }
 
 ///

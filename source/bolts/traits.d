@@ -650,3 +650,21 @@ unittest {
     void f() {}
     static assert(!isLiteralOf!(f, string));
 }
+
+/**
+    Checks if an alias is a literal
+*/
+enum isLiteral(alias a) = !is(typeof(&a));
+/// Ditto
+enum isLiteral(T) = false;
+
+///
+unittest {
+    int a;
+    void f() {}
+    assert( isLiteral!3);
+    assert( isLiteral!"hi");
+    assert(!isLiteral!int);
+    assert(!isLiteral!a);
+    assert(!isLiteral!f);
+}
