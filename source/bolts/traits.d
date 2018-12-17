@@ -566,7 +566,11 @@ template StringOf(alias U, string sep = ", ", string beg = "!(", string end = ")
 
         alias AddCommas(U...) = AliasSeq!(U, sep);
         alias ArgNames = staticMap!(.StringOf, Args);
-        alias SeparatedArgNames = staticMap!(AddCommas, ArgNames)[0 .. $-1];
+        static if (ArgNames.length == 0) {
+            alias SeparatedArgNames = AliasSeq!();
+        } else {
+            alias SeparatedArgNames = staticMap!(AddCommas, ArgNames)[0 .. $-1];
+        }
         immutable StringOf = text(tmpName, beg, SeparatedArgNames, end);
     } else {
         static if (__traits(compiles, U.stringof)) {
@@ -600,6 +604,13 @@ unittest {
     void f(int a, int b) {}
     import std.algorithm: canFind;
     assert(StringOf!(f).canFind("void(int a, int b)"));
+}
+
+unittest {
+    import std.meta: AliasSeq;
+    import bolts.meta: AliasPack;
+    alias T = AliasPack!(AliasSeq!());
+    assert(StringOf!T == "AliasPack!()");
 }
 
 /**
