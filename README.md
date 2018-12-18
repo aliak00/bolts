@@ -20,7 +20,7 @@ Bolts is a utility library for the D programming language which contains a numbe
 * **aa**: has functions that act on associative arrays
     * `isKey` (not eponymous)
 * **assume**: can alias functions to different attributed types. Useful for debugging.
-    * `nogc_`, `pure_`
+    * `nogc_`, `pure_`, `safe_`
 * **iz**: super non-eponymous template that provides a lot of the functionality that's in the traits module with a different sytax that allows their usage in meta functions as well.
 
 Most functions here operate on any compile time entity. For example `isUnaryOver` works in both these situatons:
