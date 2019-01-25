@@ -389,12 +389,23 @@ unittest {
 }
 
 /**
-    Checks if the resolved type of one thing is the same as the resolved type of another thing
+    Checks if the resolved type of one thing is the same as the resolved type of another thing.
+
+    If the type is callable, then `std.traits.ReturnType` as the resolved type
 */
 template isOf(ab...) if (ab.length == 2) {
     import bolts.meta: TypesOf;
     alias Ts = TypesOf!ab;
-    enum isOf = is(Ts[0] == Ts[1]);
+    template resolve(T) {
+        import std.traits: isCallable, ReturnType;
+        static if (isCallable!T) {
+            alias resolve = ReturnType!T;
+        } else {
+            alias resolve = T;
+        }
+    }
+
+    enum isOf = is(resolve!(Ts[0]) == resolve!(Ts[1]));
 }
 
 ///
@@ -405,6 +416,9 @@ unittest {
     static assert(!isOf!(float, 3));
     static assert(!isOf!(float, string));
     static assert(!isOf!(string, 3));
+
+    string tostr() { return ""; }
+    static assert( isOf!(string, tostr));
 }
 
 /// True if a is of type null
@@ -604,6 +618,8 @@ unittest {
     void f(int a, int b) {}
     import std.algorithm: canFind;
     assert(StringOf!(f).canFind("void(int a, int b)"));
+
+    assert(StringOf!void == "void");
 }
 
 unittest {
