@@ -6,5 +6,8 @@
 	"description": "Utility library for meta programming",
 	"copyright": "Copyright © 2018, Ali Akhtarzada",
 	"license": "MIT",
-	"targetPath": "bin"
+    "targetPath": "bin",
+    "toolChainRequirements": {
+        "frontend": ">=2.086"
+    }
 }

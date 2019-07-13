@@ -382,9 +382,9 @@ unittest {
 }
 
 /**
-    Returns true if T.name is a manifest constant, built-in type field, or immutable static
+    Returns true if the argument is a manifest constant, built-in type field, or immutable static
 */
-template isManifestAssignable(alias x) {
+template isManifestAssignable(x...) if (x.length == 1) {
     enum isManifestAssignable = __traits(compiles, { enum y = x; } );
 }
 
