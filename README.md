@@ -11,16 +11,13 @@ Bolts is a utility library for the D programming language which contains a numbe
 * **meta**: has functions that result in compile time entity transofrmations, including:
     * `TypesOf`, `Flatten`, `AliasPack`, `staticZip`
 * **traits**: has general utitlites that can query compile time entities. including:
-    * `isFunctionOver`, `isUnaryOver`, `isBinaryOver`, `hasProperty`, `propertySemantics`, `areCombinable`, `isManifestAssignable`, `isOf`, `isSame`, `isNullType`, `isNullable`,
-    `StringOf`, `isRefType`, `isValueType`, `isLiteralOf`, `isLiteral`
+    * `isFunctionOver`, `isUnaryOver`, `isBinaryOver`, `hasProperty`, `propertySemantics`, `areCombinable`, `isManifestAssignable`, `isOf`, `isSame`, `isNullType`, `isNullable`, `StringOf`, `isRefType`, `isValueType`, `isLiteralOf`, `isLiteral`, `isCopyConstructable`, `hasNonTrivialCopyConstructor`
 * **members**: has functions that allow you to query about the members of types
-    * `staticMembers`, `memberFunction`, `hasMember` (not eponymous)
+    * `staticMembers`, `memberFunction`, `member` (not eponymous)
 * **range**: query ranges
     * `isSortedRange`, `sortingPredicate`, `CommonTypeOfRanges`
 * **aa**: has functions that act on associative arrays
     * `isKey` (not eponymous)
-* **assume**: can alias functions to different attributed types. Useful for debugging.
-    * `nogc_`, `pure_`, `safe_`
 * **iz**: super non-eponymous template that provides a lot of the functionality that's in the traits module with a different sytax that allows their usage in meta functions as well.
 
 Most functions here operate on any compile time entity. For example `isUnaryOver` works in both these situatons:
