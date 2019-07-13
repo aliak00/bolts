@@ -27,6 +27,11 @@ All_the_things:
 $(TABLE
 $(TR $(TH Module) $(TH Function) $(TH Description))
 $(TR
+    $(TD `bolts.from`)
+    $(TD $(DDOX_NAMED_REF bolts.members.from, `from`))
+    $(TD lazy import of modules)
+    )
+$(TR
     $(TD `bolts.members`)
     $(TD $(DDOX_NAMED_REF bolts.members.memberFunctions, `memberFunctions`))
     $(TD Returns a list of all member functions)
@@ -167,5 +172,5 @@ public {
     import bolts.members;
     import bolts.iz;
     import bolts.aa;
-    import bolts.assume;
+    import bolts.from;
 }

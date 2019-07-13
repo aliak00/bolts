@@ -391,11 +391,10 @@ unittest {
 /**
     Checks if the resolved type of one thing is the same as the resolved type of another thing.
 
-    If the type is callable, then `std.traits.ReturnType` as the resolved type
+    If the type is callable, then `std.traits.ReturnType` is the resolved type
 */
 template isOf(ab...) if (ab.length == 2) {
-    import bolts.meta: TypesOf;
-    alias Ts = TypesOf!ab;
+    alias Ts = from.bolts.meta.TypesOf!ab;
     template resolve(T) {
         import std.traits: isCallable, ReturnType;
         static if (isCallable!T) {
@@ -423,8 +422,7 @@ unittest {
 
 /// True if a is of type null
 template isNullType(T...) if (T.length == 1) {
-    import bolts.meta: TypesOf;
-    alias U = TypesOf!T[0];
+    alias U = from.bolts.meta.TypesOf!T[0];
     enum isNullType = is(U == typeof(null));
 }
 
@@ -446,8 +444,7 @@ unittest {
     Returns true of T can be set to null
 */
 template isNullable(T...) if (T.length == 1) {
-    import bolts.meta: TypesOf;
-    alias U = TypesOf!T[0];
+    alias U = from.bolts.meta.TypesOf!T[0];
     enum isNullable = __traits(compiles, { U u = U.init; u = null; });
 }
 
@@ -596,7 +593,7 @@ template StringOf(alias U, string sep = ", ", string beg = "!(", string end = ")
 }
 
 /// Ditto
-string StringOf(T, string sep = ", ", string beg = "!(", string end = ")")() if (is(from!"std.traits".TemplateOf!T == void)) {
+string StringOf(T, string sep = ", ", string beg = "!(", string end = ")")() if (is(from.std.traits.TemplateOf!T == void)) {
     return T.stringof;
 }
 
@@ -633,8 +630,7 @@ unittest {
     Checks if a compile time entity is a reference type.
 */
 template isRefType(T...) if (T.length == 1) {
-    import bolts.meta: TypesOf;
-    alias U = TypesOf!T[0];
+    alias U = from.bolts.meta.TypesOf!T[0];
     enum isRefType = is(U == class) || is(U == interface);
 }
 

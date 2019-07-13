@@ -66,18 +66,19 @@ import bolts.internal;
 */
 template iz(Aliases...) if (Aliases.length == 1) {
     import bolts.meta: TypesOf;
-    alias T = TypesOf!Aliases[0];
+
+    alias ResolvedType = TypesOf!Aliases[0];
 
     /// See: `bolts.traits.isOf`
     static template of(Other...) if (Other.length == 1) {
-        enum of = from!"bolts.traits".isOf!(Aliases[0], Other[0]);
+        enum of = from.bolts.traits.isOf!(Aliases[0], Other[0]);
     }
 
     /// See: `bolts.traits.isNullable`
-    enum nullable = from!"bolts.traits".isNullable!T;
+    enum nullable = from.bolts.traits.isNullable!ResolvedType;
 
     /// See: `bolts.traits.isNullType`
-    enum nullType = from!"bolts.traits".isNullType!T;
+    enum nullType = from.bolts.traits.isNullType!ResolvedType;
 
     /// See: `bolts.traits.isSame`
     static template sameAs(Other...) if (Other.length == 1) {
@@ -86,25 +87,26 @@ template iz(Aliases...) if (Aliases.length == 1) {
     }
 
     /// See: `bolts.traits.isFunctionOver`
-    enum functionOver(U...) = from!"bolts.traits".isFunctionOver!(Aliases[0], U);
+    enum functionOver(U...) = from.bolts.traits.isFunctionOver!(Aliases[0], U);
 
     /// See: `bolts.traits.isUnaryOver`
-    enum unaryOver(U...) = from!"bolts.traits".isUnaryOver!(Aliases[0], U);
+    enum unaryOver(U...) = from.bolts.traits.isUnaryOver!(Aliases[0], U);
 
     /// See: `bolts.traits.isBinaryOver`
-    enum binaryOver(U...) = from!"bolts.traits".isBinaryOver!(Aliases[0], U);
+    enum binaryOver(U...) = from.bolts.traits.isBinaryOver!(Aliases[0], U);
 
     /// See: `bolts.traits.isRefType`
-    enum refType = from!"bolts.traits".isRefType!T;
+    enum refType = from.bolts.traits.isRefType!ResolvedType;
 
     /// See: `bolts.traits.isValueType`
-    enum valueType = from!"bolts.traits".isValueType!T;
+    enum valueType = from.bolts.traits.isValueType!ResolvedType;
 
     /// See: `bolts.traits.isLiteralOf`
-    enum literalOf(T) = from!"bolts.traits".isLiteralOf!(Aliases[0], T);
+    enum literalOf(T) = from.bolts.traits.isLiteralOf!(Aliases[0], T);
 
     /// See: `bolts.traits.isLiteral`
-    enum literal = from!"bolts.traits".isLiteral!(Aliases[0]);
+    enum literal = from.bolts.traits.isLiteral!(Aliases[0]);
+
 }
 
 ///

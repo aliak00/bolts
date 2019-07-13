@@ -14,6 +14,8 @@ private template GetMembersAsAliases(T, membersTuple...) {
 
 /// Returns a list of member functions of T
 template memberFunctions(T) {
+    import std.meta: aliasSeqOf;
+
     auto generateArray() {
         import std.traits: isFunction;
         string[] strings;
@@ -32,7 +34,7 @@ template memberFunctions(T) {
     immutable array = generateArray;
 
     /// Get as tuple of strings
-    alias tuple = from!"std.meta".aliasSeqOf!(memberFunctions!T.array);
+    alias tuple = aliasSeqOf!(memberFunctions!T.array);
 
     /// Get as a tuple of aliases
     alias aliases = GetMembersAsAliases!(T, memberFunctions!T.tuple);

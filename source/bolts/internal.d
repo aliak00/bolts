@@ -1,10 +1,8 @@
 module bolts.internal;
 
-package template from(string moduleName) {
-    mixin("import from = " ~ moduleName ~ ";");
-}
+public import bolts.from;
 
 version (unittest) {
     // Just here so can be used in unittests without importing all the time
-    public import std.stdio: writeln;
+    package import std.stdio: writeln;
 }
