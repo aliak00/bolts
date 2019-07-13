@@ -121,7 +121,7 @@ unittest {
     Available member traits:
         $(LI `exists`)
         $(LI `self`)
-        $(LI `hasProtection(string protectionLevel`)
+        $(LI `hasProtection(string protectionLevel)`)
         $(LI `isProperty`)
 
     Params:
