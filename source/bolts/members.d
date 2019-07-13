@@ -116,12 +116,13 @@ unittest {
 }
 
 /**
-    Used to check if T has a member with a specific trait
+    Used to extract details about a specific member
 
     Available member traits:
         $(LI `exists`)
         $(LI `self`)
         $(LI `hasProtection(string protectionLevel`)
+        $(LI `isProperty`)
 
     Params:
         T = type to check
@@ -167,6 +168,9 @@ template member(T, string name) {
         }
     }
 
+    /**
+        See: `bolts.traits.hasProperty`
+    */
     static if (exists) {
         enum isProperty = from.bolts.traits.hasProperty!(T, name);
     } else {
@@ -194,5 +198,21 @@ unittest {
         static assert( member!(T, "m2").hasProtection!"private");
         static assert(!member!(T, "m2").hasProtection!"public");
         static assert(!member!(T, "na").hasProtection!"public");
+    }
+
+    import bolts.traits: PropertySemantics;
+    struct SProperties {
+        int m;
+        @property int rp() { return m; }
+        @property void wp(int) {}
+        @property int rwp() { return m; }
+        @property void rwp(int) {}
+    }
+    static foreach (T; AliasSeq!(SProperties, SProperties*)) {
+        static assert(!member!(T, "na").isProperty);
+        static assert(!member!(T, "m").isProperty);
+        static assert( member!(T, "rp").isProperty);
+        static assert( member!(T, "wp").isProperty);
+        static assert( member!(T, "rwp").isProperty);
     }
 }

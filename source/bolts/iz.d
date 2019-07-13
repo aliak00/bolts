@@ -59,6 +59,14 @@ import bolts.internal;
         $(TD $(DDOX_NAMED_REF bolts.iz.iz.literal, `literal`))
         $(TD True if the resolved type is a literal)
         )
+    $(TR
+        $(TD $(DDOX_NAMED_REF bolts.iz.iz.copyConstructable, `copyConstructable`))
+        $(TD True if resolved type is copy constructable)
+        )
+    $(TR
+        $(TD $(DDOX_NAMED_REF bolts.iz.iz.nonTriviallyCopyConstructable, `nonTriviallyCopyConstructable`))
+        $(TD True if resolved type has a non-trivial copy constructor)
+        )
     )
 
     See_also:
@@ -172,5 +180,4 @@ unittest {
     static struct SCopyConstructor { this(ref typeof(this)) {} }
     static assert( iz!SCopyConstructor.nonTriviallyCopyConstructable);
     static assert(!iz!int.nonTriviallyCopyConstructable);
-
 }

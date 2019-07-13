@@ -322,7 +322,6 @@ enum PropertySemantics {
 */
 template propertySemantics(T, string name) if (hasProperty!(T, name)) {
     auto impl(U)() {
-        import std.typecons: tuple;
         enum overloads = __traits(getOverloads, U, name).length;
         enum canInstantiateAsField = is(typeof(mixin("U.init." ~ name)));
         static if (overloads > 1 || canInstantiateAsField)
@@ -351,7 +350,6 @@ template propertySemantics(T, string name) if (hasProperty!(T, name)) {
 
 ///
 unittest {
-    import std.typecons;
     struct S {
         int m;
         @property int rp() { return m; }
@@ -368,7 +366,6 @@ unittest {
 }
 
 unittest {
-    import std.typecons;
     struct S {
         int m;
         @property int rp() { return m; }
