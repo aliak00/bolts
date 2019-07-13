@@ -109,6 +109,9 @@ template iz(Aliases...) if (Aliases.length == 1) {
 
     /// See: `bolts.traits.isCopyConstructable`
     enum copyConstructable = from.bolts.traits.isCopyConstructable!ResolvedType;
+
+    /// See: `bolts.traits.hasNonTrivialCopyConstructor`
+    enum nonTriviallyCopyConstructable = from.bolts.traits.hasNonTrivialCopyConstructor!ResolvedType;
 }
 
 ///
@@ -150,18 +153,24 @@ unittest {
     static assert( iz!((a, b, c, d) => a).functionOver!(int, int, int, int));
 
     // Is this thing a value or reference type?
-    struct S1 {}
-    class C1 {}
-    static assert( iz!S1.valueType);
-    static assert(!iz!C1.valueType);
-    static assert(!iz!S1.refType);
-    static assert( iz!C1.refType);
+    struct SValueType {}
+    class CRefType {}
+    static assert( iz!SValueType.valueType);
+    static assert(!iz!CRefType.valueType);
+    static assert(!iz!SValueType.refType);
+    static assert( iz!CRefType.refType);
 
     static assert( iz!"hello".literalOf!string);
     static assert(!iz!3.literalOf!string);
 
     // Is this thing copy constructable?
     static assert( iz!int.copyConstructable);
-    struct S { @disable this(ref S); }
-    static assert(!iz!S.copyConstructable);
+    static struct SDisabledCopyConstructor { @disable this(ref typeof(this)); }
+    static assert(!iz!SDisabledCopyConstructor.copyConstructable);
+
+    // Does this thing define a custom copy constructor (i.e. non-trivial copy constructor)
+    static struct SCopyConstructor { this(ref typeof(this)) {} }
+    static assert( iz!SCopyConstructor.nonTriviallyCopyConstructable);
+    static assert(!iz!int.nonTriviallyCopyConstructable);
+
 }

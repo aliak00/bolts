@@ -119,45 +119,80 @@ unittest {
     Used to check if T has a member with a specific trait
 
     Available member traits:
-        $(LI `withProtection`)
+        $(LI `exists`)
+        $(LI `self`)
+        $(LI `hasProtection(string protectionLevel`)
 
     Params:
         T = type to check
         name = name of field in type
 
 */
-template hasMember(T, string name) {
-    enum yesMember = __traits(hasMember, T, name);
+template member(T, string name) {
+    /**
+        True if the member field exists
+    */
+    enum exists = __traits(hasMember, T, name);
+
+    /**
+        Aliases to the member if it exists
+    */
+    static if (exists) {
+        static if (from.std.traits.isPointer!T) {
+            alias U = from.std.traits.PointerTarget!T;
+        } else {
+            alias U = T;
+        }
+        alias self = __traits(getMember, U, name);
+    } else {
+        template self() {
+            static assert(
+                0,
+                "Type '" ~ T.stringof ~ "' does not have member '" ~ name ~ "'."
+            );
+        }
+    }
+
     /**
         Check if the member has the required access level
+
+        Params:
+            level = protection level (public/protected/private)
     */
-    template withProtection(string level) {
-        static if (yesMember && __traits(getProtection, __traits(getMember, T, name)) == level) {
-            enum withProtection = true;
+    template hasProtection(string level) {
+        static if (exists) {
+            enum hasProtection = __traits(getProtection, self) == level;
         } else {
-            enum withProtection = false;
+            enum hasProtection = false;
         }
+    }
+
+    static if (exists) {
+        enum isProperty = from.bolts.traits.hasProperty!(T, name);
+    } else {
+        enum isProperty = false;
     }
 }
 
 ///
 unittest {
-    struct S {
+    import std.meta: AliasSeq;
+
+    struct SProtection {
         int i;
         public int m0;
         protected int m1;
         private int m2;
     }
 
-    import std.meta: AliasSeq;
-    static foreach (T; AliasSeq!(S, S*)) {
-        static assert( hasMember!(T, "i").withProtection!"public");
-        static assert( hasMember!(T, "m0").withProtection!"public");
-        static assert(!hasMember!(T, "m0").withProtection!"protected");
-        static assert( hasMember!(T, "m1").withProtection!"protected");
-        static assert(!hasMember!(T, "m1").withProtection!"public");
-        static assert( hasMember!(T, "m2").withProtection!"private");
-        static assert(!hasMember!(T, "m2").withProtection!"public");
-        static assert(!hasMember!(T, "na").withProtection!"public");
+    static foreach (T; AliasSeq!(SProtection, SProtection*)) {
+        static assert( member!(T, "i").hasProtection!"public");
+        static assert( member!(T, "m0").hasProtection!"public");
+        static assert(!member!(T, "m0").hasProtection!"protected");
+        static assert( member!(T, "m1").hasProtection!"protected");
+        static assert(!member!(T, "m1").hasProtection!"public");
+        static assert( member!(T, "m2").hasProtection!"private");
+        static assert(!member!(T, "m2").hasProtection!"public");
+        static assert(!member!(T, "na").hasProtection!"public");
     }
 }

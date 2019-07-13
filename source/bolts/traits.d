@@ -303,6 +303,18 @@ unittest {
 }
 
 /**
+    Represents the semantics supported by an @property member
+*/
+enum PropertySemantics {
+    /// is a read property
+    r,
+    /// is a write property
+    w,
+    /// is a read-write property
+    rw
+}
+
+/**
     Tells you if a name is a read and/or write property
 
     Returns:
@@ -321,7 +333,13 @@ template propertySemantics(T, string name) if (hasProperty!(T, name)) {
             enum canWrite = true;
         else
             enum canWrite = false;
-        return tuple!("canRead", "canWrite")(canRead, canWrite);
+        static if (canWrite && canRead) {
+            return PropertySemantics.rw;
+        } else static if (canWrite) {
+            return PropertySemantics.w;
+        } else {
+            return PropertySemantics.r;
+        }
     }
     import std.traits: isPointer, PointerTarget;
     static if(isPointer!T) {
@@ -344,9 +362,9 @@ unittest {
 
     static assert(!__traits(compiles, propertySemantics!(S, "na")));
     static assert(!__traits(compiles, propertySemantics!(S, "m")));
-    static assert(propertySemantics!(S, "rp") == tuple!("canRead", "canWrite")(true, false));
-    static assert(propertySemantics!(S, "wp") == tuple!("canRead", "canWrite")(false, true));
-    static assert(propertySemantics!(S, "rwp") == tuple!("canRead", "canWrite")(true, true));
+    static assert(propertySemantics!(S, "rp") == PropertySemantics.r);
+    static assert(propertySemantics!(S, "wp") == PropertySemantics.w);
+    static assert(propertySemantics!(S, "rwp") == PropertySemantics.rw);
 }
 
 unittest {
@@ -361,16 +379,16 @@ unittest {
 
     static assert(!__traits(compiles, propertySemantics!(S*, "na")));
     static assert(!__traits(compiles, propertySemantics!(S*, "m")));
-    static assert(propertySemantics!(S*, "rp") == tuple!("canRead", "canWrite")(true, false));
-    static assert(propertySemantics!(S*, "wp") == tuple!("canRead", "canWrite")(false, true));
-    static assert(propertySemantics!(S*, "rwp") == tuple!("canRead", "canWrite")(true, true));
+    static assert(propertySemantics!(S*, "rp") == PropertySemantics.r);
+    static assert(propertySemantics!(S*, "wp") == PropertySemantics.w);
+    static assert(propertySemantics!(S*, "rwp") == PropertySemantics.rw);
 }
 
 /**
     Returns true if T.name is a manifest constant, built-in type field, or immutable static
 */
-template isManifestAssignable(T, string name) {
-    enum isManifestAssignable = is(typeof({ enum x = mixin("T." ~ name); }));
+template isManifestAssignable(alias x) {
+    enum isManifestAssignable = __traits(compiles, { enum y = x; } );
 }
 
 ///
@@ -381,11 +399,10 @@ unittest {
         enum e = 1;
     }
 
-    static assert(!isManifestAssignable!(A*, "na"));
-    static assert(!isManifestAssignable!(A, "na"));
-    static assert(!isManifestAssignable!(A, "m"));
-    static assert( isManifestAssignable!(A, "e"));
-    static assert( isManifestAssignable!(A, "sim"));
+    static assert(!isManifestAssignable!(A.m));
+    static assert( isManifestAssignable!(A.e));
+    static assert( isManifestAssignable!(A.sim));
+    static assert(!isManifestAssignable!int);
 }
 
 /**
@@ -661,7 +678,7 @@ unittest {
 /**
     Checks if an alias is a literal of some type
 */
-template isLiteralOf(ab...) {
+template isLiteralOf(ab...) if (ab.length == 2) {
     enum isLiteralOf = !is(typeof(&ab[0]))
         && is(typeof(ab[0]))
         && is(typeof(ab[0]) == ab[1]);
@@ -683,9 +700,7 @@ unittest {
 /**
     Checks if an alias is a literal
 */
-enum isLiteral(alias a) = !is(typeof(&a));
-/// Ditto
-enum isLiteral(T) = false;
+enum isLiteral(T...) = __traits(compiles, { enum x = T[0]; } );
 
 ///
 unittest {
@@ -735,4 +750,43 @@ unittest {
     static assert( isCopyConstructable!SDefaultContainer);
     static assert( isCopyConstructable!SCopyContainer);
     static assert(!isCopyConstructable!SBlitContainer);
+}
+
+/**
+    Checks to see if a type has a non-trivial copy constructor
+
+    This does not check for postblits
+*/
+template hasNonTrivialCopyConstructor(T...) if (T.length == 1) {
+    alias U = from.bolts.meta.TypesOf!T[0];
+    enum hasNonTrivialCopyConstructor
+        = isCopyConstructable!U
+        && from.std.traits.hasMember!(U, "__ctor");
+}
+
+///
+unittest {
+    static struct SDefault {}
+    static struct SCopy {
+        this(ref inout SCopy) inout {}
+    }
+    static struct SBlit {
+        this(this) {}
+    }
+    static struct SDefaultContainer {
+        SDefault copy;
+    }
+    static struct SCopyContainer {
+        SCopy copy;
+    }
+    static struct SBlitContainer {
+        SBlit copy;
+    }
+
+    static assert(!hasNonTrivialCopyConstructor!SDefault);
+    static assert( hasNonTrivialCopyConstructor!SCopy);
+    static assert(!hasNonTrivialCopyConstructor!SBlit);
+    static assert(!hasNonTrivialCopyConstructor!SDefaultContainer);
+    static assert( hasNonTrivialCopyConstructor!SCopyContainer);
+    static assert(!hasNonTrivialCopyConstructor!SBlitContainer);
 }

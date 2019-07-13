@@ -137,6 +137,26 @@ $(TR
     $(TD Checks if a compile time entity is a value type)
     )
 $(TR
+    $(TD)
+    $(TD $(DDOX_NAMED_REF bolts.traits.isLiteralOf, `isLiteralOf`))
+    $(TD Checks if a compile time entity is a litera of a specific type)
+    )
+$(TR
+    $(TD)
+    $(TD $(DDOX_NAMED_REF bolts.traits.isLiteral, `isLiteral`))
+    $(TD Checks if a compile time entity is a literal)
+    )
+$(TR
+    $(TD)
+    $(TD $(DDOX_NAMED_REF bolts.traits.isCopyConstructable, `isCopyConstructable`))
+    $(TD Checks if a compile time entity is copy constructable)
+    )
+$(TR
+    $(TD)
+    $(TD $(DDOX_NAMED_REF bolts.traits.hasNonTrivialCopyConstructor, `hasNonTrivialCopyConstructor`))
+    $(TD Checks if a compile time has a non-trivial (i.e. user defined) copy constructor)
+    )
+$(TR
     $(TD `bolts.range`)
     $(TD $(DDOX_NAMED_REF bolts.range.isSortedRange, `isSortedRange`))
     $(TD Tells you if a range is sorted)
