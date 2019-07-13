@@ -697,3 +697,42 @@ unittest {
     assert(!isLiteral!a);
     assert(!isLiteral!f);
 }
+
+/**
+    Checks to see if a type is copy constructable.
+
+    Returns false if there'a user defined postblit.
+*/
+template isCopyConstructable(T...) if (T.length == 1) {
+    alias U = from.bolts.meta.TypesOf!T[0];
+    enum isCopyConstructable
+        = __traits(compiles, { auto r = U.init; U copy = r; })
+        && !from.std.hasMember!(U, "__xpostblit");
+}
+
+///
+unittest {
+    static struct SDefault {}
+    static struct SCopy {
+        this(ref inout SCopy) inout {}
+    }
+    static struct SBlit {
+        this(this) {}
+    }
+    static struct SDefaultContainer {
+        SDefault copy;
+    }
+    static struct SCopyContainer {
+        SCopy copy;
+    }
+    static struct SBlitContainer {
+        SBlit copy;
+    }
+
+    static assert( isCopyConstructable!SDefault);
+    static assert( isCopyConstructable!SCopy);
+    static assert(!isCopyConstructable!SBlit);
+    static assert( isCopyConstructable!SDefaultContainer);
+    static assert( isCopyConstructable!SCopyContainer);
+    static assert(!isCopyConstructable!SBlitContainer);
+}

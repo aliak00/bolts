@@ -107,6 +107,8 @@ template iz(Aliases...) if (Aliases.length == 1) {
     /// See: `bolts.traits.isLiteral`
     enum literal = from.bolts.traits.isLiteral!(Aliases[0]);
 
+    /// See: `bolts.traits.isCopyConstructable`
+    enum copyConstructable = from.bolts.traits.isCopyConstructable!ResolvedType;
 }
 
 ///
@@ -148,13 +150,18 @@ unittest {
     static assert( iz!((a, b, c, d) => a).functionOver!(int, int, int, int));
 
     // Is this thing a value or reference type?
-    struct S {}
-    class C {}
-    static assert( iz!S.valueType);
-    static assert(!iz!C.valueType);
-    static assert(!iz!S.refType);
-    static assert( iz!C.refType);
+    struct S1 {}
+    class C1 {}
+    static assert( iz!S1.valueType);
+    static assert(!iz!C1.valueType);
+    static assert(!iz!S1.refType);
+    static assert( iz!C1.refType);
 
     static assert( iz!"hello".literalOf!string);
     static assert(!iz!3.literalOf!string);
+
+    // Is this thing copy constructable?
+    static assert( iz!int.copyConstructable);
+    struct S { @disable this(ref S); }
+    static assert(!iz!S.copyConstructable);
 }
