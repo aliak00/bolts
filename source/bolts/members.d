@@ -130,21 +130,22 @@ unittest {
 
 */
 template member(T, string name) {
+    static if (from.std.traits.isPointer!T) {
+        alias ResolvedType = from.std.traits.PointerTarget!T;
+    } else {
+        alias ResolvedType = T;
+    }
+
     /**
         True if the member field exists
     */
-    enum exists = __traits(hasMember, T, name);
+    enum exists = __traits(hasMember, ResolvedType, name);
 
     /**
         Aliases to the member if it exists
     */
     static if (exists) {
-        static if (from.std.traits.isPointer!T) {
-            alias U = from.std.traits.PointerTarget!T;
-        } else {
-            alias U = T;
-        }
-        alias self = __traits(getMember, U, name);
+        alias self = __traits(getMember, ResolvedType, name);
     } else {
         template self() {
             static assert(
@@ -165,15 +166,19 @@ template member(T, string name) {
         See: `bolts.traits.hasProperty`
     */
     static if (exists) {
-        enum isProperty = from.bolts.traits.hasProperty!(T, name);
+        enum isProperty = from.bolts.traits.hasProperty!(ResolvedType, name);
     } else {
         enum isProperty = false;
+    }
+
+    static if (exists && isProperty) {
+        enum propertySemantics = from.bolts.traits.propertySemantics!self;
     }
 }
 
 ///
 unittest {
-    import bolts.traits: ProtectionLevel;
+    import bolts.traits: ProtectionLevel, PropertySemantics;
     struct S {
         public int publicI;
         protected int protectedI;
@@ -185,7 +190,11 @@ unittest {
     static assert(member!(S, "protectedI").protection == ProtectionLevel.protected_);
     static assert(member!(S, "readPropI").protection == ProtectionLevel.private_);
 
-    // Check if any are propertiesstatic assert(!member!(T, "na").isProperty);
+    // Check if any are properties
+    static assert(!member!(S, "na").isProperty);
     static assert(!member!(S, "publicI").isProperty);
     static assert( member!(S, "readPropI").isProperty);
+
+    // Check their semantics
+    static assert(member!(S, "readPropI").propertySemantics == PropertySemantics.r);
 }

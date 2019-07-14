@@ -88,13 +88,18 @@ $(TR
     )
 $(TR
     $(TD)
+    $(TD $(DDOX_NAMED_REF bolts.traits.isProperty, `isProperty`))
+    $(TD Tells you if a symbol is an @property)
+    )
+$(TR
+    $(TD)
     $(TD $(DDOX_NAMED_REF bolts.traits.hasProperty, `hasProperty`))
     $(TD Tells you if a name is a member and property in a type)
     )
 $(TR
     $(TD)
     $(TD $(DDOX_NAMED_REF bolts.traits.propertySemantics, `propertySemantics`))
-    $(TD Tells you if a property has read and/or write semantics)
+    $(TD Tells you if a property symbol has read and/or write semantics)
     )
 $(TR
     $(TD)

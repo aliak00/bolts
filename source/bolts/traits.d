@@ -242,24 +242,51 @@ unittest {
 }
 
 /**
+    Tells you if a symbol is an @property
+*/
+template isProperty(alias sym) {
+    import std.traits: isFunction;
+    import std.algorithm: canFind;
+    static if (isFunction!sym) {
+        enum isProperty = [__traits(getFunctionAttributes, sym)].canFind("@property");
+    } else {
+        enum isProperty = false;
+    }
+}
+
+///
+unittest {
+    int i;
+    @property void f() {}
+
+    struct S {
+        int i;
+        @property void f(int i) {}
+    }
+
+    static assert(!isProperty!(i));
+    static assert( isProperty!(f));
+    static assert(!isProperty!(S.i));
+    static assert( isProperty!(S.f));
+}
+
+/**
     Tells you if a name is a member and property in a type
 */
 template hasProperty(T, string name) {
-    auto impl(U)() {
-        import std.traits: hasMember;
-        static if (hasMember!(U, name)) {
-            return !is(typeof(__traits(getMember, U, name)) == function)
-                && __traits(getOverloads, U, name).length;
-        } else {
-            return false;
-        }
+    import std.meta: anySatisfy;
+    import std.traits: isPointer, PointerTarget, hasMember, isFunction;
+
+    static if(isPointer!T) {
+        alias U = PointerTarget!T;
+    } else {
+        alias U = T;
     }
 
-    import std.traits: isPointer, PointerTarget;
-    static if(isPointer!T) {
-        enum hasProperty = impl!(PointerTarget!T);
+    static if (hasMember!(U, name) && isFunction!(__traits(getMember, U, name))) {
+        enum hasProperty = anySatisfy!(isProperty, __traits(getOverloads, U, name));
     } else {
-        enum hasProperty = impl!T;
+        enum hasProperty = false;
     }
 }
 
@@ -315,41 +342,58 @@ enum PropertySemantics {
 }
 
 /**
-    Tells you if a name is a read and/or write property
+    Tells you what property semantics a symbol has
 
     Returns:
-        `Tuple!(bool, "isRead", bool, "isWrite")`
+        The `PropertySemantics` of the symbol
 */
-template propertySemantics(T, string name) if (hasProperty!(T, name)) {
-    auto impl(U)() {
-        enum overloads = __traits(getOverloads, U, name).length;
-        enum canInstantiateAsField = is(typeof(mixin("U.init." ~ name)));
-        static if (overloads > 1 || canInstantiateAsField)
-            enum canRead = true;
-        else
-            enum canRead = false;
-        static if (overloads > 1 || !canInstantiateAsField)
-            enum canWrite = true;
-        else
-            enum canWrite = false;
-        static if (canWrite && canRead) {
-            return PropertySemantics.rw;
-        } else static if (canWrite) {
-            return PropertySemantics.w;
-        } else {
-            return PropertySemantics.r;
-        }
+template propertySemantics(alias sym) if (isProperty!sym) {
+    import std.array: split;
+    import std.meta: anySatisfy;
+    import std.traits: fullyQualifiedName, Parameters;
+
+    private string lastPart(string str) {
+        return str.split(".")[$ - 1];
     }
-    import std.traits: isPointer, PointerTarget;
-    static if(isPointer!T) {
-        enum propertySemantics = impl!(PointerTarget!T);
+
+    private static immutable name = fullyQualifiedName!sym.lastPart;
+
+    static if (is(__traits(parent, sym) T)) {
+        // Parent is a type, i.e. not a module
+        private alias overloads = __traits(getOverloads, T, name);
     } else {
-        enum propertySemantics = impl!T;
+        // Parent is a module
+        private alias overloads = __traits(getOverloads, __traits(parent, sym), name);
     }
+
+    private enum isRead(alias s) = Parameters!s.length == 0;
+    private enum isWrite(alias s) = Parameters!s.length > 0;
+
+    private enum canRead = anySatisfy!(isRead, overloads);
+    private enum canWrite = anySatisfy!(isWrite, overloads);
+
+    static if (canWrite && canRead) {
+        enum propertySemantics = PropertySemantics.rw;
+    } else static if (canWrite) {
+        enum propertySemantics = PropertySemantics.w;
+    } else {
+        enum propertySemantics = PropertySemantics.r;
+    }
+}
+
+version (unittest) {
+    private @property int localRead() {return 9;}
+    private @property void localWrite(int i, int g) {}
+    private @property int localReadWrite() {return 9;}
+    private @property void localReadWrite(int i) {}
 }
 
 ///
 unittest {
+    static assert(propertySemantics!localRead == PropertySemantics.r);
+    static assert(propertySemantics!localWrite == PropertySemantics.w);
+    static assert(propertySemantics!localReadWrite == PropertySemantics.rw);
+
     struct S {
         int m;
         @property int rp() { return m; }
@@ -358,27 +402,11 @@ unittest {
         @property void rwp(int) {}
     }
 
-    static assert(!__traits(compiles, propertySemantics!(S, "na")));
-    static assert(!__traits(compiles, propertySemantics!(S, "m")));
-    static assert(propertySemantics!(S, "rp") == PropertySemantics.r);
-    static assert(propertySemantics!(S, "wp") == PropertySemantics.w);
-    static assert(propertySemantics!(S, "rwp") == PropertySemantics.rw);
-}
-
-unittest {
-    struct S {
-        int m;
-        @property int rp() { return m; }
-        @property void wp(int) {}
-        @property int rwp() { return m; }
-        @property void rwp(int) {}
-    }
-
-    static assert(!__traits(compiles, propertySemantics!(S*, "na")));
-    static assert(!__traits(compiles, propertySemantics!(S*, "m")));
-    static assert(propertySemantics!(S*, "rp") == PropertySemantics.r);
-    static assert(propertySemantics!(S*, "wp") == PropertySemantics.w);
-    static assert(propertySemantics!(S*, "rwp") == PropertySemantics.rw);
+    static assert(!__traits(compiles, propertySemantics!(S.na)));
+    static assert(!__traits(compiles, propertySemantics!(S.m)));
+    static assert(propertySemantics!(S.rp) == PropertySemantics.r);
+    static assert(propertySemantics!(S.wp) == PropertySemantics.w);
+    static assert(propertySemantics!(S.rwp) == PropertySemantics.rw);
 }
 
 /**
