@@ -98,6 +98,11 @@ $(TR
     )
 $(TR
     $(TD)
+    $(TD $(DDOX_NAMED_REF bolts.traits.protectionLevel, `protectionLevel`))
+    $(TD Returns the protection level for a symbol)
+    )
+$(TR
+    $(TD)
     $(TD $(DDOX_NAMED_REF bolts.traits.isManifestAssignable, `isManifestAssignable`))
     $(TD If a member of a type can be assigned to a manifest constant)
     )
@@ -154,7 +159,12 @@ $(TR
 $(TR
     $(TD)
     $(TD $(DDOX_NAMED_REF bolts.traits.hasNonTrivialCopyConstructor, `hasNonTrivialCopyConstructor`))
-    $(TD Checks if a compile time has a non-trivial (i.e. user defined) copy constructor)
+    $(TD Checks if a compile timeentity has a non-trivial (i.e. user defined) copy constructor)
+    )
+$(TR
+    $(TD)
+    $(TD $(DDOX_NAMED_REF bolts.traits.isTriviallyCopyConstructable, `isTriviallyCopyConstructable`))
+    $(TD Checks if a compile time entity is trivially copy constructable)
     )
 $(TR
     $(TD `bolts.range`)
@@ -170,11 +180,6 @@ $(TR
     $(TD)
     $(TD $(DDOX_NAMED_REF bolts.range.CommonTypeOfRanges, `CommonTypeOfRanges`))
     $(TD Finds the common type from a list of ranges)
-    )
-$(TR
-    $(TD `bolts.aa`)
-    $(TD $(DDOX_NAMED_REF bolts.aa.isKey, `isKey`))
-    $(TD Traits for a type of key used in an associative array)
     )
 $(TR
     $(TD `bolts.iz`)

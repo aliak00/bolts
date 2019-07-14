@@ -9,9 +9,9 @@ import bolts.internal;
     `Iz` is a helper template that allows you to inspect a type or an alias.
 
     It takes a single element as an argument. The reason the template parameters is
-    types as a variable arg sequence is becure if D does not allow to say "I want either
-    a type or alias over here, I don't care, I'll figure it out". But it does allow it
-    when you use a $(I template sequence parameter)
+    types as a variable arg sequence is becure if D does not allow (pre version 2.087)
+    to say "I want either a type or alias over here, I don't care, I'll figure it out".
+    But it does allow it when you use a $(I template sequence parameter)
 
     $(TABLE
     $(TR $(TH method) $(TH Description))
@@ -67,6 +67,10 @@ import bolts.internal;
         $(TD $(DDOX_NAMED_REF bolts.iz.iz.nonTriviallyCopyConstructable, `nonTriviallyCopyConstructable`))
         $(TD True if resolved type has a non-trivial copy constructor)
         )
+    $(TR
+        $(TD $(DDOX_NAMED_REF bolts.iz.iz.triviallyCopyConstructable, `triviallyCopyConstructable`))
+        $(TD True if resolved is trivially copy constructable)
+        )
     )
 
     See_also:
@@ -120,6 +124,9 @@ template iz(Aliases...) if (Aliases.length == 1) {
 
     /// See: `bolts.traits.hasNonTrivialCopyConstructor`
     enum nonTriviallyCopyConstructable = from.bolts.traits.hasNonTrivialCopyConstructor!ResolvedType;
+
+    /// See: `bolts.traits.isTriviallyCopyConstructable`
+    enum triviallyCopyConstructable = from.bolts.traits.isTriviallyCopyConstructable!ResolvedType;
 }
 
 ///
@@ -172,12 +179,14 @@ unittest {
     static assert(!iz!3.literalOf!string);
 
     // Is this thing copy constructable?
-    static assert( iz!int.copyConstructable);
     static struct SDisabledCopyConstructor { @disable this(ref typeof(this)); }
     static assert(!iz!SDisabledCopyConstructor.copyConstructable);
+    static assert( iz!int.copyConstructable);
 
     // Does this thing define a custom copy constructor (i.e. non-trivial copy constructor)
     static struct SCopyConstructor { this(ref typeof(this)) {} }
     static assert( iz!SCopyConstructor.nonTriviallyCopyConstructable);
+    static assert(!iz!SCopyConstructor.triviallyCopyConstructable);
     static assert(!iz!int.nonTriviallyCopyConstructable);
+    static assert( iz!int.triviallyCopyConstructable);
 }

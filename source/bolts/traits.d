@@ -382,6 +382,51 @@ unittest {
 }
 
 /**
+    Lists the various protection levels that can be applied on types
+*/
+enum ProtectionLevel : string {
+    public_ = "public",
+    protected_ = "protected",
+    private_ = "private",
+}
+
+/**
+    Check if the access level of any symbol
+
+    Params:
+        level = protection level (public/protected/private)
+*/
+template protectionLevel(T...) if (T.length == 1) {
+    enum protectionLevel = cast(ProtectionLevel)__traits(getProtection, T[0]);
+}
+
+version (unittest) {
+    protected immutable int protectedImmutableInt = 7;
+}
+
+///
+unittest {
+    import std.meta: AliasSeq;
+
+    static assert(protectionLevel!protectedImmutableInt == ProtectionLevel.protected_);
+
+    struct S {
+        int i;
+        public int m0;
+        protected int m1;
+        private int m2;
+    }
+
+    static assert(protectionLevel!(S.i) == ProtectionLevel.public_);
+    static assert(protectionLevel!(S.m0) == ProtectionLevel.public_);
+    static assert(protectionLevel!(S.m0) != ProtectionLevel.protected_);
+    static assert(protectionLevel!(S.m1) == ProtectionLevel.protected_);
+    static assert(protectionLevel!(S.m1) != ProtectionLevel.public_);
+    static assert(protectionLevel!(S.m2) == ProtectionLevel.private_);
+    static assert(protectionLevel!(S.m2) != ProtectionLevel.public_);
+}
+
+/**
     Returns true if the argument is a manifest constant, built-in type field, or immutable static
 */
 template isManifestAssignable(x...) if (x.length == 1) {
@@ -711,9 +756,9 @@ unittest {
 }
 
 /**
-    Checks to see if a type is copy constructable.
+    Checks to see if a type is copy constructable - postblit doesn't count.
 
-    Returns false if there'a user defined postblit.
+    Returns false if there's a user defined postblit.
 */
 template isCopyConstructable(T...) if (T.length == 1) {
     alias U = from.bolts.meta.TypesOf!T[0];
@@ -724,29 +769,14 @@ template isCopyConstructable(T...) if (T.length == 1) {
 
 ///
 unittest {
-    static struct SDefault {}
-    static struct SCopy {
-        this(ref inout SCopy) inout {}
-    }
-    static struct SBlit {
-        this(this) {}
-    }
-    static struct SDefaultContainer {
-        SDefault copy;
-    }
-    static struct SCopyContainer {
-        SCopy copy;
-    }
-    static struct SBlitContainer {
-        SBlit copy;
-    }
+    mixin copyConstructableKinds;
 
-    static assert( isCopyConstructable!SDefault);
-    static assert( isCopyConstructable!SCopy);
-    static assert(!isCopyConstructable!SBlit);
-    static assert( isCopyConstructable!SDefaultContainer);
-    static assert( isCopyConstructable!SCopyContainer);
-    static assert(!isCopyConstructable!SBlitContainer);
+    static assert( isCopyConstructable!KindPOD);
+    static assert( isCopyConstructable!KindHasCopyContrustor);
+    static assert(!isCopyConstructable!KindHasPostBlit);
+    static assert( isCopyConstructable!KindContainsPOD);
+    static assert( isCopyConstructable!KindContainsTypeWithNonTrivialCopyConstructor);
+    static assert(!isCopyConstructable!KindContainsTypeWithPostBlit);
 }
 
 /**
@@ -763,27 +793,34 @@ template hasNonTrivialCopyConstructor(T...) if (T.length == 1) {
 
 ///
 unittest {
-    static struct SDefault {}
-    static struct SCopy {
-        this(ref inout SCopy) inout {}
-    }
-    static struct SBlit {
-        this(this) {}
-    }
-    static struct SDefaultContainer {
-        SDefault copy;
-    }
-    static struct SCopyContainer {
-        SCopy copy;
-    }
-    static struct SBlitContainer {
-        SBlit copy;
-    }
+    mixin copyConstructableKinds;
 
-    static assert(!hasNonTrivialCopyConstructor!SDefault);
-    static assert( hasNonTrivialCopyConstructor!SCopy);
-    static assert(!hasNonTrivialCopyConstructor!SBlit);
-    static assert(!hasNonTrivialCopyConstructor!SDefaultContainer);
-    static assert( hasNonTrivialCopyConstructor!SCopyContainer);
-    static assert(!hasNonTrivialCopyConstructor!SBlitContainer);
+    static assert(!hasNonTrivialCopyConstructor!KindPOD);
+    static assert( hasNonTrivialCopyConstructor!KindHasCopyContrustor);
+    static assert(!hasNonTrivialCopyConstructor!KindHasPostBlit);
+    static assert(!hasNonTrivialCopyConstructor!KindContainsPOD);
+    static assert( hasNonTrivialCopyConstructor!KindContainsTypeWithNonTrivialCopyConstructor);
+    static assert(!hasNonTrivialCopyConstructor!KindContainsTypeWithPostBlit);
+}
+
+/**
+    Checks if a type is trivially constructable, that is no user-defined copy constructor exists - postblit doesn't count.
+*/
+template isTriviallyCopyConstructable(T...) if (T.length == 1) {
+    alias U = from.bolts.meta.TypesOf!T[0];
+    enum isTriviallyCopyConstructable
+        = isCopyConstructable!U
+        && __traits(isPOD, U);
+}
+
+///
+unittest {
+    mixin copyConstructableKinds;
+
+    static assert( isTriviallyCopyConstructable!KindPOD);
+    static assert(!isTriviallyCopyConstructable!KindHasCopyContrustor);
+    static assert(!isTriviallyCopyConstructable!KindHasPostBlit);
+    static assert( isTriviallyCopyConstructable!KindContainsPOD);
+    static assert(!isTriviallyCopyConstructable!KindContainsTypeWithNonTrivialCopyConstructor);
+    static assert(!isTriviallyCopyConstructable!KindContainsTypeWithPostBlit);
 }

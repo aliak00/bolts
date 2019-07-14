@@ -121,8 +121,8 @@ unittest {
     Available member traits:
         $(LI `exists`)
         $(LI `self`)
-        $(LI `hasProtection(string protectionLevel)`)
         $(LI `isProperty`)
+        $(LI `protection`)
 
     Params:
         T = type to check
@@ -155,17 +155,10 @@ template member(T, string name) {
     }
 
     /**
-        Check if the member has the required access level
-
-        Params:
-            level = protection level (public/protected/private)
+        See: `bolts.traits.protectionLevel`
     */
-    template hasProtection(string level) {
-        static if (exists) {
-            enum hasProtection = __traits(getProtection, self) == level;
-        } else {
-            enum hasProtection = false;
-        }
+    static if (exists) {
+        enum protection = from.bolts.traits.protectionLevel!self;
     }
 
     /**
@@ -180,39 +173,19 @@ template member(T, string name) {
 
 ///
 unittest {
-    import std.meta: AliasSeq;
-
-    struct SProtection {
-        int i;
-        public int m0;
-        protected int m1;
-        private int m2;
+    import bolts.traits: ProtectionLevel;
+    struct S {
+        public int publicI;
+        protected int protectedI;
+        private @property int readPropI() { return protectedI; }
     }
 
-    static foreach (T; AliasSeq!(SProtection, SProtection*)) {
-        static assert( member!(T, "i").hasProtection!"public");
-        static assert( member!(T, "m0").hasProtection!"public");
-        static assert(!member!(T, "m0").hasProtection!"protected");
-        static assert( member!(T, "m1").hasProtection!"protected");
-        static assert(!member!(T, "m1").hasProtection!"public");
-        static assert( member!(T, "m2").hasProtection!"private");
-        static assert(!member!(T, "m2").hasProtection!"public");
-        static assert(!member!(T, "na").hasProtection!"public");
-    }
+    // Check the protection level of various members
+    static assert(member!(S, "publicI").protection == ProtectionLevel.public_);
+    static assert(member!(S, "protectedI").protection == ProtectionLevel.protected_);
+    static assert(member!(S, "readPropI").protection == ProtectionLevel.private_);
 
-    import bolts.traits: PropertySemantics;
-    struct SProperties {
-        int m;
-        @property int rp() { return m; }
-        @property void wp(int) {}
-        @property int rwp() { return m; }
-        @property void rwp(int) {}
-    }
-    static foreach (T; AliasSeq!(SProperties, SProperties*)) {
-        static assert(!member!(T, "na").isProperty);
-        static assert(!member!(T, "m").isProperty);
-        static assert( member!(T, "rp").isProperty);
-        static assert( member!(T, "wp").isProperty);
-        static assert( member!(T, "rwp").isProperty);
-    }
+    // Check if any are propertiesstatic assert(!member!(T, "na").isProperty);
+    static assert(!member!(S, "publicI").isProperty);
+    static assert( member!(S, "readPropI").isProperty);
 }

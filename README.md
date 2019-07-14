@@ -11,9 +11,9 @@ Bolts is a utility library for the D programming language which contains a numbe
 * **meta**: has functions that result in compile time entity transofrmations, including:
     * `TypesOf`, `Flatten`, `AliasPack`, `staticZip`
 * **traits**: has general utitlites that can query compile time entities. including:
-    * `isFunctionOver`, `isUnaryOver`, `isBinaryOver`, `hasProperty`, `propertySemantics`, `areCombinable`, `isManifestAssignable`, `isOf`, `isSame`, `isNullType`, `isNullable`, `StringOf`, `isRefType`, `isValueType`, `isLiteralOf`, `isLiteral`, `isCopyConstructable`, `hasNonTrivialCopyConstructor`
+    * `isFunctionOver`, `isUnaryOver`, `isBinaryOver`, `hasProperty`, `propertySemantics`, `areCombinable`, `isManifestAssignable`, `isOf`, `isSame`, `isNullType`, `isNullable`, `StringOf`, `isRefType`, `isValueType`, `isLiteralOf`, `isLiteral`, `isCopyConstructable`, `hasNonTrivialCopyConstructor`, `protectionLevel`, `isTriviallyCopyConstructable`
 * **members**: has functions that allow you to query about the members of types
-    * `staticMembers`, `memberFunction`, `member` (not eponymous)
+    * `staticMembers`, `memberFunctions`, `member` (not eponymous)
 * **range**: query ranges
     * `isSortedRange`, `sortingPredicate`, `CommonTypeOfRanges`
 * **aa**: has functions that act on associative arrays
@@ -38,4 +38,18 @@ The `iz` super template. Has a lot of the traits on types encapulated in one pla
 void f(int, float, string) {}
 iz!f.functionOver!(int, float, string);
 iz!f.functionOver!(3, float, "");
+```
+
+## Member super template
+
+The `member` super template, found in the `bolts.members` module is similar to the `iz` template but works on members of types only:
+
+```d
+import bolts.members: member;
+struct S {
+    static void f() {}
+}
+assert(member!(S, "f).exists);
+member!(S, "f").self(); // calls f since self is aliased to the member
+assert(member!(S, "f").protection == ProtectionLevel.public_);
 ```
