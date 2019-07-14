@@ -392,9 +392,6 @@ enum ProtectionLevel : string {
 
 /**
     Check if the access level of any symbol
-
-    Params:
-        level = protection level (public/protected/private)
 */
 template protectionLevel(T...) if (T.length == 1) {
     enum protectionLevel = cast(ProtectionLevel)__traits(getProtection, T[0]);
