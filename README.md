@@ -9,11 +9,11 @@ Bolts is a utility library for the D programming language which contains a numbe
 ## Modules:
 
 * **meta**: has functions that result in compile time entity transofrmations, including:
-    * `TypesOf`, `Flatten`, `AliasPack`, `staticZip`
+    * `TypesOf`, `Flatten`, `AliasPack`, `staticZip`, `FilterMembersOf`
 * **traits**: has general utitlites that can query compile time entities. including:
-    * `isFunctionOver`, `isUnaryOver`, `isBinaryOver`, `isProperty`, `hasProperty`, `propertySemantics`, `areCombinable`, `isManifestAssignable`, `isOf`, `isSame`, `isNullType`, `isNullable`, `StringOf`, `isRefType`, `isValueType`, `isLiteralOf`, `isLiteral`, `isCopyConstructable`, `hasNonTrivialCopyConstructor`, `protectionLevel`, `isTriviallyCopyConstructable`
+    * `isFunctionOver`, `isUnaryOver`, `isBinaryOver`, `isProperty`, `hasProperty`, `propertySemantics`, `areCombinable`, `isManifestAssignable`, `isOf`, `isSame`, `isNullType`, `isNullable`, `StringOf`, `isRefType`, `isValueType`, `isLiteralOf`, `isLiteral`, `isCopyConstructable`, `hasNonTrivialCopyConstructor`, `protectionLevel`, `isTriviallyCopyConstructable`, `hasFunctionMember`
 * **members**: has functions that allow you to query about the members of types
-    * `staticMembers`, `memberFunctions`, `member` (not eponymous)
+    * `staticMembersOf`, `memberFunctionsOf`, `member` (not eponymous)
 * **range**: query ranges
     * `isSortedRange`, `sortingPredicate`, `CommonTypeOfRanges`
 * **aa**: has functions that act on associative arrays
@@ -52,4 +52,5 @@ struct S {
 assert(member!(S, "f).exists);
 member!(S, "f").self(); // calls f since self is aliased to the member
 assert(member!(S, "f").protection == ProtectionLevel.public_);
+assert(!member!(S, "f").isProperty);
 ```

@@ -275,16 +275,12 @@ unittest {
 */
 template hasProperty(T, string name) {
     import std.meta: anySatisfy;
-    import std.traits: isPointer, PointerTarget, hasMember, isFunction;
+    import std.traits: hasMember, isFunction;
 
-    static if(isPointer!T) {
-        alias U = PointerTarget!T;
-    } else {
-        alias U = T;
-    }
+    alias ResolvedType = ResolvePointer!T;
 
-    static if (hasMember!(U, name) && isFunction!(__traits(getMember, U, name))) {
-        enum hasProperty = anySatisfy!(isProperty, __traits(getOverloads, U, name));
+    static if (hasMember!(ResolvedType, name) && isFunction!(__traits(getMember, ResolvedType, name))) {
+        enum hasProperty = anySatisfy!(isProperty, __traits(getOverloads, ResolvedType, name));
     } else {
         enum hasProperty = false;
     }
@@ -455,7 +451,7 @@ unittest {
     Returns true if the argument is a manifest constant, built-in type field, or immutable static
 */
 template isManifestAssignable(x...) if (x.length == 1) {
-    enum isManifestAssignable = __traits(compiles, { enum y = x; } );
+    enum isManifestAssignable = __traits(compiles, { enum y = x[0]; } );
 }
 
 ///
@@ -848,4 +844,34 @@ unittest {
     static assert( isTriviallyCopyConstructable!KindContainsPOD);
     static assert(!isTriviallyCopyConstructable!KindContainsTypeWithNonTrivialCopyConstructor);
     static assert(!isTriviallyCopyConstructable!KindContainsTypeWithPostBlit);
+}
+
+/**
+    Returns true if a type has a function member
+*/
+template hasFunctionMember(T, string name) {
+    import std.traits: hasMember;
+    static if (hasMember!(T, name)) {
+        import std.traits: isFunction;
+        enum hasFunctionMember = isFunction!(__traits(getMember, T, name));
+    } else {
+        enum hasFunctionMember = false;
+    }
+}
+
+///
+unittest {
+    static struct S {
+        int i;
+        void f0() {}
+        int f1(int, int) { return 0; }
+        static void f2(string) {}
+        static int s;
+    }
+
+    static assert(!hasFunctionMember!(S, "i"));
+    static assert( hasFunctionMember!(S, "f0"));
+    static assert( hasFunctionMember!(S, "f1"));
+    static assert( hasFunctionMember!(S, "f2"));
+    static assert(!hasFunctionMember!(S, "s"));
 }

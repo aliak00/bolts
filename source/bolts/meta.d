@@ -3,6 +3,8 @@
 */
 module bolts.meta;
 
+import bolts.internal;
+
 /**
     Returns the types of all values given.
 
@@ -219,4 +221,31 @@ unittest {
     static assert(d.Unpack[0].equals!(1, 4, 7));
     static assert(d.Unpack[1].equals!(2, 5, 8));
     static assert(d.Unpack[2].equals!(3, 6, 9));
+}
+
+/**
+    Filters all the members of a type based on a provided predicate
+
+    The predicate takes two parameters - the first is the type, the second is
+    the string name of the member being iterated on.
+*/
+template FilterMembersOf(T, alias Fn) {
+    import std.meta: Filter, ApplyLeft;
+    alias ResolvedType = ResolvePointer!T;
+    alias FilterMembersOf = Filter!(ApplyLeft!(Fn, ResolvedType), __traits(allMembers, ResolvedType));
+}
+
+///
+unittest {
+    import std.meta: AliasSeq;
+
+    struct S {
+        int i;
+        float f;
+        int i2;
+        short s;
+    }
+
+    enum hasInt(T, string name) = is(typeof(__traits(getMember, T, name)) == int);
+    static assert(FilterMembersOf!(S, hasInt) == AliasSeq!("i", "i2"));
 }

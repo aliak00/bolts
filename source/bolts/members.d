@@ -5,39 +5,27 @@ module bolts.members;
 
 import bolts.internal;
 
-private template GetMembersAsAliases(T, membersTuple...) {
+private template AliasesOf(T, membersTuple...) {
     import std.meta: Alias, staticMap, ApplyLeft;
     alias getMember(T, string name) = Alias!(__traits(getMember, T, name));
-    alias GetMembers(T, names...) = staticMap!(ApplyLeft!(getMember, T), names);
-    alias GetMembersAsAliases = GetMembers!(T, membersTuple);
+    alias mapMembers(T, names...) = staticMap!(ApplyLeft!(getMember, T), names);
+    alias AliasesOf = mapMembers!(T, membersTuple);
 }
 
-/// Returns a list of member functions of T
-template memberFunctions(T) {
-    import std.meta: aliasSeqOf;
+/**
+    Returns a list of member functions of T
 
-    auto generateArray() {
-        import std.traits: isFunction;
-        string[] strings;
-        foreach (member; __traits(allMembers, T)) {
-            static if (is(typeof(mixin("T." ~ member)) F))
-            {
-                if (isFunction!F) {
-                    strings ~= member;
-                }
-            }
-        }
-        return strings;
-    }
-
-    /// Get as array of immutable strings
-    immutable array = generateArray;
+    You can retireve them as a tuple of aliases, or strings
+*/
+template memberFunctionsOf(T) {
+    import bolts.traits: hasFunctionMember;
+    import bolts.meta: FilterMembersOf;
 
     /// Get as tuple of strings
-    alias tuple = aliasSeqOf!(memberFunctions!T.array);
+    alias asStrings = FilterMembersOf!(T, hasFunctionMember);
 
     /// Get as a tuple of aliases
-    alias aliases = GetMembersAsAliases!(T, memberFunctions!T.tuple);
+    alias asAliases = AliasesOf!(T, memberFunctionsOf!T.asStrings);
 }
 
 ///
@@ -56,38 +44,35 @@ unittest {
         void f1() {}
     }
 
-    alias array = memberFunctions!B.array;
-    alias tuple = memberFunctions!B.tuple;
-    alias aliases = memberFunctions!B.aliases;
+    immutable array = [memberFunctionsOf!B.asStrings];
+    alias strings = memberFunctionsOf!B.asStrings;
+    alias aliases = memberFunctionsOf!B.asAliases;
 
     static assert(array == ["f0", "f1"]);
-    static assert(tuple == AliasSeq!("f0", "f1"));
+    static assert(strings == AliasSeq!("f0", "f1"));
 
     static assert(is(typeof(array) == immutable string[]));
-    static assert(is(typeof(tuple) == AliasSeq!(immutable string, immutable string)));
+    static assert(is(typeof(strings) == AliasSeq!(string, string)));
     static assert(is(typeof(aliases) == AliasSeq!(typeof(B.f0), typeof(B.f1))));
 }
 
 /**
     Returns a list of all the static members of a type
 
+    You can retireve them as a sequence of aliases, or strings.
+
     See_Also:
      - https://forum.dlang.org/post/duvxnpwnuphuxlrkjplh@forum.dlang.org
 */
-template staticMembers(T) {
-    import std.meta: Filter, AliasSeq, ApplyLeft;
+template staticMembersOf(T) {
     import std.traits: hasStaticMember;
-
-    alias FilterMembers(U, alias Fn) = Filter!(ApplyLeft!(Fn, U), __traits(allMembers, U));
-
-    /// Get as array of immutable strings
-    immutable array = [AliasSeq!(staticMembers!T.tuple)];
+    import bolts.meta: FilterMembersOf;
 
     /// Get as tuple of strings
-    alias tuple = FilterMembers!(T, hasStaticMember);
+    alias asStrings = FilterMembersOf!(T, hasStaticMember);
 
     /// Get as a tuple of aliases
-    alias aliases = GetMembersAsAliases!(T, staticMembers!T.tuple);
+    alias asAliases = AliasesOf!(T, staticMembersOf!T.asStrings);
 }
 
 ///
@@ -103,15 +88,15 @@ unittest {
         int i = 3;
     }
 
-    alias array = staticMembers!S.array;
-    alias tuple = staticMembers!S.tuple;
-    alias aliases = staticMembers!S.aliases;
+    immutable array = [staticMembersOf!S.asStrings];
+    alias strings = staticMembersOf!S.asStrings;
+    alias aliases = staticMembersOf!S.asAliases;
 
     static assert(array == ["s0", "s1", "s2"]);
-    static assert(tuple == AliasSeq!("s0", "s1", "s2"));
+    static assert(strings == AliasSeq!("s0", "s1", "s2"));
 
     static assert(is(typeof(array) == immutable string[]));
-    static assert(is(typeof(tuple) == AliasSeq!(string, string, string)));
+    static assert(is(typeof(strings) == AliasSeq!(string, string, string)));
     static assert(is(typeof(aliases) == AliasSeq!(typeof(S.s0), typeof(S.s1), typeof(S.s2))));
 }
 
@@ -125,16 +110,14 @@ unittest {
         $(LI `protection`)
 
     Params:
-        T = type to check
-        name = name of field in type
+        Params[0] = type or alias to instance of a type
+        Params[1] = name of member
 
 */
-template member(T, string name) {
-    static if (from.std.traits.isPointer!T) {
-        alias ResolvedType = from.std.traits.PointerTarget!T;
-    } else {
-        alias ResolvedType = T;
-    }
+template member(Params...) if (Params.length == 2) {
+    private enum name = Params[1];
+    private alias T = bolts.meta.TypesOf!Params[0];
+    private alias ResolvedType = ResolvePointer!T;
 
     /**
         True if the member field exists
@@ -171,6 +154,9 @@ template member(T, string name) {
         enum isProperty = false;
     }
 
+    /**
+        See `bolts.traits.propertySemantics`
+    */
     static if (exists && isProperty) {
         enum propertySemantics = from.bolts.traits.propertySemantics!self;
     }
@@ -179,7 +165,7 @@ template member(T, string name) {
 ///
 unittest {
     import bolts.traits: ProtectionLevel, PropertySemantics;
-    struct S {
+    static struct S {
         public int publicI;
         protected int protectedI;
         private @property int readPropI() { return protectedI; }

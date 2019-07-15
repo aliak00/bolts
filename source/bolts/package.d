@@ -22,6 +22,22 @@
     iz!f.unaryOver!(3, float, "");
     ---
 
+    Member_Super_Template:
+
+    The $(DDOX_NAMED_REF bolts.members.member, `member`) super template, found in the `bolts.members` module is similar to
+    the $(DDOX_NAMED_REF bolts.iz.iz, `iz`) template but works on members of types only:
+
+    ---
+    import bolts.members: member;
+    struct S {
+        static void f() {}
+    }
+    assert(member!(S, "f).exists);
+    member!(S, "f").self(); // calls f since self is aliased to the member
+    assert(member!(S, "f").protection == ProtectionLevel.public_);
+    assert(!member!(S, "f").isProperty);
+    ---
+
 All_the_things:
 
 $(TABLE
@@ -33,17 +49,17 @@ $(TR
     )
 $(TR
     $(TD `bolts.members`)
-    $(TD $(DDOX_NAMED_REF bolts.members.memberFunctions, `memberFunctions`))
+    $(TD $(DDOX_NAMED_REF bolts.members.memberFunctionsOf, `memberFunctionsOf`))
     $(TD Returns a list of all member functions)
     )
 $(TR
     $(TD)
-    $(TD $(DDOX_NAMED_REF bolts.members.staticMembers, `staticMembers`))
+    $(TD $(DDOX_NAMED_REF bolts.members.staticMembersOf, `staticMembersOf`))
     $(TD Returns a list of of all static members)
     )
 $(TR
     $(TD)
-    $(TD $(DDOX_NAMED_REF bolts.members.hasMember, `hasMember`))
+    $(TD $(DDOX_NAMED_REF bolts.members.member, `member`))
     $(TD If a type has a member with certain attributes)
     )
 $(TR
@@ -65,6 +81,11 @@ $(TR
     $(TD)
     $(TD $(DDOX_NAMED_REF bolts.meta.staticZip, `staticZip`))
     $(TD Zip m n-tuple `AliasPack`s together to form n m-tuple AliasPacks)
+    )
+$(TR
+    $(TD)
+    $(TD $(DDOX_NAMED_REF bolts.meta.FilterMembersOf, `FilterMembersOf`))
+    $(TD Filters the members of a type based on a has-predicate)
     )
 $(TR
     $(TD `bolts.traits`)
@@ -170,6 +191,11 @@ $(TR
     $(TD)
     $(TD $(DDOX_NAMED_REF bolts.traits.isTriviallyCopyConstructable, `isTriviallyCopyConstructable`))
     $(TD Checks if a compile time entity is trivially copy constructable)
+    )
+$(TR
+    $(TD)
+    $(TD $(DDOX_NAMED_REF bolts.traits.hasFunctionMember, `hasFunctionMember`))
+    $(TD Checks if a type has a member that is a function)
     )
 $(TR
     $(TD `bolts.range`)

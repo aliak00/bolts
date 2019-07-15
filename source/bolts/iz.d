@@ -65,7 +65,7 @@ import bolts.internal;
         )
     $(TR
         $(TD $(DDOX_NAMED_REF bolts.iz.iz.nonTriviallyCopyConstructable, `nonTriviallyCopyConstructable`))
-        $(TD True if resolved type has a non-trivial copy constructor)
+        $(TD True if resolved type is non-trivially copy constructable)
         )
     $(TR
         $(TD $(DDOX_NAMED_REF bolts.iz.iz.triviallyCopyConstructable, `triviallyCopyConstructable`))

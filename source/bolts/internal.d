@@ -2,6 +2,15 @@ module bolts.internal;
 
 public import bolts.from;
 
+package template ResolvePointer(T) {
+    import std.traits: isPointer, PointerTarget;
+    static if (isPointer!T) {
+        alias ResolvePointer = PointerTarget!T;
+    } else {
+        alias ResolvePointer = T;
+    }
+}
+
 version (unittest) {
     // Just here so can be used in unittests without importing all the time
     package import std.stdio: writeln;
