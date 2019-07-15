@@ -801,13 +801,13 @@ unittest {
 }
 
 /**
-    Checks to see if a type has a non-trivial copy constructor
+    Checks to see if a type is non-trivially copy constructable
 
     This does not check for postblits
 */
-template hasNonTrivialCopyConstructor(T...) if (T.length == 1) {
+template isNonTriviallyCopyConstructable(T...) if (T.length == 1) {
     alias U = from.bolts.meta.TypesOf!T[0];
-    enum hasNonTrivialCopyConstructor
+    enum isNonTriviallyCopyConstructable
         = isCopyConstructable!U
         && from.std.traits.hasMember!(U, "__ctor");
 }
@@ -816,12 +816,12 @@ template hasNonTrivialCopyConstructor(T...) if (T.length == 1) {
 unittest {
     mixin copyConstructableKinds;
 
-    static assert(!hasNonTrivialCopyConstructor!KindPOD);
-    static assert( hasNonTrivialCopyConstructor!KindHasCopyContrustor);
-    static assert(!hasNonTrivialCopyConstructor!KindHasPostBlit);
-    static assert(!hasNonTrivialCopyConstructor!KindContainsPOD);
-    static assert( hasNonTrivialCopyConstructor!KindContainsTypeWithNonTrivialCopyConstructor);
-    static assert(!hasNonTrivialCopyConstructor!KindContainsTypeWithPostBlit);
+    static assert(!isNonTriviallyCopyConstructable!KindPOD);
+    static assert( isNonTriviallyCopyConstructable!KindHasCopyContrustor);
+    static assert(!isNonTriviallyCopyConstructable!KindHasPostBlit);
+    static assert(!isNonTriviallyCopyConstructable!KindContainsPOD);
+    static assert( isNonTriviallyCopyConstructable!KindContainsTypeWithNonTrivialCopyConstructor);
+    static assert(!isNonTriviallyCopyConstructable!KindContainsTypeWithPostBlit);
 }
 
 /**
@@ -831,7 +831,7 @@ template isTriviallyCopyConstructable(T...) if (T.length == 1) {
     alias U = from.bolts.meta.TypesOf!T[0];
     enum isTriviallyCopyConstructable
         = isCopyConstructable!U
-        && __traits(isPOD, U);
+        && !from.std.traits.hasMember!(U, "__ctor");
 }
 
 ///

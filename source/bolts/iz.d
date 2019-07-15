@@ -122,8 +122,8 @@ template iz(Aliases...) if (Aliases.length == 1) {
     /// See: `bolts.traits.isCopyConstructable`
     enum copyConstructable = from.bolts.traits.isCopyConstructable!ResolvedType;
 
-    /// See: `bolts.traits.hasNonTrivialCopyConstructor`
-    enum nonTriviallyCopyConstructable = from.bolts.traits.hasNonTrivialCopyConstructor!ResolvedType;
+    /// See: `bolts.traits.isNonTriviallyCopyConstructable`
+    enum nonTriviallyCopyConstructable = from.bolts.traits.isNonTriviallyCopyConstructable!ResolvedType;
 
     /// See: `bolts.traits.isTriviallyCopyConstructable`
     enum triviallyCopyConstructable = from.bolts.traits.isTriviallyCopyConstructable!ResolvedType;

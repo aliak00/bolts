@@ -183,8 +183,8 @@ $(TR
     )
 $(TR
     $(TD)
-    $(TD $(DDOX_NAMED_REF bolts.traits.hasNonTrivialCopyConstructor, `hasNonTrivialCopyConstructor`))
-    $(TD Checks if a compile timeentity has a non-trivial (i.e. user defined) copy constructor)
+    $(TD $(DDOX_NAMED_REF bolts.traits.isNonTriviallyCopyConstructable, `isNonTriviallyCopyConstructable`))
+    $(TD Checks if a compile time entity is non-trivially (i.e. user defined) copy constructable)
     )
 $(TR
     $(TD)
