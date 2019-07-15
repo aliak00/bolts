@@ -49,8 +49,7 @@ import bolts.members: member;
 struct S {
     static void f() {}
 }
-assert(member!(S, "f).exists);
-member!(S, "f").self(); // calls f since self is aliased to the member
+assert(member!(S, "f").exists);
 assert(member!(S, "f").protection == ProtectionLevel.public_);
 assert(!member!(S, "f").isProperty);
 ```
