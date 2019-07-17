@@ -58,7 +58,7 @@ template isFunctionOver(T...) {
             // And try and see if calling it with the init values of the desired
             // params works
             alias F = T[0];
-            alias Val(T) = Alias!(T.init);
+            alias Val(U) = Alias!(U.init);
             enum isFunctionOver = __traits(compiles, {
                 auto tup = staticMap!(Val, DesiredParams.Unpack).init;
                 F(tup);
@@ -146,8 +146,9 @@ unittest {
 }
 
 unittest {
-    struct S { @disable this(); @disable void opAssign(S); }
-    static assert(isFunctionOver!((ref s) => s, S));
+    import std.algorithm: move;
+    struct S { @disable this(); @disable void opAssign(S); @disable this(this); }
+    static assert(isFunctionOver!((ref s) => s.move, S));
 }
 
 
