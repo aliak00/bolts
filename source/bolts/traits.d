@@ -24,7 +24,10 @@ unittest {
 /**
     Returns true if the passed in function is an n-ary function over the next n parameter arguments
 
-    Parameter arguments can be any compile time entity that can be typed. The first
+    Parameter arguments can be any compile time entity that can be typed.
+
+    Params:
+        T = The first argument is the function to check, the second are the types it should be called over
 */
 template isFunctionOver(T...) {
     import std.meta: staticMap, Alias;
@@ -56,7 +59,10 @@ template isFunctionOver(T...) {
             // params works
             alias F = T[0];
             alias Val(T) = Alias!(T.init);
-            enum isFunctionOver = __traits(compiles, { F(staticMap!(Val, DesiredParams.Unpack)); });
+            enum isFunctionOver = __traits(compiles, {
+                auto tup = staticMap!(Val, DesiredParams.Unpack).init;
+                F(tup);
+            });
         } else {
             enum isFunctionOver = false;
         }
@@ -132,6 +138,16 @@ unittest {
 
     static assert(!isFunctionOver!(i));
     static assert(!isFunctionOver!(i, int));
+}
+
+unittest {
+    struct S {}
+    static assert(isFunctionOver!((ref s) => s, S));
+}
+
+unittest {
+    struct S { @disable this(); @disable void opAssign(S); }
+    static assert(isFunctionOver!((ref s) => s, S));
 }
 
 
