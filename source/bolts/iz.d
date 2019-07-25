@@ -71,6 +71,10 @@ import bolts.internal;
         $(TD $(DDOX_NAMED_REF bolts.iz.iz.triviallyCopyConstructable, `triviallyCopyConstructable`))
         $(TD True if resolved is trivially copy constructable)
         )
+    $(TR
+        $(TD $(DDOX_NAMED_REF bolts.iz.iz.equatableTo, `equatableTo`))
+        $(TD True if resolved type is equatabel to other)
+        )
     )
 
     See_also:
@@ -94,8 +98,7 @@ template iz(Aliases...) if (Aliases.length == 1) {
 
     /// See: `bolts.traits.isSame`
     static template sameAs(Other...) if (Other.length == 1) {
-        import bolts.traits: isSame;
-        enum sameAs = isSame!(Aliases[0], Other[0]);
+        enum sameAs = from.bolts.traits.isSame!(Aliases[0], Other[0]);
     }
 
     /// See: `bolts.traits.isFunctionOver`
@@ -127,6 +130,11 @@ template iz(Aliases...) if (Aliases.length == 1) {
 
     /// See: `bolts.traits.isTriviallyCopyConstructable`
     enum triviallyCopyConstructable = from.bolts.traits.isTriviallyCopyConstructable!ResolvedType;
+
+    /// See: `bolts.traits.areEquatable`
+    static template equatableTo(Other...) if (Other.length == 1) {
+        enum equatableTo = from.bolts.traits.areEquatable!(Aliases[0], Other[0]);
+    }
 }
 
 ///
@@ -189,4 +197,8 @@ unittest {
     static assert(!iz!SCopyConstructor.triviallyCopyConstructable);
     static assert(!iz!int.nonTriviallyCopyConstructable);
     static assert( iz!int.triviallyCopyConstructable);
+
+    // Can we equate these things?
+    static assert( iz!int.equatableTo!3);
+    static assert(!iz!3.equatableTo!string);
 }

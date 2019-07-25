@@ -87,6 +87,26 @@ $(TR
     $(TD Filters the members of a type based on a has-predicate)
     )
 $(TR
+    $(TD `bolts.range`)
+    $(TD $(DDOX_NAMED_REF bolts.range.isSortedRange, `isSortedRange`))
+    $(TD Tells you if a range is sorted)
+    )
+$(TR
+    $(TD)
+    $(TD $(DDOX_NAMED_REF bolts.range.sortingPredicate, `sortingPredicate`))
+    $(TD Can be used to extract the sorting predicate for a range)
+    )
+$(TR
+    $(TD)
+    $(TD $(DDOX_NAMED_REF bolts.range.CommonTypeOfRanges, `CommonTypeOfRanges`))
+    $(TD Finds the common type from a list of ranges)
+    )
+$(TR
+    $(TD `bolts.iz`)
+    $(TD $(DDOX_NAMED_REF bolts.iz.iz, `iz`))
+    $(TD Allows you to query a type or alias with a nicer syntax, i.e. `isNullable!T` == `iz!T.nullable`)
+    )
+$(TR
     $(TD `bolts.traits`)
     $(TD $(DDOX_NAMED_REF bolts.traits.isFunctionOver, `isFunctionOver`))
     $(TD Checks if a function is n-ary over the passed in types)
@@ -197,24 +217,9 @@ $(TR
     $(TD Checks if a type has a member that is a function)
     )
 $(TR
-    $(TD `bolts.range`)
-    $(TD $(DDOX_NAMED_REF bolts.range.isSortedRange, `isSortedRange`))
-    $(TD Tells you if a range is sorted)
-    )
-$(TR
     $(TD)
-    $(TD $(DDOX_NAMED_REF bolts.range.sortingPredicate, `sortingPredicate`))
-    $(TD Can be used to extract the sorting predicate for a range)
-    )
-$(TR
-    $(TD)
-    $(TD $(DDOX_NAMED_REF bolts.range.CommonTypeOfRanges, `CommonTypeOfRanges`))
-    $(TD Finds the common type from a list of ranges)
-    )
-$(TR
-    $(TD `bolts.iz`)
-    $(TD $(DDOX_NAMED_REF bolts.iz.iz, `iz`))
-    $(TD Allows you to query a type or alias with a nicer syntax, i.e. `isNullable!T` == `iz!T.nullable`)
+    $(TD $(DDOX_NAMED_REF bolts.traits.areEquatable, `areEquatable`))
+    $(TD Returns true if two things are equatable)
     )
 )
 */

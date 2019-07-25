@@ -892,3 +892,19 @@ unittest {
     static assert( hasFunctionMember!(S, "f2"));
     static assert(!hasFunctionMember!(S, "s"));
 }
+
+/**
+    Returns true if two things are equatable
+*/
+template areEquatable(T...) if (T.length == 2) {
+    private alias ResolvedTypes = from.bolts.meta.TypesOf!T;
+    enum areEquatable = is(typeof(ResolvedTypes[0].init == ResolvedTypes[1].init));
+}
+
+///
+unittest {
+    static assert( areEquatable!(1, 2));
+    static assert(!areEquatable!(1, "yo"));
+    static assert(!areEquatable!(int, "yo"));
+    static assert( areEquatable!(int, 1));
+}
