@@ -226,6 +226,11 @@ $(TR
     $(TD $(DDOX_NAMED_REF bolts.traits.isNullTestable, `isNullTestable`))
     $(TD Check if a thing can be checked to be null - i.e. if (thing is null) )
     )
+$(TR
+    $(TD)
+    $(TD $(DDOX_NAMED_REF bolts.traits.isRefDecl, `isRefDecl`))
+    $(TD See if a thing is declared as ref, or function returns by ref)
+    )
 )
 */
 module bolts;

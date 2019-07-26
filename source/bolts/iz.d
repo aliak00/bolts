@@ -83,6 +83,10 @@ import bolts.internal;
         $(TD $(DDOX_NAMED_REF bolts.iz.iz.nullSettable, `nullSettable`))
         $(TD True if resolved type can be set to null)
         )
+    $(TR
+        $(TD $(DDOX_NAMED_REF bolts.iz.iz.refDecl, `refDecl`))
+        $(TD True if resolved type is declred with ref or is a function that returns ref)
+        )
     )
 
     See_also:
@@ -150,6 +154,9 @@ template iz(Aliases...) if (Aliases.length == 1) {
 
     /// See: `bolts.traits.isNullSettable`
     enum nullSettable = from.bolts.traits.isNullSettable!Aliases;
+
+    /// See: `bolts.traits.isRefDecl`
+    enum refDecl = from.bolts.traits.isRefDecl!Aliases;
 }
 
 ///

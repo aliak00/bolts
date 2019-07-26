@@ -942,3 +942,47 @@ unittest {
     }
     static assert(isNullTestable!C2);
 }
+
+/**
+    True if it's a ref decleration. This applies to parameters and functions
+*/
+template isRefDecl(T...) if (T.length == 1) {
+    import std.traits: isFunction;
+    import std.algorithm: canFind;
+    static if (isFunction!T) {
+        enum isRefDecl = [__traits(getFunctionAttributes, T[0])].canFind("ref");
+    } else {
+        enum isRefDecl = __traits(isRef, T[0]);
+    }
+}
+
+///
+unittest {
+    bool checkRefParam()(auto ref int i) {
+        return isRefDecl!i;
+    }
+
+    bool checkRefReturn() {
+        ref int f(ref int i) {
+            return i;
+        }
+        return isRefDecl!f;
+    }
+
+    bool checkMemberFunciton() {
+        static struct S {
+            int i;
+            ref int value() { return i; }
+        }
+        S s;
+        return isRefDecl!(s.value) && isRefDecl!(S.value);
+    }
+
+    int i;
+    assert(        checkRefParam(i));
+    static assert(!checkRefParam(3));
+    static assert( checkRefReturn());
+    static assert( checkMemberFunciton());
+    static assert(!isRefDecl!int);
+    static assert(!isRefDecl!i);
+}
