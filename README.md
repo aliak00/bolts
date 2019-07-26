@@ -11,7 +11,7 @@ Bolts is a utility library for the D programming language which contains a numbe
 * **meta**: has functions that result in compile time entity transofrmations, including:
     * `TypesOf`, `Flatten`, `AliasPack`, `staticZip`, `FilterMembersOf`
 * **traits**: has general utitlites that can query compile time entities. including:
-    * `isFunctionOver`, `isUnaryOver`, `isBinaryOver`, `isProperty`, `hasProperty`, `propertySemantics`, `areCombinable`, `isManifestAssignable`, `isOf`, `isSame`, `isNullType`, `isNullable`, `StringOf`, `isRefType`, `isValueType`, `isLiteralOf`, `isLiteral`, `isCopyConstructable`, `isNonTriviallyCopyConstructable`, `protectionLevel`, `isTriviallyCopyConstructable`, `hasFunctionMember`, `areEquatable`
+    * `isFunctionOver`, `isUnaryOver`, `isBinaryOver`, `isProperty`, `hasProperty`, `propertySemantics`, `areCombinable`, `isManifestAssignable`, `isOf`, `isSame`, `isNullType`, `StringOf`, `isRefType`, `isValueType`, `isLiteralOf`, `isLiteral`, `isCopyConstructable`, `isNonTriviallyCopyConstructable`, `protectionLevel`, `isTriviallyCopyConstructable`, `hasFunctionMember`, `areEquatable`, `isNullSettable`, `isNullTestable`
 * **members**: has functions that allow you to query about the members of types
     * `staticMembersOf`, `memberFunctionsOf`, `member` (not eponymous)
 * **range**: query ranges

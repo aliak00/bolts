@@ -104,7 +104,7 @@ $(TR
 $(TR
     $(TD `bolts.iz`)
     $(TD $(DDOX_NAMED_REF bolts.iz.iz, `iz`))
-    $(TD Allows you to query a type or alias with a nicer syntax, i.e. `isNullable!T` == `iz!T.nullable`)
+    $(TD Allows you to query a type or alias with a nicer syntax, i.e. `isNullSettable!T` == `iz!T.nullSettable`)
     )
 $(TR
     $(TD `bolts.traits`)
@@ -163,11 +163,6 @@ $(TR
     )
 $(TR
     $(TD)
-    $(TD $(DDOX_NAMED_REF bolts.traits.isNullable, `isNullable`))
-    $(TD if null can be assigned to an instance of type T)
-    )
-$(TR
-    $(TD)
     $(TD $(DDOX_NAMED_REF bolts.traits.StringOf, `StringOf`))
     $(TD Stringifies a type, unlike `.stringof` this version doesn't spit out mangled gibberish)
     )
@@ -220,6 +215,16 @@ $(TR
     $(TD)
     $(TD $(DDOX_NAMED_REF bolts.traits.areEquatable, `areEquatable`))
     $(TD Returns true if two things are equatable)
+    )
+$(TR
+    $(TD)
+    $(TD $(DDOX_NAMED_REF bolts.traits.isNullSettable, `isNullSettable`))
+    $(TD Check if a thing can be set to null)
+    )
+$(TR
+    $(TD)
+    $(TD $(DDOX_NAMED_REF bolts.traits.isNullTestable, `isNullTestable`))
+    $(TD Check if a thing can be checked to be null - i.e. if (thing is null) )
     )
 )
 */

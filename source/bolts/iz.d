@@ -75,6 +75,14 @@ import bolts.internal;
         $(TD $(DDOX_NAMED_REF bolts.iz.iz.equatableTo, `equatableTo`))
         $(TD True if resolved type is equatabel to other)
         )
+    $(TR
+        $(TD $(DDOX_NAMED_REF bolts.iz.iz.nullTestable, `nullTestable`))
+        $(TD True if resolved type can be checked against null)
+        )
+    $(TR
+        $(TD $(DDOX_NAMED_REF bolts.iz.iz.nullSettable, `nullSettable`))
+        $(TD True if resolved type can be set to null)
+        )
     )
 
     See_also:
@@ -90,7 +98,8 @@ template iz(Aliases...) if (Aliases.length == 1) {
         enum of = from.bolts.traits.isOf!(Aliases[0], Other[0]);
     }
 
-    /// See: `bolts.traits.isNullable`
+    // TODO: Remove on major bump
+    deprecated("use nullTestable")
     enum nullable = from.bolts.traits.isNullable!ResolvedType;
 
     /// See: `bolts.traits.isNullType`
@@ -135,6 +144,12 @@ template iz(Aliases...) if (Aliases.length == 1) {
     static template equatableTo(Other...) if (Other.length == 1) {
         enum equatableTo = from.bolts.traits.areEquatable!(Aliases[0], Other[0]);
     }
+
+    /// See: `bolts.traits.isNullTestable`
+    enum nullTestable = from.bolts.traits.isNullTestable!Aliases;
+
+    /// See: `bolts.traits.isNullSettable`
+    enum nullSettable = from.bolts.traits.isNullSettable!Aliases;
 }
 
 ///
@@ -154,17 +169,6 @@ unittest {
     static assert(!iz!i.sameAs!j);
     static assert( iz!1.sameAs!1);
     static assert(!iz!1.sameAs!2);
-
-    // Is it nullable?
-    static assert( iz!pi.nullable);
-    static assert( iz!(char*).nullable);
-    static assert(!iz!i.nullable);
-    static assert(!iz!int.nullable);
-
-    // Is it typeof(null)?
-    static assert(!iz!int.nullType);
-    static assert( iz!null.nullType);
-    static assert( iz!(typeof(null)).nullType);
 
     // Using std.meta algorithm with iz
     import std.meta: allSatisfy, AliasSeq;
@@ -201,4 +205,22 @@ unittest {
     // Can we equate these things?
     static assert( iz!int.equatableTo!3);
     static assert(!iz!3.equatableTo!string);
+
+    // What null-semantics does the type have
+
+    // Is it settable to null?
+    static struct SNullSettable { void opAssign(int*) {} }
+    static assert( iz!pi.nullSettable);
+    static assert( iz!SNullSettable.nullSettable);
+    static assert(!iz!i.nullSettable);
+
+    // Is it checable with null? (i.e. if (this is null) )
+    static assert( iz!pi.nullTestable);
+    static assert(!iz!SNullSettable.nullTestable);
+    static assert(!iz!i.nullTestable);
+
+    // Is it typeof(null)?
+    static assert(!iz!int.nullType);
+    static assert( iz!null.nullType);
+    static assert( iz!(typeof(null)).nullType);
 }

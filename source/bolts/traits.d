@@ -14,11 +14,11 @@ unittest {
         void opAssign(typeof(null)) {}
     }
 
-    static assert( isNullable!C);
-    static assert(!isNullable!S);
-    static assert( isNullable!S1);
-    static assert( isNullable!(int *));
-    static assert(!isNullable!(int));
+    static assert( isNullSettable!C);
+    static assert(!isNullSettable!S);
+    static assert( isNullSettable!S1);
+    static assert( isNullSettable!(int *));
+    static assert(!isNullSettable!(int));
 }
 
 /**
@@ -537,33 +537,10 @@ unittest {
     static assert(isNullType!f == false);
 }
 
-/**
-    Returns true of T can be set to null
-*/
+deprecated("use isNullSettable instead")
 template isNullable(T...) if (T.length == 1) {
     alias U = from.bolts.meta.TypesOf!T[0];
     enum isNullable = __traits(compiles, { U u = U.init; u = null; });
-}
-
-///
-unittest {
-    class C {}
-    struct S1 {
-        void opAssign(int*) {}
-    }
-    static assert(isNullable!S1);
-    static assert(isNullable!C);
-    static assert(isNullable!(int*));
-
-    struct S2 {}
-    static assert(!isNullable!S2);
-    static assert(!isNullable!int);
-
-    struct S3 {
-        @disable this();
-        void opAssign(int*) {}
-    }
-    static assert(isNullable!S3);
 }
 
 /**
@@ -907,4 +884,61 @@ unittest {
     static assert(!areEquatable!(1, "yo"));
     static assert(!areEquatable!(int, "yo"));
     static assert( areEquatable!(int, 1));
+}
+
+/**
+    Returns true of T can be set to null
+*/
+template isNullSettable(T...) if (T.length == 1) {
+    alias U = from.bolts.meta.TypesOf!T[0];
+    enum isNullSettable = __traits(compiles, { U u = U.init; u = null; });
+}
+
+///
+unittest {
+    class C {}
+    struct S1 {
+        void opAssign(int*) {}
+    }
+    static assert(isNullSettable!S1);
+    static assert(isNullSettable!C);
+    static assert(isNullSettable!(int*));
+
+    struct S2 {}
+    static assert(!isNullSettable!S2);
+    static assert(!isNullSettable!int);
+
+    struct S3 {
+        @disable this();
+        void opAssign(int*) {}
+    }
+    static assert(isNullSettable!S3);
+}
+
+/**
+    Returns true of T can be check with null using an is statement
+*/
+template isNullTestable(T...) if (T.length == 1) {
+    alias U = from.bolts.meta.TypesOf!T[0];
+    enum isNullTestable = __traits(compiles, { if (U.init is null) {} });
+}
+
+///
+unittest {
+    class C {}
+    struct S1 {
+        void opAssign(int*) {}
+    }
+    static assert(!isNullTestable!S1);
+    static assert( isNullTestable!C);
+    static assert( isNullTestable!(int*));
+
+    struct S2 {}
+    static assert(!isNullTestable!S2);
+    static assert(!isNullTestable!int);
+
+    class C2 {
+        @disable this();
+    }
+    static assert(isNullTestable!C2);
 }
