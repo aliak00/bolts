@@ -4,6 +4,8 @@
 module bolts.range;
 
 import bolts.internal;
+import std.range : isInputRange;
+import std.meta : allSatisfy;
 
 /**
     True if R is a `SortedRange`
@@ -37,7 +39,7 @@ unittest {
         Args[1] = the sorting predicate to fallback to if `Range` is not a `SortedRange`
 */
 template sortingPredicate(Args...)
-if ((Args.length == 1 || Args.length == 2) && from.std.range.isInputRange!(from.bolts.meta.TypesOf!Args[0])) {
+if ((Args.length == 1 || Args.length == 2) && isInputRange!(from.bolts.meta.TypesOf!Args[0])) {
     import bolts.meta: TypesOf;
     import std.range: SortedRange;
     import std.functional: binaryFun;
@@ -71,7 +73,7 @@ unittest {
 }
 
 /// Finds the CommonType of a list of ranges
-template CommonTypeOfRanges(Rs...) if (from.std.meta.allSatisfy!(from.std.range.isInputRange, Rs)) {
+template CommonTypeOfRanges(Rs...) if (allSatisfy!(isInputRange, Rs)) {
     import std.traits: CommonType;
     import std.meta: staticMap;
     import std.range: ElementType;
