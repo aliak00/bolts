@@ -4,6 +4,8 @@
 module bolts.traits;
 
 import bolts.internal;
+import std.traits : TemplateOf;
+import std.traits : hasMember;
 
 ///
 unittest {
@@ -667,7 +669,7 @@ template StringOf(alias U, string sep = ", ", string beg = "!(", string end = ")
 }
 
 /// Ditto
-string StringOf(T, string sep = ", ", string beg = "!(", string end = ")")() if (is(from.std.traits.TemplateOf!T == void)) {
+string StringOf(T, string sep = ", ", string beg = "!(", string end = ")")() if (is(TemplateOf!T == void)) {
     return T.stringof;
 }
 
@@ -779,7 +781,7 @@ template isCopyConstructable(T...) if (T.length == 1) {
     alias U = from.bolts.meta.TypesOf!T[0];
     enum isCopyConstructable
         = __traits(compiles, { auto r = U.init; U copy = r; })
-        && !from.std.hasMember!(U, "__xpostblit");
+        && !hasMember!(U, "__xpostblit");
 }
 
 ///
@@ -803,7 +805,7 @@ template isNonTriviallyCopyConstructable(T...) if (T.length == 1) {
     alias U = from.bolts.meta.TypesOf!T[0];
     enum isNonTriviallyCopyConstructable
         = isCopyConstructable!U
-        && from.std.traits.hasMember!(U, "__ctor");
+        && hasMember!(U, "__ctor");
 }
 
 ///
@@ -825,7 +827,7 @@ template isTriviallyCopyConstructable(T...) if (T.length == 1) {
     alias U = from.bolts.meta.TypesOf!T[0];
     enum isTriviallyCopyConstructable
         = isCopyConstructable!U
-        && !from.std.traits.hasMember!(U, "__ctor");
+        && !hasMember!(U, "__ctor");
 }
 
 ///
