@@ -12,6 +12,23 @@
     isFunctionOver!(f, i);
     ---
 
+    Signatures (experimental):
+
+    Signatures are a way to enforce types to comply with other types. For example if you are making a range you can ensure your types
+    conform to a range by mixing in an `EnforceSignature` template to the type that needs it. You can also use the utilities provided
+    here to constrain functions to types that adhere to a specific signature.
+
+    ---
+    struct Sig {
+        int x;
+    }
+
+    struct AType {
+        mixin EnforceSignature!Sig; // will error if AType doens't match Sig
+        int x;
+    }
+    ---
+
     Iz_Super_Template:
 
     The $(DDOX_NAMED_REF bolts.iz.iz, `iz`) super template. Has a lot of the traits on types encapulated in one place. So
@@ -242,4 +259,5 @@ public {
     import bolts.members;
     import bolts.iz;
     import bolts.from;
+    import bolts.experimental;
 }
