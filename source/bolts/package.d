@@ -15,7 +15,7 @@
     Signatures (experimental):
 
     Signatures are a way to enforce types to comply with other types. For example if you are making a range you can ensure your types
-    conform to a range by mixing in an `EnforceSignature` template to the type that needs it. You can also use the utilities provided
+    conform to a range by mixing in an `ModelsSignature` template to the type that needs it. You can also use the utilities provided
     here to constrain functions to types that adhere to a specific signature.
 
     ---
@@ -24,7 +24,7 @@
     }
 
     struct AType {
-        mixin EnforceSignature!Sig; // will error if AType doens't match Sig
+        mixin ModelsSignature!Sig; // will error if AType doens't match Sig
         int x;
     }
     ---
