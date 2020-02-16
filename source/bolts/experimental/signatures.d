@@ -3,148 +3,235 @@
 */
 module bolts.experimental.signatures;
 
-/**
-    Checks if type `This` is a model of type `Sig`
-*/
-template isModelOf(This, Sig, string file = __FILE__, int line = __LINE__) {
+private enum Report {
+    all,
+    one,
+}
+
+private auto checkSignatureOf(alias Model, alias Sig, Report report = Report.one)() {
     import bolts.traits: StringOf;
-    import std.traits: hasMember, isAggregateType, isNested, OriginalType, EnumMembers;
+    import std.traits: hasMember, isAggregateType, isNested, OriginalType;
     import std.conv: to;
 
-    alias sigMember(string m) = __traits(getMember, Sig, m);
-    alias thisMember(string m) = __traits(getMember, This, m);
+    alias sigMember(string member) = __traits(getMember, Sig, member);
+    alias modelMember(string member) = __traits(getMember, Model, member);
 
-    template loc(alias sym) {
-        template str(string file, int line, int _) {
-            enum str = file ~ "(" ~ to!string(line) ~ ")";
+    string typeToString(T)() {
+        import std.traits: isFunction;
+        static if (is(T == struct)) {
+            return "struct";
+        } else static if (is(T == class)) {
+            return "class";
+        } else static if (is(T == union)) {
+            return "union";
+        } else static if (is(T == interface)) {
+            return "interface";
+        } else static if (is(T == enum)) {
+            return "enum";
+        } else static if (isFunction!T) {
+            return "function";
+        } else {
+            return "type";
         }
-        enum loc = str!(__traits(getLocation, sym));
     }
 
-    string error(string str) {
-        enum mixedLoc = file ~ "(" ~ to!string(line) ~ ")";
+    string checkTypedIdentifier(string member, SigMember)() {
+        static if (is(typeof(modelMember!member) ModelMember) && is(SigMember == ModelMember)) {
+            return null;
+        } else {
+            return "Missing identifier `"
+                ~ member
+                ~ "` of "
+                ~ typeToString!SigMember
+                ~ " `"
+                ~ StringOf!SigMember
+                ~ "`.";
+        }
+    }
+
+    string checkEnum(string member, ModelMember, SigMember)() {
+        static if (is(ModelMember == enum) && is(OriginalType!SigMember == OriginalType!ModelMember)) {
+            import std.algorithm: sort, setDifference;
+            auto sigMembers = [__traits(allMembers, SigMember)].sort;
+            auto modelMembers = [__traits(allMembers, ModelMember)].sort;
+            if (sigMembers != modelMembers) {
+                return "Enum `"
+                    ~ member
+                    ~ "` is missing members: "
+                    ~ sigMembers.setDifference(modelMembers).to!string;
+            }
+            return null;
+        } else {
+            return "Missing enum named `"
+                ~ member
+                ~ "` of type `"
+                ~ StringOf!SigMember
+                ~ " with original type `"
+                ~ StringOf!(OriginalType!SigMember)
+                ~ "`.";
+        }
+    }
+
+    string checkAlias(string member, ModelMember, SigMember)() {
+        static if (!is(SigMember == ModelMember)) {
+            return "Alias `"
+                ~ member
+                ~ "` is wrong type. Expected alias to "
+                ~ typeToString!SigMember
+                ~ " `"
+                ~ StringOf!SigMember
+                ~ "`.";
+        } else {
+            return null;
+        }
+    }
+
+    auto checkType(string member, SigMember)() {
+        static if (is(modelMember!member ModelMember)) {
+            static if (member != StringOf!SigMember) {
+                if (auto error = checkAlias!(member, ModelMember, SigMember)) {
+                    return error;
+                }
+            } else static if (is(SigMember == enum)) {
+                if (auto error = checkEnum!(member, ModelMember, SigMember)) {
+                    return error;
+                }
+            } else static if (isAggregateType!SigMember) {
+                if (auto error = checkSignatureOf!(ModelMember, SigMember, report)) {
+                    return error;
+                }
+            }
+            return null;
+        } else {
+            static if (StringOf!SigMember != member) {
+                return "Missing alias named `"
+                    ~ member
+                    ~ "` to "
+                    ~ typeToString!SigMember
+                    ~ " `"
+                    ~ StringOf!SigMember
+                    ~ "`.";
+            } else {
+                return "Missing "
+                    ~ typeToString!SigMember
+                    ~ " named `"
+                    ~ member
+                    ~ "`";
+            }
+        }
+    }
+
+    string checkUnknown(string member)() {
+        static if (isNested!Sig && member == "this") {
+            return null;
+        } else {
+            return "Don`t know member `" ~ member ~ "` of type `" ~ StringOf!Model ~ "`";
+        }
+    }
+
+    static if (report == Report.all) {
+        string[] result;
+    } else {
+        string result;
+    }
+
+    immutable storeResult = q{
+        static if (report == Report.one) {
+            result = error;
+            break;
+        } else {
+            result ~= error;
+        }
+    };
+
+    foreach (member; __traits(allMembers, Sig)) {
+        static if (is(typeof(sigMember!member) T)) {
+            if (auto error = checkTypedIdentifier!(member, T)) {
+                mixin(storeResult);
+            }
+        } else static if (is(sigMember!member T)) {
+            if (auto error = checkType!(member, T)) {
+                mixin(storeResult);
+            }
+        } else {
+            if (auto error = checkUnknown!member) {
+                mixin(storeResult);
+            }
+        }
+    }
+    return result;
+}
+
+
+unittest {
+    struct X { alias b = int; alias c = float; enum E1 { one } void f(int) {} enum E2 { a, b } int x; float y; short z; enum e3 { a, b } }
+    struct Y { alias a = int; alias c = int;                                  enum E2 { a }    int x;          int z;   enum e3 { a, b } }
+
+    const expectedErrors = [
+        "Missing alias named `b` to type `int`.",
+        "Alias `c` is wrong type. Expected alias to type `float`.",
+        "Missing enum named `E1`",
+        "Missing identifier `f` of function `void(int)`.",
+        "Enum `E2` is missing members: [\"b\"]",
+        "Missing identifier `y` of type `float`.",
+        "Missing identifier `z` of type `short`.",
+    ];
+
+    assert(checkSignatureOf!(Y, X, Report.all) == expectedErrors);
+}
+
+/**
+    Checks if type `Model` is a model of type `Sig`
+*/
+template isModelOf(alias _Model, alias _Sig) {
+    import bolts.meta: TypesOf;
+    alias Model = TypesOf!_Model[0];
+    alias Sig = TypesOf!_Sig[0];
+    enum isModelOf = checkSignatureOf!(Model, Sig, Report.one) == null;
+}
+
+/**
+    Asserts that the given model follows the specification of the given signature
+*/
+template AssertModelOf(alias _Model, alias _Sig, string file = __FILE__, int line = __LINE__) {
+    import std.algorithm: map, joiner;
+    import std.range: array;
+    import std.conv: to;
+    import bolts.traits: StringOf;
+    import bolts.meta: TypesOf;
+
+    alias Model = TypesOf!_Model[0];
+    alias Sig = TypesOf!_Sig[0];
+
+    string addLocation(string str) {
+        template symLoc(alias sym) {
+            template format(string file, int line, int _) {
+                enum format = file ~ "(" ~ to!string(line) ~ ")";
+            }
+            enum symLoc = format!(__traits(getLocation, sym));
+        }
+        enum assertLoc = file ~ "(" ~ to!string(line) ~ ")";
         return str
             ~ "\n  "
-            ~ loc!Sig
+            ~ symLoc!Sig
             ~ ": <-- Signature `"
             ~ StringOf!Sig
             ~ "` defined here.\n  "
-            ~ mixedLoc
-            ~ ": <-- Modeled here.";
+            ~ assertLoc
+            ~ ": <-- Checked here.";
     }
 
-    static foreach (m; __traits(allMembers, Sig)) {
-        static if (is(typeof(sigMember!m))) { // Are we a typed identifier?
-
-            // Ensure we have a member of that name
-            static assert(
-                hasMember!(This, m),
-                "Type `" ~ StringOf!This
-                    ~ "` is missing identifier named `"
-                    ~ m
-                    ~ "` of type `"
-                    ~ StringOf!(typeof(sigMember!m))
-                    ~ "`.".error
-            );
-
-            // Ensure the member is also a typed identifier
-            static assert(
-                is(typeof(thisMember!m)),
-                "Expected type `" ~ StringOf!This
-                    ~ "` to have an identifier named `"
-                    ~ m
-                    ~ "` but it looks like `"
-                    ~ m
-                    ~ "` is not an identifier.".error
-            );
-
-            // Ensure the types are the same
-            static assert(
-                is(typeof(sigMember!m) == typeof(thisMember!m)),
-                "Expected type `" ~ StringOf!This
-                    ~ "` to have identifier named `"
-                    ~ m
-                    ~ "` of type `"
-                    ~ StringOf!(typeof(sigMember!m))
-                    ~ "` but found identifier of type `"
-                    ~ StringOf!(typeof(thisMember!m))
-                    ~ "`.".error
-            );
-        } else static if (is(sigMember!m)) { // Are we a type
-
-            // Ensure we have a member with the same name
-            static assert(
-                hasMember!(This, m),
-                "Type `" ~ StringOf!This
-                    ~ "` is missing name `"
-                    ~ m
-                    ~ "` of type `"
-                    ~ StringOf!sigT
-                    ~ "`".error
-            );
-
-            // Ensure the member is also a type
-            static assert(
-                is(thisMember!m),
-                "Expected type `" ~ StringOf!This
-                    ~ "` to have a type named `"
-                    ~ m
-                    ~ "` but it looks like `"
-                    ~ m
-                    ~ "` is not a type.".error
-            );
-
-            static if (isAggregateType!(sigMember!m)) { // If it's an aggregate type, recurse in
-                static assert(isModelOf!(thisMember!m, sigMember!m, file, line));
-            } else static if (is(sigMember!m == enum)) {
-                static assert(
-                    is(thisMember!m == enum),
-                    "Expected type `" ~ StringOf!This
-                        ~ "` to have enum named `"
-                        ~ m
-                        ~ "` but it looks like `"
-                        ~ m
-                        ~ "` is not an enum.".error
-                );
-                static assert(
-                    is(OriginalType!(sigMember!m) == OriginalType!(thisMember!m)),
-                    "enum not correct type",
-                );
-                import std.algorithm: sort, setDifference;
-                static assert(
-                    [__traits(allMembers, sigMember!m)] == [__traits(allMembers, thisMember!m)],
-                    "Type `" ~ StringOf!This
-                        ~ "` is missing the following members of enum `"
-                        ~ m
-                        ~ "`: "
-                        ~ [__traits(allMembers, sigMember!m)]
-                            .sort
-                            .setDifference([__traits(allMembers, thisMember!m)].sort)
-                            .to!string
-                            .error
-                );
-            } else {
-                static assert(
-                    is(sigMember!m == thisMember!m),
-                    "Expected type `" ~ StringOf!This
-                        ~ "` to have name `"
-                        ~ m
-                        ~ "` of type `"
-                        ~ StringOf!(sigMember!m)
-                        ~ "` but found type `"
-                        ~ StringOf!(thisMember!m)
-                        ~ "`.".error
-                );
-            }
-        } else {
-            static assert(
-                isNested!This && m == "this",
-                "Don`t know member `" ~ m ~ "` of type `" ~ StringOf!This ~ "`".error
-            );
-        }
-    }
-
-    enum isModelOf = true;
+    immutable errors = checkSignatureOf!(Model, Sig, Report.all);
+    static assert(
+        errors.length == 0,
+        "Type `" ~ StringOf!Model ~ "` does not comply to signature `" ~ StringOf!Sig ~ "`"
+            ~ errors
+                .map!(s => "\n  " ~ s)
+                .joiner
+                .to!string
+                .addLocation
+    );
+    enum AssertModelOf = true;
 }
 
 ///
@@ -159,8 +246,8 @@ unittest {
 /**
     Mixin that ensures a type models the desired signature of a structure
 */
-mixin template ModelsSignature(alias Sig, string file = __FILE__, int line = __LINE__) {
-    static assert(isModelOf!(typeof(this), Sig, file, line));
+mixin template Models(alias Sig, string file = __FILE__, int line = __LINE__) {
+    static assert(AssertModelOf!(typeof(this), Sig, file, line));
 }
 
 ///
@@ -175,7 +262,7 @@ unittest {
     }
 
     struct Y {
-        mixin ModelsSignature!Sig;
+        mixin Models!Sig;
         alias I = int;
         int x;
         float y;
@@ -183,6 +270,8 @@ unittest {
         int f(int) { return 0; }
         enum X { one, two }
     }
+
+    static assert(isModelOf!(Y, Sig));
 }
 
 unittest {
@@ -191,7 +280,7 @@ unittest {
     }
 
     struct Y(T) {
-        mixin ModelsSignature!(TemplatedSig!T);
+        mixin Models!(TemplatedSig!T);
         T value;
     }
 
@@ -209,7 +298,7 @@ unittest {
 
     static assert(!__traits(compiles, {
         struct X {
-            mixin ModelsSignature!Sig;
+            mixin Models!Sig;
             alias I = float;
             int x;
             float y;
@@ -218,7 +307,7 @@ unittest {
 
     static assert(!__traits(compiles, {
         struct X {
-            mixin ModelsSignature!Sig;
+            mixin Models!Sig;
             int I;
             int x;
             float y;
@@ -227,7 +316,7 @@ unittest {
 
     static assert(!__traits(compiles, {
         struct X {
-            mixin ModelsSignature!Sig;
+            mixin Models!Sig;
             alias M = int;
             int x;
             float y;
@@ -244,7 +333,7 @@ unittest {
 
     static assert(!__traits(compiles, {
         struct X {
-            mixin ModelsSignature!Sig;
+            mixin Models!Sig;
             alias I = float;
             float x;
             float y;
@@ -253,7 +342,7 @@ unittest {
 
     static assert(!__traits(compiles, {
         struct X {
-            mixin ModelsSignature!Sig;
+            mixin Models!Sig;
             int I;
             alias x = int;
             float y;
@@ -262,7 +351,7 @@ unittest {
 
     static assert(!__traits(compiles, {
         struct X {
-            mixin ModelsSignature!Sig;
+            mixin Models!Sig;
             alias M = int;
             int x;
         }
@@ -281,7 +370,7 @@ struct InputRange(T) {
 ///
 unittest {
     struct R(T) {
-        mixin ModelsSignature!(InputRange!T);
+        mixin Models!(InputRange!T);
 
         T[] values;
         int index;

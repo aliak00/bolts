@@ -61,12 +61,24 @@ assert(!member!(S, "f").isProperty);
 Signatures are a way to enforce types to comply with other types. For example if you are making a range you can ensure your types conform to a range by mixing in an `ModelsSignature` template to the type that needs it. You can also use the utilities provided here to constrain functions to types that adhere to a specific signature.
 
 ```
-struct Sig {
-    int x;
+struct InputRangeSignature(T) {
+    bool empty() { return true; }
+    T front() { return T.init; }
+    void popFront() {}
 }
 
-struct AType {
-    mixin ModelsSignature!Sig; // will error if AType doens't match Sig
-    int x;
+struct MyRange {
+    mixin ModelsSignature!(InputRangeSignature!int);
 }
+```
+
+The above will fail to compile with something like:
+
+```
+source/bolts/experimental/signatures.d(225,5): Error: static assert:  "Type R!(int) does not comply to signature InputRange!(int)
+    Missing identifier empty of function pure nothrow @nogc @safe bool().
+    Missing identifier front of function pure nothrow @nogc @safe int().
+    Missing identifier popFront of function pure nothrow @nogc @safe void().
+    source/bolts/experimental/signatures.d(364): <-- Signature InputRange!(int) defined here.
+    source/bolts/experimental/signatures.d(373): <-- Checked here."
 ```
