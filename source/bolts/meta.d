@@ -249,3 +249,20 @@ unittest {
     enum hasInt(T, string name) = is(typeof(__traits(getMember, T, name)) == int);
     static assert(FilterMembersOf!(S, hasInt) == AliasSeq!("i", "i2"));
 }
+
+/**
+    Removes all the attributes from compile-time entity that is given as the only argument
+*/
+template RemoveAttributes(T...) {
+    import std.traits: functionLinkage, SetFunctionAttributes, FunctionAttribute;
+    alias U = TypesOf!T[0];
+	alias RemoveAttributes = SetFunctionAttributes!(U, functionLinkage!U, FunctionAttribute.none);
+}
+
+///
+unittest {
+    void f0() @safe {}
+    void f1() @system {}
+
+    static assert(is(RemoveAttributes!f1 == RemoveAttributes!f0));
+}

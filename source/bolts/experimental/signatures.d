@@ -8,9 +8,10 @@ private enum Report {
     one,
 }
 
-private auto checkSignatureOf(alias Model, alias Sig, Report report = Report.one)() {
+private auto checkSignatureOf(alias Model, alias Sig, Report report = Report.one, string path = "")() {
     import bolts.traits: StringOf;
-    import std.traits: hasMember, isAggregateType, isNested, OriginalType;
+    import bolts.meta: RemoveAttributes;
+    import std.traits: hasMember, isAggregateType, isNested, OriginalType, isFunction, hasUDA;
     import std.conv: to;
 
     alias sigMember(string member) = __traits(getMember, Sig, member);
@@ -35,17 +36,55 @@ private auto checkSignatureOf(alias Model, alias Sig, Report report = Report.one
         }
     }
 
-    string checkTypedIdentifier(string member, SigMember)() {
-        static if (is(typeof(modelMember!member) ModelMember) && is(SigMember == ModelMember)) {
-            return null;
+    string errorPrefix(string prefix)() {
+        string lower() {
+            if (prefix[0] >= 'A' && prefix[0] <= 'Z') {
+                return prefix[0] + 32 ~ prefix[1 .. $];
+            } else {
+                return prefix;
+            }
+        }
+
+        string upper() {
+            if (prefix[0] >= 'a' && prefix[0] <= 'z') {
+                return prefix[0] - 32 ~ prefix[1 .. $];
+            } else {
+                return prefix;
+            }
+        }
+
+        if (path.length) {
+            return "Type `" ~ path ~ "` " ~ lower();
         } else {
-            return "Missing identifier `"
-                ~ member
-                ~ "` of "
-                ~ typeToString!SigMember
-                ~ " `"
-                ~ StringOf!SigMember
-                ~ "`.";
+            return upper();
+        }
+    }
+
+    string checkTypedIdentifier(string member, SigMember)() {
+
+        enum error = errorPrefix!"Missing identifier `"
+            ~ member
+            ~ "` of "
+            ~ typeToString!SigMember
+            ~ " `"
+            ~ StringOf!SigMember
+            ~ "`.";
+
+        static if (is(typeof(modelMember!member) ModelMember)) {
+            static if (isFunction!SigMember && hasUDA!(sigMember!member, ignoreAttributes)) {
+                static if (is(RemoveAttributes!SigMember == RemoveAttributes!ModelMember)) {
+                    return null;
+                } else {
+                    return error;
+                }
+            } else static if (is(SigMember == ModelMember)) {
+                return null;
+            } else {
+
+                return error;
+            }
+        } else {
+            return error;
         }
     }
 
@@ -55,14 +94,14 @@ private auto checkSignatureOf(alias Model, alias Sig, Report report = Report.one
             auto sigMembers = [__traits(allMembers, SigMember)].sort;
             auto modelMembers = [__traits(allMembers, ModelMember)].sort;
             if (sigMembers != modelMembers) {
-                return "Enum `"
+                return errorPrefix!"Enum `"
                     ~ member
                     ~ "` is missing members: "
                     ~ sigMembers.setDifference(modelMembers).to!string;
             }
             return null;
         } else {
-            return "Missing enum named `"
+            return errorPrefix!"Missing enum named `"
                 ~ member
                 ~ "` of type `"
                 ~ StringOf!SigMember
@@ -74,9 +113,9 @@ private auto checkSignatureOf(alias Model, alias Sig, Report report = Report.one
 
     string checkAlias(string member, ModelMember, SigMember)() {
         static if (!is(SigMember == ModelMember)) {
-            return "Alias `"
+            return errorPrefix!"Found alias `"
                 ~ member
-                ~ "` is wrong type. Expected alias to "
+                ~ "` of wrong type. Expected alias to "
                 ~ typeToString!SigMember
                 ~ " `"
                 ~ StringOf!SigMember
@@ -97,14 +136,14 @@ private auto checkSignatureOf(alias Model, alias Sig, Report report = Report.one
                     return error;
                 }
             } else static if (isAggregateType!SigMember) {
-                if (auto error = checkSignatureOf!(ModelMember, SigMember, report)) {
+                if (auto error = checkSignatureOf!(ModelMember, SigMember, report, path ~ "." ~ StringOf!ModelMember)) {
                     return error;
                 }
             }
             return null;
         } else {
             static if (StringOf!SigMember != member) {
-                return "Missing alias named `"
+                return errorPrefix!"Missing alias named `"
                     ~ member
                     ~ "` to "
                     ~ typeToString!SigMember
@@ -112,7 +151,7 @@ private auto checkSignatureOf(alias Model, alias Sig, Report report = Report.one
                     ~ StringOf!SigMember
                     ~ "`.";
             } else {
-                return "Missing "
+                return errorPrefix!"Missing "
                     ~ typeToString!SigMember
                     ~ " named `"
                     ~ member
@@ -164,17 +203,40 @@ private auto checkSignatureOf(alias Model, alias Sig, Report report = Report.one
 
 
 unittest {
-    struct X { alias b = int; alias c = float; enum E1 { one } void f(int) {} enum E2 { a, b } int x; float y; short z; enum e3 { a, b } }
-    struct Y { alias a = int; alias c = int;                                  enum E2 { a }    int x;          int z;   enum e3 { a, b } }
+    struct X {
+        alias b = int; alias c = float; enum E1 { one } void f(int) {}
+        enum E2 { a, b } int x; float y; short z; enum E3 { a, b }
+        struct Inner {
+            struct AnotherInner {
+                int a;
+                int b;
+            }
+        }
+        struct MissingInner {
+            struct A {}
+        }
+    }
+    struct Y {
+        alias a = int; alias c = int;
+        enum E2 { a }    int x;          int z;   enum E3 { a, b }
+        struct Inner {
+            struct AnotherInner {
+                int a;
+                int b;
+            }
+        }
+        struct MissingInner {}
+    }
 
     const expectedErrors = [
         "Missing alias named `b` to type `int`.",
-        "Alias `c` is wrong type. Expected alias to type `float`.",
+        "Found alias `c` of wrong type. Expected alias to type `float`.",
         "Missing enum named `E1`",
         "Missing identifier `f` of function `void(int)`.",
         "Enum `E2` is missing members: [\"b\"]",
         "Missing identifier `y` of type `float`.",
         "Missing identifier `z` of type `short`.",
+        "Type `.MissingInner` missing struct named `A`",
     ];
 
     assert(checkSignatureOf!(Y, X, Report.all) == expectedErrors);
@@ -222,6 +284,7 @@ template AssertModelOf(alias _Model, alias _Sig, string file = __FILE__, int lin
     }
 
     immutable errors = checkSignatureOf!(Model, Sig, Report.all);
+
     static assert(
         errors.length == 0,
         "Type `" ~ StringOf!Model ~ "` does not comply to signature `" ~ StringOf!Sig ~ "`"
@@ -231,6 +294,7 @@ template AssertModelOf(alias _Model, alias _Sig, string file = __FILE__, int lin
                 .to!string
                 .addLocation
     );
+
     enum AssertModelOf = true;
 }
 
@@ -256,9 +320,10 @@ unittest {
         alias I = int;
         int x;
         float y;
-        struct Inner { int a; }
+        struct Inner { int a; struct X { int b; } }
         int f(int) { return 0; }
         enum X { one, two }
+        union L { int a; }
     }
 
     struct Y {
@@ -266,9 +331,10 @@ unittest {
         alias I = int;
         int x;
         float y;
-        struct Inner { int a; }
+        struct Inner { int a; struct X { int b; } }
         int f(int) { return 0; }
         enum X { one, two }
+        union L { int a; }
     }
 
     static assert(isModelOf!(Y, Sig));
@@ -359,12 +425,18 @@ unittest {
 }
 
 /**
+    Attribute that can be applied on identifiers in a signature that will let the model checker know not to
+    take attributes in to account
+*/
+struct ignoreAttributes {}
+
+/**
     An input range signature
 */
-struct InputRange(T) {
-    bool empty() { return true; }
-    T front() { return T.init; }
-    void popFront() {}
+interface InputRange(T) {
+    @property bool empty();
+    @property T front();
+    @ignoreAttributes void popFront();
 }
 
 ///
@@ -377,10 +449,10 @@ unittest {
         this(T[] arr) {
             values = arr;
         }
-        bool empty() {
-            return this.values.length == index;
+        @property bool empty() {
+            return values.length == index;
         }
-        T front() {
+        @property T front() {
             return values[index];
         }
         void popFront() {
