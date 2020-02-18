@@ -336,7 +336,8 @@ unittest {
     Mixin that ensures a type models the desired signature of a structure
 */
 mixin template Models(alias Sig, string file = __FILE__, int line = __LINE__) {
-    static assert(AssertModelOf!(typeof(this), Sig, file, line));
+    static import bolts.experimental;
+    static assert(bolts.experimental.signatures.AssertModelOf!(typeof(this), Sig, file, line));
 }
 
 ///
