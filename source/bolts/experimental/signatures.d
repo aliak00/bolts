@@ -11,7 +11,7 @@ private enum Report {
 private auto checkSignatureOf(alias Model, alias Sig, Report report = Report.one, string path = "")() {
     import bolts.traits: StringOf;
     import bolts.meta: RemoveAttributes;
-    import std.traits: hasMember, isAggregateType, isNested, OriginalType, isFunction, hasUDA;
+    import std.traits: hasMember, isAggregateType, isNested, OriginalType;
     import std.conv: to;
 
     alias sigMember(string member) = __traits(getMember, Sig, member);
@@ -62,27 +62,51 @@ private auto checkSignatureOf(alias Model, alias Sig, Report report = Report.one
 
     string checkTypedIdentifier(string member, SigMember)() {
 
+        import std.traits: isFunction, hasUDA, hasStaticMember;
+
         enum error = errorPrefix!"Missing identifier `"
             ~ member
             ~ "` of "
             ~ typeToString!SigMember
             ~ " `"
+            ~ (hasStaticMember!(Sig, member) ? "static " : "")
             ~ StringOf!SigMember
             ~ "`.";
 
-        static if (is(typeof(modelMember!member) ModelMember)) {
-            static if (isFunction!SigMember && hasUDA!(sigMember!member, ignoreAttributes)) {
-                static if (is(RemoveAttributes!SigMember == RemoveAttributes!ModelMember)) {
-                    return null;
-                } else {
-                    return error;
-                }
-            } else static if (is(SigMember == ModelMember)) {
-                return null;
-            } else {
+        bool staticCheckPass() {
+            return !hasStaticMember!(Sig, member)
+                || hasStaticMember!(Model, member);
+        }
 
+        bool ignoreAttributesCheckPass(ModelMember)() {
+            return !(isFunction!SigMember && hasUDA!(sigMember!member, ignoreAttributes))
+                || is(RemoveAttributes!SigMember == RemoveAttributes!ModelMember);
+        }
+
+        bool correctTypeCheckPass(ModelMember)() {
+            return is(SigMember == ModelMember);
+        }
+
+        static if (is(typeof(modelMember!member) ModelMember)) {
+
+            if (!staticCheckPass()) {
                 return error;
             }
+
+            static if (hasUDA!(sigMember!member, ignoreAttributes)) {
+                alias T = RemoveAttributes!SigMember;
+                alias U = RemoveAttributes!ModelMember;
+            } else {
+                alias T = SigMember;
+                alias U = ModelMember;
+            }
+
+            static if (is(T == U)) {
+                return null;
+            } else {
+                return error;
+            }
+
         } else {
             return error;
         }
@@ -201,7 +225,6 @@ private auto checkSignatureOf(alias Model, alias Sig, Report report = Report.one
     return result;
 }
 
-
 unittest {
     struct X {
         alias b = int; alias c = float; enum E1 { one } void f(int) {}
@@ -215,6 +238,7 @@ unittest {
         struct MissingInner {
             struct A {}
         }
+        static int s;
     }
     struct Y {
         alias a = int; alias c = int;
@@ -237,6 +261,7 @@ unittest {
         "Missing identifier `y` of type `float`.",
         "Missing identifier `z` of type `short`.",
         "Type `.MissingInner` missing struct named `A`",
+        "Missing identifier `s` of type `static int`.",
     ];
 
     assert(checkSignatureOf!(Y, X, Report.all) == expectedErrors);
@@ -463,4 +488,22 @@ unittest {
     import std.range: array;
     auto r = R!int([1, 4, 2, 3]);
     assert(r.array == [1, 4, 2, 3]);
+}
+
+unittest {
+    interface Sig {
+        static @property string name();
+        static @property string help();
+        int run(string[]);
+    }
+
+    struct X {
+        mixin Models!Sig;
+
+        static string name = "hello";
+        static string help = "help";
+        int run(string[] args) {
+            return 0;
+        }
+    }
 }
