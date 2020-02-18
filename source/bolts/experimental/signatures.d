@@ -78,15 +78,6 @@ private auto checkSignatureOf(alias Model, alias Sig, Report report = Report.one
                 || hasStaticMember!(Model, member);
         }
 
-        bool ignoreAttributesCheckPass(ModelMember)() {
-            return !(isFunction!SigMember && hasUDA!(sigMember!member, ignoreAttributes))
-                || is(RemoveAttributes!SigMember == RemoveAttributes!ModelMember);
-        }
-
-        bool correctTypeCheckPass(ModelMember)() {
-            return is(SigMember == ModelMember);
-        }
-
         static if (is(typeof(modelMember!member) ModelMember)) {
 
             if (!staticCheckPass()) {
@@ -97,8 +88,14 @@ private auto checkSignatureOf(alias Model, alias Sig, Report report = Report.one
                 alias T = RemoveAttributes!SigMember;
                 alias U = RemoveAttributes!ModelMember;
             } else {
-                alias T = SigMember;
-                alias U = ModelMember;
+                static if (hasUDA!(sigMember!member, ignoreQualifiers)) {
+                    import std.traits: Unqual;
+                    alias T = Unqual!SigMember;
+                    alias U = Unqual!ModelMember;
+                } else {
+                    alias T = SigMember;
+                    alias U = ModelMember;
+                }
             }
 
             static if (is(T == U)) {
@@ -457,6 +454,14 @@ unittest {
 struct ignoreAttributes {}
 
 /**
+    Attribute that can be applied on identifiers in a signature that will let the model checker know not to
+    take type qualifiers in to account
+*/
+struct ignoreQualifiers {}
+
+
+
+/**
     An input range signature
 */
 interface InputRange(T) {
@@ -494,7 +499,7 @@ unittest {
 unittest {
     interface Sig {
         static @property string name();
-        static @property string help();
+        @ignoreQualifiers static @property string help();
         int run(string[]);
     }
 
@@ -502,7 +507,7 @@ unittest {
         mixin Models!Sig;
 
         static string name = "hello";
-        static string help = "help";
+        immutable static string help = "help";
         int run(string[] args) {
             return 0;
         }
