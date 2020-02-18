@@ -116,6 +116,11 @@ $(TR
     $(TD Filters the members of a type based on a has-predicate)
     )
 $(TR
+    $(TD)
+    $(TD $(DDOX_NAMED_REF bolts.meta.RemoveAttributes, `RemoveAttributes`))
+    $(TD Removes all the attributes of a symbol and returns the new type)
+    )
+$(TR
     $(TD `bolts.range`)
     $(TD $(DDOX_NAMED_REF bolts.range.isSortedRange, `isSortedRange`))
     $(TD Tells you if a range is sorted)

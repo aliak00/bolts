@@ -8,7 +8,7 @@ import bolts.internal;
 /**
     Returns the types of all values given.
 
-    $(OD isFunction!T then the typeof the address is taken if possible)
+    $(OD If isFunction!T then the typeof the address is taken if possible)
     $(OD If typeof(T) can be taken it is)
     $(OD Else it is appended on as is)
 
