@@ -9,9 +9,9 @@ Bolts is a utility library for the D programming language which contains a numbe
 ## Modules:
 
 * **meta**: has functions that result in compile time entity transofrmations, including:
-    * `TypesOf`, `Flatten`, `AliasPack`, `staticZip`, `FilterMembersOf`
+    * `Flatten`, `AliasPack`, `staticZip`, `FilterMembersOf`, `RemoveAttributes`.
 * **traits**: has general utitlites that can query compile time entities. including:
-    * `isFunctionOver`, `isUnaryOver`, `isBinaryOver`, `isProperty`, `hasProperty`, `propertySemantics`, `areCombinable`, `isManifestAssignable`, `isOf`, `isSame`, `isNullType`, `StringOf`, `isRefType`, `isValueType`, `isLiteralOf`, `isLiteral`, `isCopyConstructable`, `isNonTriviallyCopyConstructable`, `protectionLevel`, `isTriviallyCopyConstructable`, `hasFunctionMember`, `areEquatable`, `isNullSettable`, `isNullTestable`, `isRefDecl`
+    * `isFunctionOver`, `isUnaryOver`, `isBinaryOver`, `isProperty`, `hasProperty`, `propertySemantics`, `areCombinable`, `isManifestAssignable`, `isOf`, `isSame`, `isNullType`, `StringOf`, `isRefType`, `isValueType`, `isLiteralOf`, `isLiteral`, `isCopyConstructable`, `isNonTriviallyCopyConstructable`, `protectionLevel`, `isTriviallyCopyConstructable`, `hasFunctionMember`, `areEquatable`, `isNullSettable`, `isNullTestable`, `isRefDecl`, `TypesOf`
 * **members**: has functions that allow you to query about the members of types
     * `staticMembersOf`, `memberFunctionsOf`, `member` (not eponymous)
 * **range**: query ranges
@@ -20,7 +20,7 @@ Bolts is a utility library for the D programming language which contains a numbe
     * `isKey` (not eponymous)
 * **iz**: super non-eponymous template that provides a lot of the functionality that's in the traits module with a different sytax that allows their usage in meta functions as well.
 * **experimental**: contains experimental features
-    * **signatures**: working implementation of type signatures
+    *signatures: working implementation of type signatures
 
 Most functions here operate on any compile time entity. For example `isUnaryOver` works in both these situatons:
 

@@ -24,10 +24,6 @@ import bolts.internal;
         $(TD True if T and U are the same "thing" (type, alias, literal value))
         )
     $(TR
-        $(TD $(DDOX_NAMED_REF bolts.iz.iz.nullable, `nullable`))
-        $(TD True if the resolved type is nullable)
-        )
-    $(TR
         $(TD $(DDOX_NAMED_REF bolts.iz.iz.nullType, `nullType`))
         $(TD True if the resolved type is typeof(null))
         )
@@ -97,7 +93,7 @@ template iz(Aliases...) if (Aliases.length == 1) {
 
     alias ResolvedType = TypesOf!Aliases[0];
 
-    /// See: `bolts.traits.isOf`
+    /// See: `bolts.traits.symbols.isOf`
     static template of(Other...) if (Other.length == 1) {
         enum of = from.bolts.traits.isOf!(Aliases[0], Other[0]);
     }
@@ -106,56 +102,56 @@ template iz(Aliases...) if (Aliases.length == 1) {
     deprecated("use nullTestable")
     enum nullable = from.bolts.traits.isNullable!ResolvedType;
 
-    /// See: `bolts.traits.isNullType`
+    /// See: `bolts.traits.types.isNullType`
     enum nullType = from.bolts.traits.isNullType!ResolvedType;
 
-    /// See: `bolts.traits.isSame`
+    /// See: `bolts.traits.symbols.isSame`
     static template sameAs(Other...) if (Other.length == 1) {
         enum sameAs = from.bolts.traits.isSame!(Aliases[0], Other[0]);
     }
 
-    /// See: `bolts.traits.isFunctionOver`
+    /// See: `bolts.traits.functions.isFunctionOver`
     enum functionOver(U...) = from.bolts.traits.isFunctionOver!(Aliases[0], U);
 
-    /// See: `bolts.traits.isUnaryOver`
+    /// See: `bolts.traits.functions.isUnaryOver`
     enum unaryOver(U...) = from.bolts.traits.isUnaryOver!(Aliases[0], U);
 
-    /// See: `bolts.traits.isBinaryOver`
+    /// See: `bolts.traits.functions.isBinaryOver`
     enum binaryOver(U...) = from.bolts.traits.isBinaryOver!(Aliases[0], U);
 
-    /// See: `bolts.traits.isRefType`
+    /// See: `bolts.traits.types.isRefType`
     enum refType = from.bolts.traits.isRefType!ResolvedType;
 
-    /// See: `bolts.traits.isValueType`
+    /// See: `bolts.traits.types.isValueType`
     enum valueType = from.bolts.traits.isValueType!ResolvedType;
 
-    /// See: `bolts.traits.isLiteralOf`
+    /// See: `bolts.traits.symbols.isLiteralOf`
     enum literalOf(T) = from.bolts.traits.isLiteralOf!(Aliases[0], T);
 
-    /// See: `bolts.traits.isLiteral`
+    /// See: `bolts.traits.symbols.isLiteral`
     enum literal = from.bolts.traits.isLiteral!(Aliases[0]);
 
-    /// See: `bolts.traits.isCopyConstructable`
+    /// See: `bolts.traits.types.isCopyConstructable`
     enum copyConstructable = from.bolts.traits.isCopyConstructable!ResolvedType;
 
-    /// See: `bolts.traits.isNonTriviallyCopyConstructable`
+    /// See: `bolts.traits.types.isNonTriviallyCopyConstructable`
     enum nonTriviallyCopyConstructable = from.bolts.traits.isNonTriviallyCopyConstructable!ResolvedType;
 
-    /// See: `bolts.traits.isTriviallyCopyConstructable`
+    /// See: `bolts.traits.types.isTriviallyCopyConstructable`
     enum triviallyCopyConstructable = from.bolts.traits.isTriviallyCopyConstructable!ResolvedType;
 
-    /// See: `bolts.traits.areEquatable`
+    /// See: `bolts.traits.types.areEquatable`
     static template equatableTo(Other...) if (Other.length == 1) {
         enum equatableTo = from.bolts.traits.areEquatable!(Aliases[0], Other[0]);
     }
 
-    /// See: `bolts.traits.isNullTestable`
+    /// See: `bolts.traits.types.isNullTestable`
     enum nullTestable = from.bolts.traits.isNullTestable!Aliases;
 
-    /// See: `bolts.traits.isNullSettable`
+    /// See: `bolts.traits.types.isNullSettable`
     enum nullSettable = from.bolts.traits.isNullSettable!Aliases;
 
-    /// See: `bolts.traits.isRefDecl`
+    /// See: `bolts.traits.symbols.isRefDecl`
     enum refDecl = from.bolts.traits.isRefDecl!Aliases;
 }
 

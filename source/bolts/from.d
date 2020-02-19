@@ -1,3 +1,6 @@
+/**
+    Lazy import symbols
+*/
 module bolts.from;
 
 /**
