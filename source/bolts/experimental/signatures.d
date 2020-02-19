@@ -460,18 +460,13 @@ struct ignoreAttributes {}
 struct ignoreQualifiers {}
 
 
-
-/**
-    An input range signature
-*/
-interface InputRange(T) {
-    @property bool empty();
-    @property T front();
-    @ignoreAttributes void popFront();
-}
-
-///
 unittest {
+    interface InputRange(T) {
+        @property bool empty();
+        @property T front();
+        @ignoreAttributes void popFront();
+    }
+
     struct R(T) {
         mixin Models!(InputRange!T);
 
