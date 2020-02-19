@@ -6,53 +6,6 @@ module bolts.meta;
 import bolts.internal;
 
 /**
-    Returns the types of all values given.
-
-    $(OD If isFunction!T then the typeof the address is taken if possible)
-    $(OD If typeof(T) can be taken it is)
-    $(OD Else it is appended on as is)
-
-    Returns:
-        AliasSeq of the resulting types
-*/
-template TypesOf(Values...) {
-    import std.meta: AliasSeq;
-    import std.traits: isExpressions, isFunction;
-    static if (Values.length) {
-        static if (isFunction!(Values[0]) && is(typeof(&Values[0]) F)) {
-            alias T = F;
-        } else static if (is(typeof(Values[0]))) {
-            alias T = typeof(Values[0]);
-        } else {
-            alias T = Values[0];
-        }
-        alias TypesOf = AliasSeq!(T, TypesOf!(Values[1..$]));
-    } else {
-        alias TypesOf = AliasSeq!();
-    }
-}
-
-///
-unittest {
-    import std.meta: AliasSeq;
-    static assert(is(TypesOf!("hello", 1, 2, 3.0, real) == AliasSeq!(string, int, int, double, real)));
-}
-
-unittest {
-    import std.meta: AliasSeq;
-    static void f0() {}
-    void f1() {}
-    struct S { void f2() {} }
-    static assert(is(TypesOf!(f0, f1, S.f2) == AliasSeq!(typeof(&f0), typeof(&f1), typeof(&S.f2))));
-}
-
-unittest {
-    import std.meta: AliasSeq;
-    int f(int p) { return 3; }
-    static assert(is(TypesOf!(typeof(f)) == AliasSeq!(typeof(f))));
-}
-
-/**
     Flattens a list of types to their `ElementType` or in the case of an AliasPack it's `.UnpackDeep`
 
     If a type is a range then its `ElementType` is used
@@ -255,7 +208,7 @@ unittest {
 */
 template RemoveAttributes(T...) {
     import std.traits: functionLinkage, SetFunctionAttributes, FunctionAttribute;
-    alias U = TypesOf!T[0];
+    alias U = from.bolts.traits.TypesOf!T[0];
 	alias RemoveAttributes = SetFunctionAttributes!(U, functionLinkage!U, FunctionAttribute.none);
 }
 

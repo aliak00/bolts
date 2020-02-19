@@ -1,5 +1,5 @@
 /**
-    Contains experimental features
+    Contains experimental features - these can break *anytime*
 */
 module bolts.experimental;
 

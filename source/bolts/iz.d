@@ -1,5 +1,5 @@
 /**
-    Iz is is - reason for choosing iz is because is is a keyword
+    Iz is is - reason for choosing iz is because is is a keyword. Answers the qustions "is this 'thing' ____ ?"
 */
 module bolts.iz;
 
@@ -93,7 +93,7 @@ import bolts.internal;
         - https://dlang.org/spec/template.html#variadic-templates
 */
 template iz(Aliases...) if (Aliases.length == 1) {
-    import bolts.meta: TypesOf;
+    import bolts.traits.symbols: TypesOf;
 
     alias ResolvedType = TypesOf!Aliases[0];
 

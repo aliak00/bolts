@@ -3,6 +3,38 @@
 */
 module bolts.experimental.signatures;
 
+///
+unittest {
+    interface InputRange(T) {
+        @property bool empty();
+        @property T front();
+        @ignoreAttributes void popFront();
+    }
+
+    struct R(T) {
+        mixin Models!(InputRange!T);
+
+        T[] values;
+        int index;
+        this(T[] arr) {
+            values = arr;
+        }
+        @property bool empty() {
+            return values.length == index;
+        }
+        @property T front() {
+            return values[index];
+        }
+        void popFront() {
+            index++;
+        }
+    }
+
+    import std.range: array;
+    auto r = R!int([1, 4, 2, 3]);
+    assert(r.array == [1, 4, 2, 3]);
+}
+
 private enum Report {
     all,
     one,
@@ -268,7 +300,7 @@ unittest {
     Checks if type `Model` is a model of type `Sig`
 */
 template isModelOf(alias _Model, alias _Sig) {
-    import bolts.meta: TypesOf;
+    import bolts.traits: TypesOf;
     alias Model = TypesOf!_Model[0];
     alias Sig = TypesOf!_Sig[0];
     enum isModelOf = checkSignatureOf!(Model, Sig, Report.one) == null;
@@ -281,8 +313,7 @@ template AssertModelOf(alias _Model, alias _Sig, string file = __FILE__, int lin
     import std.algorithm: map, joiner;
     import std.range: array;
     import std.conv: to;
-    import bolts.traits: StringOf;
-    import bolts.meta: TypesOf;
+    import bolts.traits: StringOf, TypesOf;
 
     alias Model = TypesOf!_Model[0];
     alias Sig = TypesOf!_Sig[0];
@@ -458,38 +489,6 @@ struct ignoreAttributes {}
     take type qualifiers in to account
 */
 struct ignoreQualifiers {}
-
-
-unittest {
-    interface InputRange(T) {
-        @property bool empty();
-        @property T front();
-        @ignoreAttributes void popFront();
-    }
-
-    struct R(T) {
-        mixin Models!(InputRange!T);
-
-        T[] values;
-        int index;
-        this(T[] arr) {
-            values = arr;
-        }
-        @property bool empty() {
-            return values.length == index;
-        }
-        @property T front() {
-            return values[index];
-        }
-        void popFront() {
-            index++;
-        }
-    }
-
-    import std.range: array;
-    auto r = R!int([1, 4, 2, 3]);
-    assert(r.array == [1, 4, 2, 3]);
-}
 
 unittest {
     interface Sig {

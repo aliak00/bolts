@@ -15,7 +15,7 @@ import std.meta : allSatisfy;
 */
 template isSortedRange(R...) if (R.length == 1) {
     import std.range: SortedRange;
-    import bolts.meta: TypesOf;
+    import bolts.traits: TypesOf;
     alias T = TypesOf!R[0];
     enum isSortedRange = is(T : SortedRange!U, U...);
 }
@@ -39,8 +39,8 @@ unittest {
         Args[1] = the sorting predicate to fallback to if `Range` is not a `SortedRange`
 */
 template sortingPredicate(Args...)
-if ((Args.length == 1 || Args.length == 2) && isInputRange!(from.bolts.meta.TypesOf!Args[0])) {
-    import bolts.meta: TypesOf;
+if ((Args.length == 1 || Args.length == 2) && isInputRange!(from.bolts.traits.TypesOf!Args[0])) {
+    import bolts.traits: TypesOf;
     import std.range: SortedRange;
     import std.functional: binaryFun;
     alias R = TypesOf!Args[0];

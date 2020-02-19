@@ -78,7 +78,7 @@ template staticMembersOf(T) {
 ///
 unittest {
     import std.meta: AliasSeq, Alias;
-    import bolts.meta: TypesOf;
+    import bolts.traits: TypesOf;
     struct S {
         static void s0() {}
         static int s1 = 3;
@@ -116,7 +116,7 @@ unittest {
 */
 template member(Params...) if (Params.length == 2) {
     private enum name = Params[1];
-    private alias T = bolts.meta.TypesOf!Params[0];
+    private alias T = bolts.traits.TypesOf!Params[0];
     private alias ResolvedType = ResolvePointer!T;
 
     /**
