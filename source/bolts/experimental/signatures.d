@@ -30,7 +30,7 @@ private auto checkSignatureOf(alias Model, alias Sig, Report report = Report.one
         } else static if (is(T == enum)) {
             return "enum";
         } else static if (isFunction!T) {
-            return "function";
+            return "function type";
         } else {
             return "type";
         }
@@ -253,7 +253,7 @@ unittest {
         "Missing alias named `b` to type `int`.",
         "Found alias `c` of wrong type. Expected alias to type `float`.",
         "Missing enum named `E1`",
-        "Missing identifier `f` of function `void(int)`.",
+        "Missing identifier `f` of function type `void(int)`.",
         "Enum `E2` is missing members: [\"b\"]",
         "Missing identifier `y` of type `float`.",
         "Missing identifier `z` of type `short`.",
