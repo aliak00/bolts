@@ -100,7 +100,7 @@ $(TR
     )
 $(TR
     $(TD)
-    $(TD $(DDOX_NAMED_REF bolts.meta.staticZip, `staticZip`))
+    $(TD $(DDOX_NAMED_REF bolts.meta.Zip, `Zip`))
     $(TD Zip m n-tuple `AliasPack`s together to form n m-tuple AliasPacks)
     )
 $(TR
