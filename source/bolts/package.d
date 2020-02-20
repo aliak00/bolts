@@ -105,7 +105,7 @@ $(TR
     )
 $(TR
     $(TD)
-    $(TD $(DDOX_NAMED_REF bolts.meta.pluck, `pluck`))
+    $(TD $(DDOX_NAMED_REF bolts.meta.Pluck, `Pluck`))
     $(TD Extract `AliasPack` elements at positions)
     )
 $(TR

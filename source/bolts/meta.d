@@ -183,27 +183,26 @@ unittest {
     The function takes two parameters - the first is the `AliasPack` to extract
     from, the second is an `AliasPack` of positions.
 */
-template pluck(alias Pack, size_t[] Positions)
-  if (isInstanceOf!(AliasPack, Pack))
-{
-  static if (Positions.length == 0) {
-    alias pluck = AliasPack!();
-  } else {
-      static assert(
-        Positions[0] >= 0 && Positions[0] < Pack.length,
-        "Position is out of range");
-      alias pluck = AliasPack!(
-        Pack.Unpack[Positions[0]],
-        pluck!(Pack, Positions[1..$]).Unpack);
-  }
+template Pluck(alias Pack, size_t[] Positions) if (isInstanceOf!(AliasPack, Pack)) {
+    static if (Positions.length == 0) {
+        alias Pluck = AliasPack!();
+    } else {
+        static assert(
+            Positions[0] >= 0 && Positions[0] < Pack.length,
+            "Position is out of range"
+        );
+        alias Pluck = AliasPack!(
+            Pack.Unpack[Positions[0]],
+            Pluck!(Pack, Positions[1..$]).Unpack
+        );
+    }
 }
 
 ///
-unittest
-{
-  static assert(pluck!(AliasPack!(), []).equals!());
-  static assert(pluck!(AliasPack!(int, char, float), []).equals!());
-  static assert(pluck!(AliasPack!(int, char, float), [0,  2]).equals!(int, float));
+unittest {
+    static assert(Pluck!(AliasPack!(), []).equals!());
+    static assert(Pluck!(AliasPack!(int, char, float), []).equals!());
+    static assert(Pluck!(AliasPack!(int, char, float), [0, 2]).equals!(int, float));
 }
 
 /**
