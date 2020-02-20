@@ -16,7 +16,7 @@ import bolts.internal;
 template isFunctionOver(T...) {
     import std.meta: staticMap, Alias;
     import std.traits: isSomeFunction, Parameters;
-    import bolts.meta: AliasPack, staticZip;
+    import bolts.meta: AliasPack, Zip;
 
     alias Types = from.bolts.traits.TypesOf!T;
 
@@ -29,7 +29,7 @@ template isFunctionOver(T...) {
                     enum isFunctionOver = true;
                 } else {
                     import std.meta: allSatisfy;
-                    alias Pairs = staticZip!(ExpectedParams, DesiredParams);
+                    alias Pairs = Zip!(ExpectedParams, DesiredParams);
                     // If is(DesiredType : ExpectedType)
                     enum AreSame(alias Pair) = is(Pair.Unpack[1] : Pair.Unpack[0]);
                     enum isFunctionOver = allSatisfy!(AreSame, Pairs.Unpack);

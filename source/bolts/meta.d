@@ -124,13 +124,16 @@ unittest {
     static assert(AliasPack!(PackOfPacks.UnpackDeep).equals!(1, int, 2, float, 17));
 }
 
+deprecated("use Zip instead")
+alias staticZip = Zip;
+
 /**
     Zips sequences of `AliasPack`s together into an AliasPack of AliasPacks.
 
     See_Also:
         - https://forum.dlang.org/post/mnobngrzdmqbxomulpts@forum.dlang.org
 */
-template staticZip(Seqs...) {
+template Zip(Seqs...) {
     import std.traits: isInstanceOf;
     import std.meta: allSatisfy, staticMap;
 
@@ -145,7 +148,7 @@ template staticZip(Seqs...) {
     static foreach (Seq; Seqs[1 .. $]) {
         static assert(
             Seq.length == len,
-            "All arguments to staticZip must have the same length"
+            "All arguments to Zip must have the same length"
         );
     }
 
@@ -153,11 +156,11 @@ template staticZip(Seqs...) {
     alias Tail(alias P) = P.Tail;
 
     static if (len == 0) {
-        alias staticZip = AliasPack!();
+        alias Zip = AliasPack!();
     } else {
-        alias staticZip = AliasPack!(
+        alias Zip = AliasPack!(
             AliasPack!(staticMap!(Head, Seqs)),
-            staticZip!(staticMap!(Tail, Seqs)).Unpack
+            Zip!(staticMap!(Tail, Seqs)).Unpack
         );
     }
 }
@@ -167,7 +170,7 @@ unittest {
     alias a = AliasPack!(1, 2, 3);
     alias b = AliasPack!(4, 5, 6);
     alias c = AliasPack!(7, 8, 9);
-    alias d = staticZip!(a, b, c);
+    alias d = Zip!(a, b, c);
 
     static assert(d.length == 3);
 
