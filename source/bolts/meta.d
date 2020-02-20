@@ -4,6 +4,7 @@
 module bolts.meta;
 
 import bolts.internal;
+import std.traits: isInstanceOf;
 
 /**
     Flattens a list of types to their `ElementType` or in the case of an AliasPack it's `.UnpackDeep`
@@ -174,6 +175,35 @@ unittest {
     static assert(d.Unpack[0].equals!(1, 4, 7));
     static assert(d.Unpack[1].equals!(2, 5, 8));
     static assert(d.Unpack[2].equals!(3, 6, 9));
+}
+
+/**
+    Extract the elements of an `AliasPack` at given positions.
+
+    The function takes two parameters - the first is the `AliasPack` to extract
+    from, the second is an `AliasPack` of positions.
+*/
+template pluck(alias Pack, size_t[] Positions)
+  if (isInstanceOf!(AliasPack, Pack))
+{
+  static if (Positions.length == 0) {
+    alias pluck = AliasPack!();
+  } else {
+      static assert(
+        Positions[0] >= 0 && Positions[0] < Pack.length,
+        "Position is out of range");
+      alias pluck = AliasPack!(
+        Pack.Unpack[Positions[0]],
+        pluck!(Pack, Positions[1..$]).Unpack);
+  }
+}
+
+///
+unittest
+{
+  static assert(pluck!(AliasPack!(), []).equals!());
+  static assert(pluck!(AliasPack!(int, char, float), []).equals!());
+  static assert(pluck!(AliasPack!(int, char, float), [0,  2]).equals!(int, float));
 }
 
 /**

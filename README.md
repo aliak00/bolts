@@ -9,7 +9,7 @@ Bolts is a utility library for the D programming language which contains a numbe
 ## Modules:
 
 * **meta**: has functions that result in compile time entity transofrmations, including:
-    * `Flatten`, `AliasPack`, `staticZip`, `FilterMembersOf`, `RemoveAttributes`.
+    * `Flatten`, `AliasPack`, `pluck`, `staticZip`, `FilterMembersOf`, `RemoveAttributes`.
 * **traits**: has general utitlites that can query compile time entities. including:
     * `isFunctionOver`, `isUnaryOver`, `isBinaryOver`, `isProperty`, `hasProperty`, `propertySemantics`, `areCombinable`, `isManifestAssignable`, `isOf`, `isSame`, `isNullType`, `StringOf`, `isRefType`, `isValueType`, `isLiteralOf`, `isLiteral`, `isCopyConstructable`, `isNonTriviallyCopyConstructable`, `protectionLevel`, `isTriviallyCopyConstructable`, `hasFunctionMember`, `areEquatable`, `isNullSettable`, `isNullTestable`, `isRefDecl`, `TypesOf`
 * **members**: has functions that allow you to query about the members of types

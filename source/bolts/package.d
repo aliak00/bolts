@@ -105,6 +105,11 @@ $(TR
     )
 $(TR
     $(TD)
+    $(TD $(DDOX_NAMED_REF bolts.meta.pluck, `pluck`))
+    $(TD Extract `AliasPack` elements at positions)
+    )
+$(TR
+    $(TD)
     $(TD $(DDOX_NAMED_REF bolts.meta.FilterMembersOf, `FilterMembersOf`))
     $(TD Filters the members of a type based on a has-predicate)
     )
