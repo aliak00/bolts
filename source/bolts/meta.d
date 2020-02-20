@@ -4,7 +4,6 @@
 module bolts.meta;
 
 import bolts.internal;
-import std.traits: isInstanceOf;
 
 /**
     Flattens a list of types to their `ElementType` or in the case of an AliasPack it's `.UnpackDeep`
@@ -183,7 +182,7 @@ unittest {
     The function takes two parameters - the first is the `AliasPack` to extract
     from, the second is an `AliasPack` of positions.
 */
-template Pluck(alias Pack, size_t[] Positions) if (isInstanceOf!(AliasPack, Pack)) {
+template Pluck(alias Pack, size_t[] Positions) if (from.std.traits.isInstanceOf!(AliasPack, Pack)) {
     static if (Positions.length == 0) {
         alias Pluck = AliasPack!();
     } else {
