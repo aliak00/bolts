@@ -16,16 +16,16 @@ This module helps building functions from other functions.
 
 module bolts.experimental.refraction;
 
-import std.algorithm.iteration : map;
+import std.algorithm;
 import std.array;
 import std.format;
 import std.meta;
-import std.range : iota;
-import std.traits : functionAttributes, FunctionAttribute;
+import std.range;
+import std.traits;
+import bolts.traits;
 
 // Do not require caller module to import 'std.traits'. Instead use our own
 // aliases in mixtures.
-alias ReturnType = std.traits.ReturnType;
 alias Parameters = std.traits.Parameters;
 
 /**
@@ -50,19 +50,19 @@ alias Parameters = std.traits.Parameters;
 Function refract(alias fun, string localName, int overloadIndex = -1)()
 if (is(typeof(fun) == function)) {
     Function model = {
-    name: __traits(identifier, fun),
-    overloadIndex: overloadIndex,
-    localName: localName,
-    returnType: __MODULE__~".ReturnType!("~localName~")",
-    parameters: refractParameterList!(fun, localName),
-    udas: __traits(getAttributes, fun)
-    .length.iota.map!(
-        formatIndex!(
-            "@(__traits(getAttributes, %s)[%%d])".format(localName))).array,
-    attributes: functionAttributes!(fun),
-    static_: (__traits(isStaticFunction, fun)
-              && isAggregate!(__traits(parent, fun))),
-    body_: ";",
+        name: __traits(identifier, fun),
+        overloadIndex: overloadIndex,
+        localName: localName,
+        returnType: StringOf!(ReturnType!fun),
+        parameters: refractParameterList!(fun, localName),
+        udas: __traits(getAttributes, fun)
+            .length.iota.map!(
+                formatIndex!(
+                    "@(__traits(getAttributes, %s)[%%d])".format(localName))).array,
+        attributes: functionAttributes!(fun),
+        static_: (__traits(isStaticFunction, fun)
+            && isAggregate!(__traits(parent, fun))),
+        body_: ";",
     };
 
     return model;
@@ -73,21 +73,16 @@ unittest {
     pure @nogc int answer(lazy string question);
     alias F = answer; // typically F is a template argument
     static assert(
-        refract!(F, "F").mixture ==
-        "pure @nogc @system %s.ReturnType!(F) answer(lazy %s.Parameters!(F)[0] _0);"
-        .format(__MODULE__, __MODULE__));
+        refract!(F, "F").mixture
+            == "pure @nogc @system int answer(lazy %s.Parameters!(F)[0] _0);"
+                .format(__MODULE__));
 }
 
 ///
 unittest {
-    import std.format;
-    import std.traits : FunctionAttribute;
-    import bolts.experimental.refraction;
-
     interface GrandTour {
         pure int foo() immutable;
-        @nogc @trusted nothrow ref int foo(
-            out real, return ref int, lazy int) const;
+        @nogc @trusted nothrow ref int foo(out real, return ref int, lazy int) const;
         @safe shared scope void bar(scope Object);
     }
 
@@ -181,16 +176,10 @@ unittest {
 
     static assert(functions.length == 2);
 
-    static assert(
-        functions[0].mixture ==
-        q{@system %s.ReturnType!(__traits(getOverloads, Container, "answer")[0]) answer();}
-        .format(__MODULE__));
+    static assert(functions[0].mixture == q{@system int answer();});
     static assert(functions[0].overloadIndex == 0);
 
-    static assert(
-        functions[1].mixture ==
-        q{@system %s.ReturnType!(__traits(getOverloads, Container, "answer")[2]) answer();}
-        .format(__MODULE__));
+    static assert(functions[1].mixture == q{@system string answer();});
     static assert(functions[1].overloadIndex == 2);
 }
 
@@ -278,8 +267,7 @@ immutable struct Function {
     int overloadIndex;
 
     /**
-       Return type. Initial value:
-       `bolts.experimental.refraction.ReturnType!fun`.
+       Return type. Initial value: `std.traits.ReturnType!fun`.
     */
 
     string returnType;
