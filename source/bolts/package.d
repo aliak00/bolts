@@ -64,6 +64,30 @@
       source/bolts/experimental/signatures.d(471): <-- Checked here."
     ---
 
+    Refraction_(experimental):
+
+    It is sometimes necessary to create a function which is an exact copy of
+    another function. Or sometimes it is necessary to introduce a few variations,
+    while carrying all the other aspects. Because of function attributes, parameter
+    storage classes and user-defined attributes, this requires building a string
+    mixin. In addition, the mixed-in code must refer only to local names, if it is
+    to work across module boundaires. This module facilitates the creation of such
+    mixins.
+
+    For example, this creates a function that has a different name and return type,
+    but retains the 'pure' attribute from the original function:
+
+    ---
+    pure int answer() { return 42; }
+    mixin(
+      refract!(answer, "answer").withName("realAnswer")
+      .withReturnType("real")
+      .mixture);
+    static assert(is(typeof(realAnswer()) == real));
+    static assert(functionAttributes!realAnswer & FunctionAttribute.pure_);
+    ---
+
+
 All_the_things:
 
 $(TABLE
@@ -147,6 +171,11 @@ $(TR
     $(TD)
     $(TD $(DDOX_NAMED_REF bolts.experimental.signatures.Models, `Models`))
     $(TD Mixin that throws a compile error if a structure does not match another)
+    )
+$(TR
+    $(TD `bolts.experimental.refraction`)
+    $(TD $(DDOX_NAMED_REF bolts.experimental.refraction.refract, `refract`))
+    $(TD Returns a compile time object that helps create a string mixin corresponding to a function, possibly with variations)
     )
 $(TR
     $(TD `bolts.traits`)

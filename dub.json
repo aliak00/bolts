@@ -9,5 +9,14 @@
     "targetPath": "bin",
     "toolChainRequirements": {
         "frontend": ">=2.086"
-    }
+    },
+	"configurations": [
+		{
+			"dflags": [
+				"-mixin=mixins.txt"
+			],
+			"name": "unittest",
+			"targetType": "library"
+		}
+	],
 }
