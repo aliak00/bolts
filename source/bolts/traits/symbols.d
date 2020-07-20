@@ -397,7 +397,7 @@ unittest {
     bool checkMemberFunciton() {
         static struct S {
             int i;
-            ref int value() { return i; }
+            ref int value() return { return i; }
         }
         S s;
         return isRefDecl!(s.value) && isRefDecl!(S.value);
