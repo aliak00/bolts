@@ -14,3 +14,4 @@ bolts-test-*
 bin/
 docs/
 dub.selections.json
+mixins.txt
