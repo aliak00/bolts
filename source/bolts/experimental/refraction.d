@@ -441,7 +441,7 @@ immutable struct Function {
     /**
        User defined attributes.
        Initial value:
-       `bolts.experimental.refraction.ParameterAttribute!(fun, parameterIndex..., attributeIndex...)`.
+       `bolts.experimental.refraction.ParameterAttributes!(fun, parameterIndex)...[attributeIndex...])`.
     */
 
     string[] udas;
@@ -626,7 +626,7 @@ immutable struct Parameter {
 
     /**
        Parameter UDAs. Initial value:
-       `[@(bolts.experimental.refraction.ParameterAttribute!(fun,i, j...))]`,
+       `[@(bolts.experimental.refraction.ParameterAttribute!(fun,i)[j...])]`,
        where where `fun` is the refracted function, `i` is the position of the
        parameter, and `j...` are the positions of the UDAs.
     */
@@ -652,7 +652,7 @@ private Parameter refractParameter(alias Fun, string mixture, uint index)() {
     static if (is(typeof(Fun) parameters == __parameters)) {
         alias parameter = parameters[index .. index + 1];
         static if (__traits(compiles,  __traits(getAttributes, parameter))) {
-            enum udaFormat = "@(%s.ParameterAttribute!(%s, %d, %%d))".format(
+            enum udaFormat = "@(%s.ParameterAttributes!(%s, %d)[%%d])".format(
                 __MODULE__, mixture, index);
             enum udas = __traits(getAttributes, parameter).length.iota.map!(
                 formatIndex!udaFormat).array;
@@ -694,16 +694,32 @@ private string formatIndex(string f)(ulong i) {
    j = zero-based index of a user-defined attribute of i-th parameter fun
 */
 
-template ParameterAttribute(alias fun, int i, int j) {
+template ParameterAttributes(alias fun, int i) {
     static if (is(typeof(fun) P == __parameters)) {
-        alias ParameterAttribute =
-            Alias!(__traits(getAttributes, P[i..i+1])[j]);
+        alias ParameterAttributes =
+            __traits(getAttributes, P[i..i+1]);
     }
 }
 
 unittest {
     struct virtual;
     void kick(int times, @virtual @("Animal") Object animal);
-    static assert(is(ParameterAttribute!(kick, 1, 0) == virtual));
-    static assert(ParameterAttribute!(kick, 1, 1) == "Animal");
+    static assert(ParameterAttributes!(kick, 1).length == 2);
+    static assert(is(ParameterAttributes!(kick, 1)[0] == virtual));
+    static assert(ParameterAttributes!(kick, 1)[1] == "Animal");
+
+    import bolts.experimental.refraction;
+    enum kickModel = refract!(kick, "kick");
+    mixin(kickModel.withName("pet").mixture);
+    static assert(is(typeof(pet) == typeof(kick)));
+
+    mixin(
+        kickModel
+        .withName("feed")
+        .withParameters(
+            [ kickModel.parameters[0].withUdas(kickModel.parameters[1].udas),
+              kickModel.parameters[1].withUdas(kickModel.parameters[0].udas) ])
+        .mixture);
+    static assert(ParameterAttributes!(feed, 0).stringof == ParameterAttributes!(kick, 1).stringof);
+    static assert(ParameterAttributes!(feed, 1).stringof == ParameterAttributes!(kick, 0).stringof);
 }
