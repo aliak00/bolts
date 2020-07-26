@@ -7,7 +7,7 @@ This module helps building functions from other functions.
  parameter storage classes and user-defined attributes, this requires building
  a string mixin. In addition, the mixed-in code must refer only to local names,
  if it is to work across module boundaires. This problem and its solution are
- by Adam D. Ruppe in a Tip of the Week, available here:
+described  by Adam D. Ruppe in a Tip of the Week, available here:
  https://stackoverflow.com/questions/32615733/struct-composition-with-mixin-and-templates/32621854#32621854
 
  This module facilitates the  creation of such mixins.
