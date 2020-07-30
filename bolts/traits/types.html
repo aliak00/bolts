@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8"/>
+		<title>Module bolts.traits.types</title>
+		<link rel="stylesheet" type="text/css" href="../../styles/ddox.css"/>
+		<link rel="stylesheet" href="../../prettify/prettify.css" type="text/css"/>
+		<script type="text/javascript" src="../../scripts/jquery.js">/**/</script><script type="text/javascript" src="../../scripts/ddox.js">/**/</script>
+	</head>
+	<body onload="setupDdox();">
+		<nav id="main-nav">
+			<noscript>
+				<p style="color: red">The search functionality needs JavaScript enabled</p>
+			</noscript>
+			<div id="symbolSearchPane" style="display: none">
+				<form action="#" method="GET">
+					<input id="symbolSearch" type="text" name="q" placeholder="Search for symbols" autocomplete="off" onchange="performSymbolSearch(40);" onkeypress="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();"/>
+				</form>
+				<ul id="symbolSearchResults" class="symbolList" style="display: none"></ul><script type="application/javascript" src="../../symbols.js"></script><script type="application/javascript">var symbolSearchRootDir = "../../";
+$('#symbolSearchPane').show();</script>
+			</div>
+			<ul class="tree-view">
+				<li class="tree-view ">
+					<div class="package ">
+						<a href="../../bolts.html">bolts</a>
+					</div>
+			<ul class="tree-view">
+				<li class="tree-view collapsed">
+					<div class="package ">
+						<a href="../../bolts/experimental.html">experimental</a>
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../../bolts/experimental/refraction.html">refraction</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/experimental/signatures.html">signatures</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li class="tree-view ">
+					<div class="package ">
+						<a href="../../bolts/traits.html">traits</a>
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../../bolts/traits/functions.html">functions</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/traits/has.html">has</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/traits/symbols.html">symbols</a>
+					</div>
+				</li>
+				<li>
+					<div class="module selected">
+						<a href="../../bolts/traits/types.html">types</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/from.html">from</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/iz.html">iz</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/members.html">members</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/meta.html">meta</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/range.html">range</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+			</ul>
+		</nav>
+		<div id="main-contents">
+			<h1>Module bolts.traits.types</h1><p>Traits that can query type information about stuff.
+</p>
+			<section></section>
+			<section>
+				<h2>Functions</h2>
+				<table>
+					<col class="caption"/>
+					<tr>
+						<th>Name</th><th>Description</th>
+					</tr>
+					<tr>
+						<td>
+							<code>
+								<a id="StringOf" class="public" href="../../bolts/traits/types/StringOf.html">StringOf</a><span class="tableEntryAnnotation">()</span>
+							</code>
+						</td>
+						<td>Returns a stringof another template with it's real and non-mangled types
+</td>
+					</tr>
+				</table>
+			</section>
+			<section>
+				<h2>Manifest constants</h2>
+				<table>
+					<col class="caption"/>
+					<tr>
+						<th>Name</th><th>Type</th><th>Description</th>
+					</tr>
+					<tr>
+						<td>
+							<a id="areCombinable" class="public" href="../../bolts/traits/types/areCombinable.html">
+								<code>areCombinable</code>
+							</a>
+						</td>
+						<td>
+						</td>
+						<td>Tells you if a list of types, which are composed of ranges and non ranges,
+    share a common type after flattening the ranges (i.e. <code class="lang-d"><span class="typ">ElementType</span></code>)
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="areEquatable" class="public" href="../../bolts/traits/types/areEquatable.html">
+								<code>areEquatable</code>
+							</a>
+						</td>
+						<td>
+						</td>
+						<td>Returns true if two things are equatable
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="isCopyConstructable" class="public" href="../../bolts/traits/types/isCopyConstructable.html">
+								<code>isCopyConstructable</code>
+							</a>
+						</td>
+						<td>
+						</td>
+						<td>Checks to see if a type is copy constructable - postblit doesn't count.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="isNonTriviallyCopyConstructable" class="public" href="../../bolts/traits/types/isNonTriviallyCopyConstructable.html">
+								<code>isNonTriviallyCopyConstructable</code>
+							</a>
+						</td>
+						<td>
+						</td>
+						<td>Checks to see if a type is non-trivially copy constructable
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="isNullSettable" class="public" href="../../bolts/traits/types/isNullSettable.html">
+								<code>isNullSettable</code>
+							</a>
+						</td>
+						<td>
+						</td>
+						<td>Returns true of T can be set to null
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="isNullTestable" class="public" href="../../bolts/traits/types/isNullTestable.html">
+								<code>isNullTestable</code>
+							</a>
+						</td>
+						<td>
+						</td>
+						<td>Returns true of T can be check with null using an if statement
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="isNullType" class="public" href="../../bolts/traits/types/isNullType.html">
+								<code>isNullType</code>
+							</a>
+						</td>
+						<td>
+						</td>
+						<td>True if <code class="lang-d"><span class="pln">T</span></code> is of type null
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="isRefType" class="public" href="../../bolts/traits/types/isRefType.html">
+								<code>isRefType</code>
+							</a>
+						</td>
+						<td>
+						</td>
+						<td>Checks if a compile time entity is a reference type.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="isTriviallyCopyConstructable" class="public" href="../../bolts/traits/types/isTriviallyCopyConstructable.html">
+								<code>isTriviallyCopyConstructable</code>
+							</a>
+						</td>
+						<td>
+						</td>
+						<td>Checks if a type is trivially constructable, that is no user-defined copy constructor exists - postblit doesn't count.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="isValueType" class="public" href="../../bolts/traits/types/isValueType.html">
+								<code>isValueType</code>
+							</a>
+						</td>
+						<td>
+						</td>
+						<td>Checks if a compile time entity is a value type
+</td>
+					</tr>
+				</table>
+			</section>
+			<section>
+				<h2>Global variables</h2>
+				<table>
+					<col class="caption"/>
+					<tr>
+						<th>Name</th><th>Type</th><th>Description</th>
+					</tr>
+					<tr>
+						<td>
+							<a id="StringOf" class="public" href="../../bolts/traits/types/StringOf.html">
+								<code>StringOf</code>
+							</a>
+						</td>
+						<td>
+							<code class="prettyprint lang-d"><span class="typ">void</span></code>
+						</td>
+						<td>Returns a stringof another template with it's real and non-mangled types
+</td>
+					</tr>
+				</table>
+			</section>
+			<footer>
+				<table class="license-info">
+					<tr>
+						<th>Authors</th>
+						<td>
+							
+						</td>
+					</tr>
+					<tr>
+						<th>Copyright</th>
+						<td>
+							
+						</td>
+					</tr>
+					<tr>
+						<th>License</th>
+						<td>
+							
+						</td>
+					</tr>
+				</table>
+				<p class="faint">Generated using the DDOX documentation generator</p>
+			</footer>
+		</div>
+	</body>
+</html>

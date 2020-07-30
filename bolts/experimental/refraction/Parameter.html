@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8"/>
+		<title>Struct Parameter</title>
+		<link rel="stylesheet" type="text/css" href="../../../styles/ddox.css"/>
+		<link rel="stylesheet" href="../../../prettify/prettify.css" type="text/css"/>
+		<script type="text/javascript" src="../../../scripts/jquery.js">/**/</script><script type="text/javascript" src="../../../scripts/ddox.js">/**/</script>
+	</head>
+	<body onload="setupDdox();">
+		<nav id="main-nav">
+			<noscript>
+				<p style="color: red">The search functionality needs JavaScript enabled</p>
+			</noscript>
+			<div id="symbolSearchPane" style="display: none">
+				<form action="#" method="GET">
+					<input id="symbolSearch" type="text" name="q" placeholder="Search for symbols" autocomplete="off" onchange="performSymbolSearch(40);" onkeypress="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();"/>
+				</form>
+				<ul id="symbolSearchResults" class="symbolList" style="display: none"></ul><script type="application/javascript" src="../../../symbols.js"></script><script type="application/javascript">var symbolSearchRootDir = "../../../";
+$('#symbolSearchPane').show();</script>
+			</div>
+			<ul class="tree-view">
+				<li class="tree-view ">
+					<div class="package ">
+						<a href="../../../bolts.html">bolts</a>
+					</div>
+			<ul class="tree-view">
+				<li class="tree-view ">
+					<div class="package ">
+						<a href="../../../bolts/experimental.html">experimental</a>
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module selected">
+						<a href="../../../bolts/experimental/refraction.html">refraction</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/experimental/signatures.html">signatures</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li class="tree-view collapsed">
+					<div class="package ">
+						<a href="../../../bolts/traits.html">traits</a>
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/traits/functions.html">functions</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/traits/has.html">has</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/traits/symbols.html">symbols</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/traits/types.html">types</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/from.html">from</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/iz.html">iz</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/members.html">members</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/meta.html">meta</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/range.html">range</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+			</ul>
+		</nav>
+		<div id="main-contents">
+			<h1>Struct Parameter</h1><p>A struct capturing all the properties of a function parameter.
+</p>
+			<div class="prototype">
+				<code class="lang-d">
+					<div class="single-prototype">
+			<span class="kwd">struct</span> <span class="typ">Parameter</span>
+			<span class="pun">;</span>
+					</div>
+				</code>
+			</div>
+			
+			<section><h2>Fields</h2>
+				<table>
+					<col class="caption"/>
+					<tr>
+						<th>Name</th><th>Type</th><th>Description</th>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../../bolts/experimental/refraction/Parameter.name.html" class="public"><code>name</code></a>
+						</td>
+						<td class="typecol"><code class="prettyprint lang-d"><span class="kwd">immutable</span><span class="pun">(</span><span class="typ">char</span><span class="pun">[]</span><span class="pun">)</span></code></td><td>Parameter name. Initial value: <code class="lang-d"><span class="pln">_i</span></code>, where <code class="lang-d"><span class="pln">i</span></code> is the position of the
+       parameter.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../../bolts/experimental/refraction/Parameter.storageClasses.html" class="public"><code>storageClasses</code></a>
+						</td>
+						<td class="typecol"><code class="prettyprint lang-d"><span class="kwd">immutable</span><span class="pun">(</span><span class="typ">char</span><span class="pun">[]</span><span class="pun">[]</span><span class="pun">)</span></code></td><td>Parameter storage classes. Initial value:
+       <code class="lang-d"><span class="pun">[</span><span class="kwd">__traits</span><span class="pun">(</span><span class="pln">getParameterStorageClasses</span><span class="pun">, </span><span class="pln">fun</span><span class="pun">, </span><span class="pln">i</span><span class="pun">)]</span></code>, where where <code class="lang-d"><span class="pln">fun</span></code> is
+       the refracted function and <code class="lang-d"><span class="pln">i</span></code> is the position of the parameter.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../../bolts/experimental/refraction/Parameter.type.html" class="public"><code>type</code></a>
+						</td>
+						<td class="typecol"><code class="prettyprint lang-d"><span class="kwd">immutable</span><span class="pun">(</span><span class="typ">char</span><span class="pun">[]</span><span class="pun">)</span></code></td><td>Parameter type. Initial value: <code class="lang-d"><span class="pln">std<wbr/></span><span class="pun">.</span><span class="pln">traits<wbr/></span><span class="pun">.</span><span class="typ">Parameter</span><span class="pun">!</span><span class="pln">fun</span><span class="pun">[</span><span class="pln">i</span><span class="pun">]</span></code>, where
+       <code class="lang-d"><span class="pln">fun</span></code> is the refracted function and <code class="lang-d"><span class="pln">i</span></code> is the position of the
+       parameter.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../../bolts/experimental/refraction/Parameter.udas.html" class="public"><code>udas</code></a>
+						</td>
+						<td class="typecol"><code class="prettyprint lang-d"><span class="kwd">immutable</span><span class="pun">(</span><span class="typ">char</span><span class="pun">[]</span><span class="pun">[]</span><span class="pun">)</span></code></td><td>Parameter UDAs. Initial value:
+       <code class="lang-d"><span class="pun">[@(<a href="../../../bolts/experimental/refraction/ParameterAttribute.html" title="bolts.experimental.refraction.ParameterAttribute"></span><span class="typ">ParameterAttribute</span></a><span class="pun">!(</span><span class="pln">fun</span><span class="pun">,</span><span class="pln">i</span><span class="pun">, </span><span class="pln">j</span><span class="pun">...))]</span></code>,
+       where where <code class="lang-d"><span class="pln">fun</span></code> is the refracted function, <code class="lang-d"><span class="pln">i</span></code> is the position of the
+       parameter, and <code class="lang-d"><span class="pln">j</span><span class="pun">...</span></code> are the positions of the UDAs.
+</td>
+					</tr>
+				</table>
+			</section>
+			<section><h2>Methods</h2>
+				<table>
+					<col class="caption"/>
+					<tr>
+						<th>Name</th><th>Description</th>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../../bolts/experimental/refraction/Parameter.withName.html" class="public">
+								<code>withName</code>
+							</a>
+							<span class="tableEntryAnnotation">(value)</span>
+						</td>
+						<td>Return a new Parameter object with the <code class="lang-d"><a href="../../../bolts/experimental/refraction/Parameter.name.html"><span class="pln">name</span></a></code> attribute set to <code class="lang-d"><a href="../../../bolts/experimental/refraction/Parameter.withName.html#value"><span class="pln">value</span></a></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../../bolts/experimental/refraction/Parameter.withStorageClasses.html" class="public">
+								<code>withStorageClasses</code>
+							</a>
+							<span class="tableEntryAnnotation">(value)</span>
+						</td>
+						<td>Return a new <code class="lang-d"><a href="../../../bolts/experimental/refraction/Parameter.html"><span class="typ">Parameter</span></a></code> object with the <code class="lang-d"><a href="../../../bolts/experimental/refraction/Parameter.storageClasses.html"><span class="pln">storageClasses</span></a></code> attribute set
+       to <code class="lang-d"><a href="../../../bolts/experimental/refraction/Parameter.withStorageClasses.html#value"><span class="pln">value</span></a></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../../bolts/experimental/refraction/Parameter.withType.html" class="public">
+								<code>withType</code>
+							</a>
+							<span class="tableEntryAnnotation">(value)</span>
+						</td>
+						<td>Return a new <code class="lang-d"><a href="../../../bolts/experimental/refraction/Parameter.html"><span class="typ">Parameter</span></a></code> object with the <code class="lang-d"><a href="../../../bolts/experimental/refraction/Parameter.type.html"><span class="pln">type</span></a></code> attribute set to
+       <code class="lang-d"><a href="../../../bolts/experimental/refraction/Parameter.withType.html#value"><span class="pln">value</span></a></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../../bolts/experimental/refraction/Parameter.withUdas.html" class="public">
+								<code>withUdas</code>
+							</a>
+							<span class="tableEntryAnnotation">(value)</span>
+						</td>
+						<td>Return a new <code class="lang-d"><a href="../../../bolts/experimental/refraction/Parameter.html"><span class="typ">Parameter</span></a></code> object with the <code class="lang-d"><a href="../../../bolts/experimental/refraction/Parameter.udas.html"><span class="pln">udas</span></a></code> attribute set to
+       <code class="lang-d"><a href="../../../bolts/experimental/refraction/Parameter.withUdas.html#value"><span class="pln">value</span></a></code>.
+</td>
+					</tr>
+				</table>
+			</section>
+			
+			<footer>
+				<table class="license-info">
+					<tr>
+						<th>Authors</th>
+						<td>
+							
+						</td>
+					</tr>
+					<tr>
+						<th>Copyright</th>
+						<td>
+							
+						</td>
+					</tr>
+					<tr>
+						<th>License</th>
+						<td>
+							
+						</td>
+					</tr>
+				</table>
+				<p class="faint">Generated using the DDOX documentation generator</p>
+			</footer>
+		</div>
+	</body>
+</html>

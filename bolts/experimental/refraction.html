@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8"/>
+		<title>Module bolts.experimental.refraction</title>
+		<link rel="stylesheet" type="text/css" href="../../styles/ddox.css"/>
+		<link rel="stylesheet" href="../../prettify/prettify.css" type="text/css"/>
+		<script type="text/javascript" src="../../scripts/jquery.js">/**/</script><script type="text/javascript" src="../../scripts/ddox.js">/**/</script>
+	</head>
+	<body onload="setupDdox();">
+		<nav id="main-nav">
+			<noscript>
+				<p style="color: red">The search functionality needs JavaScript enabled</p>
+			</noscript>
+			<div id="symbolSearchPane" style="display: none">
+				<form action="#" method="GET">
+					<input id="symbolSearch" type="text" name="q" placeholder="Search for symbols" autocomplete="off" onchange="performSymbolSearch(40);" onkeypress="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();"/>
+				</form>
+				<ul id="symbolSearchResults" class="symbolList" style="display: none"></ul><script type="application/javascript" src="../../symbols.js"></script><script type="application/javascript">var symbolSearchRootDir = "../../";
+$('#symbolSearchPane').show();</script>
+			</div>
+			<ul class="tree-view">
+				<li class="tree-view ">
+					<div class="package ">
+						<a href="../../bolts.html">bolts</a>
+					</div>
+			<ul class="tree-view">
+				<li class="tree-view ">
+					<div class="package ">
+						<a href="../../bolts/experimental.html">experimental</a>
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module selected">
+						<a href="../../bolts/experimental/refraction.html">refraction</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/experimental/signatures.html">signatures</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li class="tree-view collapsed">
+					<div class="package ">
+						<a href="../../bolts/traits.html">traits</a>
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../../bolts/traits/functions.html">functions</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/traits/has.html">has</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/traits/symbols.html">symbols</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/traits/types.html">types</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/from.html">from</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/iz.html">iz</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/members.html">members</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/meta.html">meta</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/range.html">range</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+			</ul>
+		</nav>
+		<div id="main-contents">
+			<h1>Module bolts.experimental.refraction</h1><p>This module helps building functions from other functions.
+</p><section><p>It is sometimes necessary to create a function which is an exact copy of
+ another function. Or sometimes it is necessary to introduce a few variations,
+ while carrying all the other aspects. Because of function attributes,
+ parameter storage classes and user-defined attributes, this requires building
+ a string mixin. In addition, the mixed-in code must refer only to local names,
+ if it is to work across module boundaires. This problem and its solution are
+ by Adam D. Ruppe in a Tip of the Week, available here:
+</p>
+</section>
+
+			<section><section><h2>https</h2>
+<p>//stackoverflow.com/questions/32615733/struct-composition-with-mixin-and-templates/32621854#32621854
+</p>
+
+<p> This module facilitates the  creation of such mixins.
+</p>
+</section>
+</section>
+			<section>
+				<h2>Functions</h2>
+				<table>
+					<col class="caption"/>
+					<tr>
+						<th>Name</th><th>Description</th>
+					</tr>
+					<tr>
+						<td>
+							<code>
+								<a id="functionsOf" class="public" href="../../bolts/experimental/refraction/functionsOf.html">functionsOf</a><span class="tableEntryAnnotation">()</span>
+							</code>
+						</td>
+						<td>Return an array of <code class="lang-d"><a href="../../bolts/experimental/refraction/Function.html"><span class="typ">Function</span></a></code> objects, refracting the functions in <code class="lang-d"><span class="typ">Scope</span></code>
+   for which <code class="lang-d"><span class="typ">IncludePredicate</span></code> evaluates to <code class="lang-d"><span class="kwd">true</span></code>, using the value of
+   <code class="lang-d"><span class="pln">localName</span></code> to represent <code class="lang-d"><span class="typ">Scope</span></code>. <code class="lang-d"><span class="typ">IncludePredicate</span></code> is optional; if not
+   specified, refract all the functions. The <code class="lang-d"><span class="pln">overloadIndex</span></code> property of each
+   <code class="lang-d"><a href="../../bolts/experimental/refraction/Function.html"><span class="typ">Function</span></a></code> is set to the index of the function in its *entire* overload set
+   (i.e. including the overloads that may have been excluded by
+   <code class="lang-d"><span class="typ">IncludePredicate</span></code>).
+</td>
+					</tr>
+					<tr>
+						<td>
+							<code>
+								<a id="refract" class="public" href="../../bolts/experimental/refraction/refract.html">refract</a><span class="tableEntryAnnotation">()</span>
+							</code>
+						</td>
+						<td>Return a <code class="lang-d"><a href="../../bolts/experimental/refraction/Function.html"><span class="typ">Function</span></a></code> object that captures all the aspects of <code class="lang-d"><span class="pln">fun</span></code>, using the
+   value of <code class="lang-d"><span class="pln">localName</span></code> to represent the return and parameter types, and the
+   UDAs. Set the <code class="lang-d"><a href="../../bolts/experimental/refraction/Function.html"><span class="typ">Function</span></a></code>'s <code class="lang-d"><span class="pln">overloadIndex</span></code> property to <code class="lang-d"><span class="pln">index</span></code>, or to -1 if
+   it is not specified.
+</td>
+					</tr>
+				</table>
+			</section>
+			<section>
+				<h2>Structs</h2>
+				<table>
+					<col class="caption"/>
+					<tr>
+						<th>Name</th><th>Description</th>
+					</tr>
+					<tr>
+						<td>
+							<code>
+								<a id="Function" class="public" href="../../bolts/experimental/refraction/Function.html">Function</a>
+							</code>
+						</td>
+						<td>A struct capturing all the aspects of a function necessary to produce a
+   string mixin that re-creates the function (excepting the body).
+</td>
+					</tr>
+					<tr>
+						<td>
+							<code>
+								<a id="Parameter" class="public" href="../../bolts/experimental/refraction/Parameter.html">Parameter</a>
+							</code>
+						</td>
+						<td>A struct capturing all the properties of a function parameter.
+</td>
+					</tr>
+				</table>
+			</section>
+			<section>
+				<h2>Aliases</h2>
+				<table>
+					<col class="caption"/>
+					<tr>
+						<th>Name</th><th>Type</th><th>Description</th>
+					</tr>
+					<tr>
+						<td>
+							<a id="ParameterAttribute" class="public" href="../../bolts/experimental/refraction/ParameterAttribute.html">
+								<code>ParameterAttribute</code>
+							</a>
+						</td>
+						<td>
+							<code class="prettyprint lang-d"><span class="typ">Alias</span>!(__traits(getAttributes,P[i..i+1])[j])</code>
+						</td>
+						<td>Return an alias to the <code class="lang-d"><span class="pln">j</span></code>-th user-define attribute of the <code class="lang-d"><span class="pln">i</span></code>-th parameter
+   of <code class="lang-d"><span class="pln">fun</span></code>.
+</td>
+					</tr>
+				</table>
+			</section>
+			<footer>
+				<table class="license-info">
+					<tr>
+						<th>Authors</th>
+						<td>
+							
+						</td>
+					</tr>
+					<tr>
+						<th>Copyright</th>
+						<td>
+							
+						</td>
+					</tr>
+					<tr>
+						<th>License</th>
+						<td>
+							
+						</td>
+					</tr>
+				</table>
+				<p class="faint">Generated using the DDOX documentation generator</p>
+			</footer>
+		</div>
+	</body>
+</html>

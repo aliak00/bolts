@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8"/>
+		<title>Template iz</title>
+		<link rel="stylesheet" type="text/css" href="../../styles/ddox.css"/>
+		<link rel="stylesheet" href="../../prettify/prettify.css" type="text/css"/>
+		<script type="text/javascript" src="../../scripts/jquery.js">/**/</script><script type="text/javascript" src="../../scripts/ddox.js">/**/</script>
+	</head>
+	<body onload="setupDdox();">
+		<nav id="main-nav">
+			<noscript>
+				<p style="color: red">The search functionality needs JavaScript enabled</p>
+			</noscript>
+			<div id="symbolSearchPane" style="display: none">
+				<form action="#" method="GET">
+					<input id="symbolSearch" type="text" name="q" placeholder="Search for symbols" autocomplete="off" onchange="performSymbolSearch(40);" onkeypress="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();"/>
+				</form>
+				<ul id="symbolSearchResults" class="symbolList" style="display: none"></ul><script type="application/javascript" src="../../symbols.js"></script><script type="application/javascript">var symbolSearchRootDir = "../../";
+$('#symbolSearchPane').show();</script>
+			</div>
+			<ul class="tree-view">
+				<li class="tree-view ">
+					<div class="package ">
+						<a href="../../bolts.html">bolts</a>
+					</div>
+			<ul class="tree-view">
+				<li class="tree-view collapsed">
+					<div class="package ">
+						<a href="../../bolts/experimental.html">experimental</a>
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../../bolts/experimental/refraction.html">refraction</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/experimental/signatures.html">signatures</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li class="tree-view collapsed">
+					<div class="package ">
+						<a href="../../bolts/traits.html">traits</a>
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../../bolts/traits/functions.html">functions</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/traits/has.html">has</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/traits/symbols.html">symbols</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/traits/types.html">types</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/from.html">from</a>
+					</div>
+				</li>
+				<li>
+					<div class="module selected">
+						<a href="../../bolts/iz.html">iz</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/members.html">members</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/meta.html">meta</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/range.html">range</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+			</ul>
+		</nav>
+		<div id="main-contents">
+			<h1>Template iz</h1><p><code class="lang-d"><span class="typ">Iz</span></code> is a helper template that allows you to inspect a type or an alias.
+</p>
+			<div class="prototype">
+				<code class="lang-d">
+					<div class="single-prototype">
+			<span class="kwd">template</span> <span class="pln">iz</span>(Aliases...)
+			;
+					</div>
+				</code>
+			</div>
+			<section><p>It takes a single element as an argument. The reason the template parameters is
+    types as a variable arg sequence is becure if D does not allow (pre version 2.087)
+    to say "I want either a type or alias over here, I don't care, I'll figure it out".
+    But it does allow it when you use a <i>template sequence parameter</i>
+</p>
+
+<p>    <table>    <tr><th>method</th> <th>Description</th></tr>
+    <tr>        <td><a href="../../bolts/iz/iz.of.html" title="bolts.iz.iz.of"><code class="lang-d"><a href="../../bolts/iz/iz.of.html"><span class="pln">of</span></a></code></a></td>
+        <td>True if the resolved type is the same as another resolved type</td>
+        </tr>
+    <tr>        <td><a href="../../bolts/iz/iz.sameAs.html" title="bolts.iz.iz.sameAs"><code class="lang-d"><a href="../../bolts/iz/iz.sameAs.html"><span class="pln">sameAs</span></a></code></a></td>
+        <td>True if T and U are the same "thing" (type, alias, literal value)</td>
+        </tr>
+    <tr>        <td><a href="../../bolts/iz/iz.nullType.html" title="bolts.iz.iz.nullType"><code class="lang-d"><a href="../../bolts/iz/iz.nullType.html"><span class="pln">nullType</span></a></code></a></td>
+        <td>True if the resolved type is typeof(null)</td>
+        </tr>
+    <tr>        <td><a href="../../bolts/iz/iz.unaryOver.html" title="bolts.iz.iz.unaryOver"><code class="lang-d"><a href="../../bolts/iz/iz.unaryOver.html"><span class="pln">unaryOver</span></a></code></a></td>
+        <td>True if the resolved type a unary funtion over some other types</td>
+        </tr>
+    <tr>        <td><a href="../../bolts/iz/iz.binaryOver.html" title="bolts.iz.iz.binaryOver"><code class="lang-d"><a href="../../bolts/iz/iz.binaryOver.html"><span class="pln">binaryOver</span></a></code></a></td>
+        <td>True if the resolved type a binary funtion over some other types</td>
+        </tr>
+    <tr>        <td><a href="../../bolts/iz/iz.functionOver.html" title="bolts.iz.iz.functionOver"><code class="lang-d"><a href="../../bolts/iz/iz.functionOver.html"><span class="pln">functionOver</span></a></code></a></td>
+        <td>True if the resolved type an n-ary funtion over n types</td>
+        </tr>
+    <tr>        <td><a href="../../bolts/iz/iz.refType.html" title="bolts.iz.iz.refType"><code class="lang-d"><a href="../../bolts/iz/iz.refType.html"><span class="pln">refType</span></a></code></a></td>
+        <td>True if the resolved type a reference type</td>
+        </tr>
+    <tr>        <td><a href="../../bolts/iz/iz.valueType.html" title="bolts.iz.iz.valueType"><code class="lang-d"><a href="../../bolts/iz/iz.valueType.html"><span class="pln">valueType</span></a></code></a></td>
+        <td>True if the resolved type a value type</td>
+        </tr>
+    <tr>        <td><a href="../../bolts/iz/iz.literalOf.html" title="bolts.iz.iz.literalOf"><code class="lang-d"><a href="../../bolts/iz/iz.literalOf.html"><span class="pln">literalOf</span></a></code></a></td>
+        <td>True if the resolved type is a literal of a type of T</td>
+        </tr>
+    <tr>        <td><a href="../../bolts/iz/iz.literal.html" title="bolts.iz.iz.literal"><code class="lang-d"><a href="../../bolts/iz/iz.literal.html"><span class="pln">literal</span></a></code></a></td>
+        <td>True if the resolved type is a literal</td>
+        </tr>
+    <tr>        <td><a href="../../bolts/iz/iz.copyConstructable.html" title="bolts.iz.iz.copyConstructable"><code class="lang-d"><a href="../../bolts/iz/iz.copyConstructable.html"><span class="pln">copyConstructable</span></a></code></a></td>
+        <td>True if resolved type is copy constructable</td>
+        </tr>
+    <tr>        <td><a href="../../bolts/iz/iz.nonTriviallyCopyConstructable.html" title="bolts.iz.iz.nonTriviallyCopyConstructable"><code class="lang-d"><a href="../../bolts/iz/iz.nonTriviallyCopyConstructable.html"><span class="pln">nonTriviallyCopyConstructable</span></a></code></a></td>
+        <td>True if resolved type is non-trivially copy constructable</td>
+        </tr>
+    <tr>        <td><a href="../../bolts/iz/iz.triviallyCopyConstructable.html" title="bolts.iz.iz.triviallyCopyConstructable"><code class="lang-d"><a href="../../bolts/iz/iz.triviallyCopyConstructable.html"><span class="pln">triviallyCopyConstructable</span></a></code></a></td>
+        <td>True if resolved is trivially copy constructable</td>
+        </tr>
+    <tr>        <td><a href="../../bolts/iz/iz.equatableTo.html" title="bolts.iz.iz.equatableTo"><code class="lang-d"><a href="../../bolts/iz/iz.equatableTo.html"><span class="pln">equatableTo</span></a></code></a></td>
+        <td>True if resolved type is equatabel to other</td>
+        </tr>
+    <tr>        <td><a href="../../bolts/iz/iz.nullTestable.html" title="bolts.iz.iz.nullTestable"><code class="lang-d"><a href="../../bolts/iz/iz.nullTestable.html"><span class="pln">nullTestable</span></a></code></a></td>
+        <td>True if resolved type can be checked against null</td>
+        </tr>
+    <tr>        <td><a href="../../bolts/iz/iz.nullSettable.html" title="bolts.iz.iz.nullSettable"><code class="lang-d"><a href="../../bolts/iz/iz.nullSettable.html"><span class="pln">nullSettable</span></a></code></a></td>
+        <td>True if resolved type can be set to null</td>
+        </tr>
+    <tr>        <td><a href="../../bolts/iz/iz.refDecl.html" title="bolts.iz.iz.refDecl"><code class="lang-d"><a href="../../bolts/iz/iz.refDecl.html"><span class="pln">refDecl</span></a></code></a></td>
+        <td>True if resolved type is declred with ref or is a function that returns ref</td>
+        </tr>
+    </table>
+</p>
+</section>
+
+			<section><h2>See also</h2>
+<p>- https://dlang.org/spec/template.html#variadic-templates
+</p>
+</section>
+<section><h2>Example</h2>
+
+<pre class="code"><code class="lang-d"><span class="typ">int </span><span class="pln">i </span><span class="pun">= </span><span class="lit">3</span><span class="pun">;
+</span><span class="typ">int </span><span class="pln">j </span><span class="pun">= </span><span class="lit">4</span><span class="pun">;
+</span><span class="typ">int </span><span class="pun">*</span><span class="pln">pi </span><span class="pun">= </span><span class="kwd">null</span><span class="pun">;
+
+</span><span class="com">// Is it resolved to the same type as another?
+</span><span class="kwd">static assert</span><span class="pun">( </span><span class="pln">iz</span><span class="pun">!</span><span class="pln">i<wbr/></span><span class="pun">.</span><span class="pln">of</span><span class="pun">!</span><span class="typ">int</span><span class="pun">);
+</span><span class="kwd">static assert</span><span class="pun">(!</span><span class="pln">iz</span><span class="pun">!</span><span class="pln">i<wbr/></span><span class="pun">.</span><span class="pln">of</span><span class="pun">!(</span><span class="typ">int</span><span class="pun">*));
+</span><span class="kwd">static assert</span><span class="pun">( </span><span class="pln">iz</span><span class="pun">!</span><span class="lit">3<wbr/></span><span class="pun">.</span><span class="pln">of</span><span class="pun">!</span><span class="pln">i</span><span class="pun">);
+</span><span class="kwd">static assert</span><span class="pun">(!</span><span class="pln">iz</span><span class="pun">!</span><span class="typ">int<wbr/></span><span class="pun">.</span><span class="pln">of</span><span class="pun">!</span><span class="pln">pi</span><span class="pun">);
+
+</span><span class="com">// Is it the same as another?
+</span><span class="kwd">static assert</span><span class="pun">( </span><span class="pln">iz</span><span class="pun">!</span><span class="pln">i<wbr/></span><span class="pun">.</span><span class="pln">sameAs</span><span class="pun">!</span><span class="pln">i</span><span class="pun">);
+</span><span class="kwd">static assert</span><span class="pun">(!</span><span class="pln">iz</span><span class="pun">!</span><span class="pln">i<wbr/></span><span class="pun">.</span><span class="pln">sameAs</span><span class="pun">!</span><span class="pln">j</span><span class="pun">);
+</span><span class="kwd">static assert</span><span class="pun">( </span><span class="pln">iz</span><span class="pun">!</span><span class="lit">1<wbr/></span><span class="pun">.</span><span class="pln">sameAs</span><span class="pun">!</span><span class="lit">1</span><span class="pun">);
+</span><span class="kwd">static assert</span><span class="pun">(!</span><span class="pln">iz</span><span class="pun">!</span><span class="lit">1<wbr/></span><span class="pun">.</span><span class="pln">sameAs</span><span class="pun">!</span><span class="lit">2</span><span class="pun">);
+
+</span><span class="com">// Using std.meta algorithm with iz
+</span><span class="kwd">import </span><span class="pln">std<wbr/></span><span class="pun">.</span><span class="pln">meta</span><span class="pun">: </span><span class="pln">allSatisfy</span><span class="pun">, </span><span class="typ">AliasSeq</span><span class="pun">;
+</span><span class="kwd">static assert</span><span class="pun">(</span><span class="pln">allSatisfy</span><span class="pun">!(</span><span class="pln">iz</span><span class="pun">!</span><span class="typ">int<wbr/></span><span class="pun">.</span><span class="pln">of</span><span class="pun">, </span><span class="lit">3</span><span class="pun">, </span><span class="lit">4</span><span class="pun">, </span><span class="typ">int</span><span class="pun">, </span><span class="pln">i</span><span class="pun">));
+
+</span><span class="com">/// Is it a function over
+</span><span class="kwd">static assert</span><span class="pun">( </span><span class="pln">iz</span><span class="pun">!(</span><span class="pln">a </span><span class="pun">=&gt; </span><span class="pln">a</span><span class="pun">)<wbr/>.</span><span class="pln">unaryOver</span><span class="pun">!</span><span class="typ">int</span><span class="pun">);
+</span><span class="kwd">static assert</span><span class="pun">( </span><span class="pln">iz</span><span class="pun">!((</span><span class="pln">a</span><span class="pun">, </span><span class="pln">b</span><span class="pun">) =&gt; </span><span class="pln">a</span><span class="pun">)<wbr/>.</span><span class="pln">binaryOver</span><span class="pun">!(</span><span class="typ">int</span><span class="pun">, </span><span class="typ">int</span><span class="pun">));
+</span><span class="kwd">static assert</span><span class="pun">( </span><span class="pln">iz</span><span class="pun">!((</span><span class="pln">a</span><span class="pun">, </span><span class="pln">b</span><span class="pun">, </span><span class="pln">c</span><span class="pun">, </span><span class="pln">d</span><span class="pun">) =&gt; </span><span class="pln">a</span><span class="pun">)<wbr/>.</span><span class="pln">functionOver</span><span class="pun">!(</span><span class="typ">int</span><span class="pun">, </span><span class="typ">int</span><span class="pun">, </span><span class="typ">int</span><span class="pun">, </span><span class="typ">int</span><span class="pun">));
+
+</span><span class="com">// Is this thing a value or reference type?
+</span><span class="kwd">struct </span><span class="typ">SValueType </span><span class="pun">{}
+</span><span class="kwd">class </span><span class="typ">CRefType </span><span class="pun">{}
+</span><span class="kwd">static assert</span><span class="pun">( </span><span class="pln">iz</span><span class="pun">!</span><span class="typ">SValueType<wbr/></span><span class="pun">.</span><span class="pln">valueType</span><span class="pun">);
+</span><span class="kwd">static assert</span><span class="pun">(!</span><span class="pln">iz</span><span class="pun">!</span><span class="typ">CRefType<wbr/></span><span class="pun">.</span><span class="pln">valueType</span><span class="pun">);
+</span><span class="kwd">static assert</span><span class="pun">(!</span><span class="pln">iz</span><span class="pun">!</span><span class="typ">SValueType<wbr/></span><span class="pun">.</span><span class="pln">refType</span><span class="pun">);
+</span><span class="kwd">static assert</span><span class="pun">( </span><span class="pln">iz</span><span class="pun">!</span><span class="typ">CRefType<wbr/></span><span class="pun">.</span><span class="pln">refType</span><span class="pun">);
+
+</span><span class="kwd">static assert</span><span class="pun">( </span><span class="pln">iz</span><span class="pun">!</span><span class="str">"hello"<wbr/></span><span class="pun">.</span><span class="pln">literalOf</span><span class="pun">!</span><span class="typ">string</span><span class="pun">);
+</span><span class="kwd">static assert</span><span class="pun">(!</span><span class="pln">iz</span><span class="pun">!</span><span class="lit">3<wbr/></span><span class="pun">.</span><span class="pln">literalOf</span><span class="pun">!</span><span class="typ">string</span><span class="pun">);
+
+</span><span class="com">// Is this thing copy constructable?
+</span><span class="kwd">static struct </span><span class="typ">SDisabledCopyConstructor </span><span class="pun">{ </span><span class="kwd">@disable this</span><span class="pun">(</span><span class="kwd">ref typeof</span><span class="pun">(</span><span class="kwd">this</span><span class="pun">)); }
+</span><span class="kwd">static assert</span><span class="pun">(!</span><span class="pln">iz</span><span class="pun">!</span><span class="typ">SDisabledCopyConstructor<wbr/></span><span class="pun">.</span><span class="pln">copyConstructable</span><span class="pun">);
+</span><span class="kwd">static assert</span><span class="pun">( </span><span class="pln">iz</span><span class="pun">!</span><span class="typ">int<wbr/></span><span class="pun">.</span><span class="pln">copyConstructable</span><span class="pun">);
+
+</span><span class="com">// Does this thing define a custom copy constructor (i.e. non-trivial copy constructor)
+</span><span class="kwd">static struct </span><span class="typ">SCopyConstructor </span><span class="pun">{ </span><span class="kwd">this</span><span class="pun">(</span><span class="kwd">ref typeof</span><span class="pun">(</span><span class="kwd">this</span><span class="pun">)) {} }
+</span><span class="kwd">static assert</span><span class="pun">( </span><span class="pln">iz</span><span class="pun">!</span><span class="typ">SCopyConstructor<wbr/></span><span class="pun">.</span><span class="pln">nonTriviallyCopyConstructable</span><span class="pun">);
+</span><span class="kwd">static assert</span><span class="pun">(!</span><span class="pln">iz</span><span class="pun">!</span><span class="typ">SCopyConstructor<wbr/></span><span class="pun">.</span><span class="pln">triviallyCopyConstructable</span><span class="pun">);
+</span><span class="kwd">static assert</span><span class="pun">(!</span><span class="pln">iz</span><span class="pun">!</span><span class="typ">int<wbr/></span><span class="pun">.</span><span class="pln">nonTriviallyCopyConstructable</span><span class="pun">);
+</span><span class="kwd">static assert</span><span class="pun">( </span><span class="pln">iz</span><span class="pun">!</span><span class="typ">int<wbr/></span><span class="pun">.</span><span class="pln">triviallyCopyConstructable</span><span class="pun">);
+
+</span><span class="com">// Can we equate these things?
+</span><span class="kwd">static assert</span><span class="pun">( </span><span class="pln">iz</span><span class="pun">!</span><span class="typ">int<wbr/></span><span class="pun">.</span><span class="pln">equatableTo</span><span class="pun">!</span><span class="lit">3</span><span class="pun">);
+</span><span class="kwd">static assert</span><span class="pun">(!</span><span class="pln">iz</span><span class="pun">!</span><span class="lit">3<wbr/></span><span class="pun">.</span><span class="pln">equatableTo</span><span class="pun">!</span><span class="typ">string</span><span class="pun">);
+
+</span><span class="com">// What null-semantics does the type have
+
+// Is it settable to null?
+</span><span class="kwd">static struct </span><span class="typ">SNullSettable </span><span class="pun">{ </span><span class="typ">void </span><span class="pln">opAssign</span><span class="pun">(</span><span class="typ">int</span><span class="pun">*) {} }
+</span><span class="kwd">static assert</span><span class="pun">( </span><span class="pln">iz</span><span class="pun">!</span><span class="pln">pi<wbr/></span><span class="pun">.</span><span class="pln">nullSettable</span><span class="pun">);
+</span><span class="kwd">static assert</span><span class="pun">( </span><span class="pln">iz</span><span class="pun">!</span><span class="typ">SNullSettable<wbr/></span><span class="pun">.</span><span class="pln">nullSettable</span><span class="pun">);
+</span><span class="kwd">static assert</span><span class="pun">(!</span><span class="pln">iz</span><span class="pun">!</span><span class="pln">i<wbr/></span><span class="pun">.</span><span class="pln">nullSettable</span><span class="pun">);
+
+</span><span class="com">// Is it checable with null? (i.e. if (this is null) )
+</span><span class="kwd">static assert</span><span class="pun">( </span><span class="pln">iz</span><span class="pun">!</span><span class="pln">pi<wbr/></span><span class="pun">.</span><span class="pln">nullTestable</span><span class="pun">);
+</span><span class="kwd">static assert</span><span class="pun">(!</span><span class="pln">iz</span><span class="pun">!</span><span class="typ">SNullSettable<wbr/></span><span class="pun">.</span><span class="pln">nullTestable</span><span class="pun">);
+</span><span class="kwd">static assert</span><span class="pun">(!</span><span class="pln">iz</span><span class="pun">!</span><span class="pln">i<wbr/></span><span class="pun">.</span><span class="pln">nullTestable</span><span class="pun">);
+
+</span><span class="com">// Is it typeof(null)?
+</span><span class="kwd">static assert</span><span class="pun">(!</span><span class="pln">iz</span><span class="pun">!</span><span class="typ">int<wbr/></span><span class="pun">.</span><span class="pln">nullType</span><span class="pun">);
+</span><span class="kwd">static assert</span><span class="pun">( </span><span class="pln">iz</span><span class="pun">!</span><span class="kwd">null<wbr/></span><span class="pun">.</span><span class="pln">nullType</span><span class="pun">);
+</span><span class="kwd">static assert</span><span class="pun">( </span><span class="pln">iz</span><span class="pun">!(</span><span class="kwd">typeof</span><span class="pun">(</span><span class="kwd">null</span><span class="pun">))<wbr/>.</span><span class="pln">nullType</span><span class="pun">);
+</span></code></pre>
+</section>
+
+			<footer>
+				<table class="license-info">
+					<tr>
+						<th>Authors</th>
+						<td>
+							
+						</td>
+					</tr>
+					<tr>
+						<th>Copyright</th>
+						<td>
+							
+						</td>
+					</tr>
+					<tr>
+						<th>License</th>
+						<td>
+							
+						</td>
+					</tr>
+				</table>
+				<p class="faint">Generated using the DDOX documentation generator</p>
+			</footer>
+		</div>
+	</body>
+</html>

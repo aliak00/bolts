@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8"/>
+		<title>Variable StringOf</title>
+		<link rel="stylesheet" type="text/css" href="../../../styles/ddox.css"/>
+		<link rel="stylesheet" href="../../../prettify/prettify.css" type="text/css"/>
+		<script type="text/javascript" src="../../../scripts/jquery.js">/**/</script><script type="text/javascript" src="../../../scripts/ddox.js">/**/</script>
+	</head>
+	<body onload="setupDdox();">
+		<nav id="main-nav">
+			<noscript>
+				<p style="color: red">The search functionality needs JavaScript enabled</p>
+			</noscript>
+			<div id="symbolSearchPane" style="display: none">
+				<form action="#" method="GET">
+					<input id="symbolSearch" type="text" name="q" placeholder="Search for symbols" autocomplete="off" onchange="performSymbolSearch(40);" onkeypress="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();"/>
+				</form>
+				<ul id="symbolSearchResults" class="symbolList" style="display: none"></ul><script type="application/javascript" src="../../../symbols.js"></script><script type="application/javascript">var symbolSearchRootDir = "../../../";
+$('#symbolSearchPane').show();</script>
+			</div>
+			<ul class="tree-view">
+				<li class="tree-view ">
+					<div class="package ">
+						<a href="../../../bolts.html">bolts</a>
+					</div>
+			<ul class="tree-view">
+				<li class="tree-view collapsed">
+					<div class="package ">
+						<a href="../../../bolts/experimental.html">experimental</a>
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/experimental/refraction.html">refraction</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/experimental/signatures.html">signatures</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li class="tree-view ">
+					<div class="package ">
+						<a href="../../../bolts/traits.html">traits</a>
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/traits/functions.html">functions</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/traits/has.html">has</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/traits/symbols.html">symbols</a>
+					</div>
+				</li>
+				<li>
+					<div class="module selected">
+						<a href="../../../bolts/traits/types.html">types</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/from.html">from</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/iz.html">iz</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/members.html">members</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/meta.html">meta</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/range.html">range</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+			</ul>
+		</nav>
+		<div id="main-contents">
+			<h1>Variable StringOf</h1><p>Returns a stringof another template with it's real and non-mangled types
+</p>
+			<div class="prototype">
+				<code class="lang-d">
+					<div class="single-prototype">
+			<span class="typ">void</span> <span class="pln">StringOf</span>(alias U, <span class="typ">string</span> sep<span class="pln"> </span><span class="pun">= </span><span class="str">", "</span>, <span class="typ">string</span> beg<span class="pln"> </span><span class="pun">= </span><span class="str">"!("</span>, <span class="typ">string</span> end<span class="pln"> </span><span class="pun">= </span><span class="str">")"</span>)
+			 <span class="pun">=</span> <span class="pln">text</span><span class="pun">(</span><span class="pln">tmpName</span><span class="pun">, </span><span class="pln">beg</span><span class="pun">, </span><span class="typ">SeparatedArgNames</span><span class="pun">, </span><span class="pln">end</span><span class="pun">)</span><span class="pun">;</span>
+					</div>
+					<div class="single-prototype">
+			<br/>
+			<br/>
+			<span class="typ">string</span> <span class="pln">StringOf</span>(T, <span class="typ">string</span> sep<span class="pln"> </span><span class="pun">= </span><span class="str">", "</span>, <span class="typ">string</span> beg<span class="pln"> </span><span class="pun">= </span><span class="str">"!("</span>, <span class="typ">string</span> end<span class="pln"> </span><span class="pun">= </span><span class="str">")"</span>)<span class="pun">(</span><span class="pun">)</span>
+			<br/>
+			<span class="kwd">if</span> <span class="pun">(</span><span class="kwd">is</span><span class="pun">(</span><span class="typ">TemplateOf</span><span class="pun">!</span><span class="pln">T </span><span class="pun">== </span><span class="typ">void</span><span class="pun">)</span><span class="pun">);</span>
+					</div>
+				</code>
+			</div>
+			<section><p>You may also customize the format in the case of templates:
+</p>
+
+<pre class="code"><code class="lang-d"><span class="kwd">struct </span><span class="pln">S</span><span class="pun">(</span><span class="pln">T</span><span class="pun">, </span><span class="pln">U</span><span class="pun">) {}
+</span><span class="typ">StringOf</span><span class="pun">!(</span><span class="pln">S</span><span class="pun">!(</span><span class="typ">int</span><span class="pun">, </span><span class="typ">int</span><span class="pun">))<wbr/>.</span><span class="pln">writeln</span><span class="pun">; </span><span class="com">// "S!(int, int)"
+</span><span class="typ">StringOf</span><span class="pun">!(</span><span class="pln">S</span><span class="pun">!(</span><span class="typ">int</span><span class="pun">, </span><span class="typ">int</span><span class="pun">), </span><span class="str">"..."</span><span class="pun">, </span><span class="str">"&lt;"</span><span class="pun">, </span><span class="str">"&gt;"</span><span class="pun">)<wbr/>.</span><span class="pln">writeln</span><span class="pun">; </span><span class="com">// "S&lt;int...int&gt;"</span></code></pre>
+</section>
+<h2>Variable StringOf</h2><h2>Function StringOf</h2>
+			<section><h2>Parameters</h2>
+<table><col class="caption"><tr><th>Name</th><th>Description</th></tr>
+<tr><td id="T">T</td><td> the type you want to stringize</td></tr>
+<tr><td id="sep">sep</td><td> in case of a template, what's the deperator between types</td></tr>
+<tr><td id="beg">beg</td><td> in case of a template, what token marks the beginnig of the template arguments</td></tr>
+<tr><td id="end">end</td><td> in case of a template, what token marks the end of the template arguments</td></tr>
+</table>
+</section>
+<section><h2>See Also</h2>
+<p>- https://forum.dlang.org/post/iodgpllgtcefcncoghri@forum.dlang.org
+</p>
+</section>
+<section><h2>Example</h2>
+
+<pre class="code"><code class="lang-d"><span class="kwd">template </span><span class="pln">A</span><span class="pun">(</span><span class="pln">T</span><span class="pun">...) {}
+</span><span class="kwd">struct </span><span class="pln">B </span><span class="pun">{}
+</span><span class="kwd">struct </span><span class="pln">C </span><span class="pun">{}
+</span><span class="kwd">alias </span><span class="pln">T </span><span class="pun">= </span><span class="pln">A</span><span class="pun">!(</span><span class="pln">A</span><span class="pun">!(</span><span class="pln">B</span><span class="pun">, </span><span class="pln">C</span><span class="pun">));
+</span><span class="kwd">assert</span><span class="pun">(</span><span class="typ">StringOf</span><span class="pun">!</span><span class="pln">T </span><span class="pun">== </span><span class="str">"A!(A!(B, C))"</span><span class="pun">);
+
+</span><span class="kwd">struct </span><span class="pln">S</span><span class="pun">(</span><span class="pln">T</span><span class="pun">) {}
+</span><span class="kwd">assert</span><span class="pun">(</span><span class="typ">StringOf</span><span class="pun">!(</span><span class="pln">S</span><span class="pun">!</span><span class="typ">int</span><span class="pun">) == </span><span class="str">"S!(int)"</span><span class="pun">);
+</span><span class="kwd">assert</span><span class="pun">(</span><span class="typ">StringOf</span><span class="pun">!(</span><span class="pln">A</span><span class="pun">!(</span><span class="pln">A</span><span class="pun">!(</span><span class="pln">B</span><span class="pun">, </span><span class="pln">S</span><span class="pun">!</span><span class="typ">int</span><span class="pun">))) == </span><span class="str">"A!(A!(B, S!(int)))"</span><span class="pun">);
+
+</span><span class="kwd">assert</span><span class="pun">(</span><span class="typ">StringOf</span><span class="pun">!</span><span class="typ">int </span><span class="pun">== </span><span class="str">"int"</span><span class="pun">);
+</span><span class="kwd">assert</span><span class="pun">(</span><span class="typ">StringOf</span><span class="pun">!</span><span class="lit">3 </span><span class="pun">== </span><span class="str">"3"</span><span class="pun">);
+
+</span><span class="typ">void </span><span class="pln">f</span><span class="pun">(</span><span class="typ">int </span><span class="pln">a</span><span class="pun">, </span><span class="typ">int </span><span class="pln">b</span><span class="pun">) {}
+</span><span class="kwd">import </span><span class="pln">std<wbr/></span><span class="pun">.</span><span class="pln">algorithm</span><span class="pun">: </span><span class="pln">canFind</span><span class="pun">;
+</span><span class="kwd">assert</span><span class="pun">(</span><span class="typ">StringOf</span><span class="pun">!(</span><span class="pln">f</span><span class="pun">)<wbr/>.</span><span class="pln">canFind</span><span class="pun">(</span><span class="str">"void(int a, int b)"</span><span class="pun">));
+
+</span><span class="kwd">assert</span><span class="pun">(</span><span class="typ">StringOf</span><span class="pun">!</span><span class="typ">void </span><span class="pun">== </span><span class="str">"void"</span><span class="pun">);
+</span></code></pre>
+</section>
+
+			<footer>
+				<table class="license-info">
+					<tr>
+						<th>Authors</th>
+						<td>
+							
+						</td>
+					</tr>
+					<tr>
+						<th>Copyright</th>
+						<td>
+							
+						</td>
+					</tr>
+					<tr>
+						<th>License</th>
+						<td>
+							
+						</td>
+					</tr>
+				</table>
+				<p class="faint">Generated using the DDOX documentation generator</p>
+			</footer>
+		</div>
+	</body>
+</html>

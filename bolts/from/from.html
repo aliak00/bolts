@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8"/>
+		<title>Enum member from</title>
+		<link rel="stylesheet" type="text/css" href="../../styles/ddox.css"/>
+		<link rel="stylesheet" href="../../prettify/prettify.css" type="text/css"/>
+		<script type="text/javascript" src="../../scripts/jquery.js">/**/</script><script type="text/javascript" src="../../scripts/ddox.js">/**/</script>
+	</head>
+	<body onload="setupDdox();">
+		<nav id="main-nav">
+			<noscript>
+				<p style="color: red">The search functionality needs JavaScript enabled</p>
+			</noscript>
+			<div id="symbolSearchPane" style="display: none">
+				<form action="#" method="GET">
+					<input id="symbolSearch" type="text" name="q" placeholder="Search for symbols" autocomplete="off" onchange="performSymbolSearch(40);" onkeypress="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();"/>
+				</form>
+				<ul id="symbolSearchResults" class="symbolList" style="display: none"></ul><script type="application/javascript" src="../../symbols.js"></script><script type="application/javascript">var symbolSearchRootDir = "../../";
+$('#symbolSearchPane').show();</script>
+			</div>
+			<ul class="tree-view">
+				<li class="tree-view ">
+					<div class="package ">
+						<a href="../../bolts.html">bolts</a>
+					</div>
+			<ul class="tree-view">
+				<li class="tree-view collapsed">
+					<div class="package ">
+						<a href="../../bolts/experimental.html">experimental</a>
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../../bolts/experimental/refraction.html">refraction</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/experimental/signatures.html">signatures</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li class="tree-view collapsed">
+					<div class="package ">
+						<a href="../../bolts/traits.html">traits</a>
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../../bolts/traits/functions.html">functions</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/traits/has.html">has</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/traits/symbols.html">symbols</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/traits/types.html">types</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li>
+					<div class="module selected">
+						<a href="../../bolts/from.html">from</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/iz.html">iz</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/members.html">members</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/meta.html">meta</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/range.html">range</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+			</ul>
+		</nav>
+		<div id="main-contents">
+			<h1>Enum member from</h1><p>Encompases the from import idiom in an opDispatch version
+</p>
+			<div class="prototype">
+				<code class="lang-d">
+					<div class="single-prototype">
+			<span class="kwd">enum</span> <span class="pln">from</span>
+			 <span class="pun">=</span> <span class="typ">FromImpl</span><span class="pun">()</span><span class="pun">;</span>
+					</div>
+				</code>
+			</div>
+			<section></section>
+
+			<section><h2>Since</h2>
+<p>- 0.12.0
+</p>
+</section>
+<section><h2>See Also</h2>
+<p><li> https://dlang.org/blog/2017/02/13/a-new-import-idiom/
+        <li> https://forum.dlang.org/thread/gdipbdsoqdywuabnpzpe@forum.dlang.org
+</p>
+</section>
+<section><h2>Example</h2>
+
+<pre class="code"><code class="lang-d"><span class="com">// Call a function
+</span><span class="kwd">auto </span><span class="pln">_0 </span><span class="pun">= </span><span class="pln">from<wbr/></span><span class="pun">.</span><span class="pln">std<wbr/></span><span class="pun">.</span><span class="pln">algorithm<wbr/></span><span class="pun">.</span><span class="pln">map</span><span class="pun">!</span><span class="str">"a"</span><span class="pun">([</span><span class="lit">1</span><span class="pun">, </span><span class="lit">2</span><span class="pun">, </span><span class="lit">3</span><span class="pun">]);
+</span><span class="com">// Assign an object
+</span><span class="kwd">auto </span><span class="pln">_1 </span><span class="pun">= </span><span class="pln">from<wbr/></span><span class="pun">.</span><span class="pln">std<wbr/></span><span class="pun">.</span><span class="pln">datetime<wbr/></span><span class="pun">.</span><span class="pln">stopwatch<wbr/></span><span class="pun">.</span><span class="typ">AutoStart<wbr/></span><span class="pun">.</span><span class="pln">yes</span><span class="pun">;
+
+</span><span class="com">// compile-time constraints
+</span><span class="kwd">auto </span><span class="pln">length</span><span class="pun">(</span><span class="pln">R</span><span class="pun">)(</span><span class="pln">R range</span><span class="pun">) </span><span class="kwd">if </span><span class="pun">(</span><span class="pln">from<wbr/></span><span class="pun">.</span><span class="pln">std<wbr/></span><span class="pun">.</span><span class="pln">range<wbr/></span><span class="pun">.</span><span class="pln">isInputRange</span><span class="pun">!</span><span class="pln">R</span><span class="pun">) {
+    </span><span class="kwd">return </span><span class="pln">from<wbr/></span><span class="pun">.</span><span class="pln">std<wbr/></span><span class="pun">.</span><span class="pln">range<wbr/></span><span class="pun">.</span><span class="pln">walkLength</span><span class="pun">(</span><span class="pln">range</span><span class="pun">);
+}
+
+</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">length</span><span class="pun">([</span><span class="lit">1</span><span class="pun">, </span><span class="lit">2</span><span class="pun">]) == </span><span class="lit">2</span><span class="pun">);
+</span></code></pre>
+</section>
+
+			<footer>
+				<table class="license-info">
+					<tr>
+						<th>Authors</th>
+						<td>
+							
+						</td>
+					</tr>
+					<tr>
+						<th>Copyright</th>
+						<td>
+							
+						</td>
+					</tr>
+					<tr>
+						<th>License</th>
+						<td>
+							
+						</td>
+					</tr>
+				</table>
+				<p class="faint">Generated using the DDOX documentation generator</p>
+			</footer>
+		</div>
+	</body>
+</html>

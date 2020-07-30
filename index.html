@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8"/>
+		<title>API documentation</title>
+		<link rel="stylesheet" type="text/css" href="./styles/ddox.css"/>
+		<link rel="stylesheet" href="./prettify/prettify.css" type="text/css"/>
+		<script type="text/javascript" src="./scripts/jquery.js">/**/</script><script type="text/javascript" src="./scripts/ddox.js">/**/</script>
+	</head>
+	<body onload="setupDdox();">
+		<nav id="main-nav">
+			<noscript>
+				<p style="color: red">The search functionality needs JavaScript enabled</p>
+			</noscript>
+			<div id="symbolSearchPane" style="display: none">
+				<form action="#" method="GET">
+					<input id="symbolSearch" type="text" name="q" placeholder="Search for symbols" autocomplete="off" onchange="performSymbolSearch(40);" onkeypress="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();"/>
+				</form>
+				<ul id="symbolSearchResults" class="symbolList" style="display: none"></ul><script type="application/javascript" src="./symbols.js"></script><script type="application/javascript">var symbolSearchRootDir = "./";
+$('#symbolSearchPane').show();</script>
+			</div>
+			<ul class="tree-view">
+				<li class="tree-view ">
+					<div class="package ">
+						<a href="./bolts.html">bolts</a>
+					</div>
+			<ul class="tree-view">
+				<li class="tree-view collapsed">
+					<div class="package ">
+						<a href="./bolts/experimental.html">experimental</a>
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="./bolts/experimental/refraction.html">refraction</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="./bolts/experimental/signatures.html">signatures</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li class="tree-view collapsed">
+					<div class="package ">
+						<a href="./bolts/traits.html">traits</a>
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="./bolts/traits/functions.html">functions</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="./bolts/traits/has.html">has</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="./bolts/traits/symbols.html">symbols</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="./bolts/traits/types.html">types</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="./bolts/from.html">from</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="./bolts/iz.html">iz</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="./bolts/members.html">members</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="./bolts/meta.html">meta</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="./bolts/range.html">range</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+			</ul>
+		</nav>
+		<div id="main-contents">
+			<h1>API documentation</h1>
+			<table>
+				<col class="caption"/>
+				<tr>
+					<th>Module</th><th>Description</th>
+				</tr>
+			<tr>
+				<td>
+					<a href="./bolts/experimental/refraction.html">bolts.experimental.refraction</a>
+				</td>
+				<td>
+					This module helps building functions from other functions.
+
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<a href="./bolts/experimental/signatures.html">bolts.experimental.signatures</a>
+				</td>
+				<td>
+					Provides utilites that allow you to enforce signatures - a specification for a structure
+
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<a href="./bolts/traits/functions.html">bolts.traits.functions</a>
+				</td>
+				<td>
+					Traits that can query information about functions
+
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<a href="./bolts/traits/has.html">bolts.traits.has</a>
+				</td>
+				<td>
+					Traits that tell you if one thing has another thing
+
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<a href="./bolts/traits/symbols.html">bolts.traits.symbols</a>
+				</td>
+				<td>
+					Traits about symbols
+
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<a href="./bolts/traits/types.html">bolts.traits.types</a>
+				</td>
+				<td>
+					Traits that can query type information about stuff.
+
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<a href="./bolts/experimental.html">bolts.experimental</a>
+				</td>
+				<td>
+					Contains experimental features - these can break *anytime*
+
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<a href="./bolts/from.html">bolts.from</a>
+				</td>
+				<td>
+					Lazy import symbols
+
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<a href="./bolts/iz.html">bolts.iz</a>
+				</td>
+				<td>
+					Iz is is - reason for choosing iz is because is is a keyword. Answers the qustions "is this 'thing' ___ ?"
+
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<a href="./bolts/members.html">bolts.members</a>
+				</td>
+				<td>
+					Provides compile time utilities that can query a type's members
+
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<a href="./bolts/meta.html">bolts.meta</a>
+				</td>
+				<td>
+					Provides meta utilities that can modify types
+
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<a href="./bolts/range.html">bolts.range</a>
+				</td>
+				<td>
+					Static introspection utilties for ranges
+
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<a href="./bolts/traits.html">bolts.traits</a>
+				</td>
+				<td>
+					Provides utilites that allow you to determine type traits
+
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<a href="./bolts.html">bolts</a>
+				</td>
+				<td>
+					Contains a number of static reflection utilties that query compile time entities (traits) or transform
+    them (meta). General utilties are in the modules <code class="lang-d"><span class="pln">traits</span></code> and <code class="lang-d"><span class="pln">meta</span></code> and most specific ones are in
+    dedicated modules (i.e. <code class="lang-d"><a href="./bolts/members.html"><span class="pln">bolts<wbr/></span><span class="pun">.</span><span class="pln">members</span></a></code> provides utilities over a type's members).
+
+				</td>
+			</tr>
+			</table>
+			<footer>
+				<p class="faint">Generated using the DDOX documentation generator</p>
+			</footer>
+		</div>
+	</body>
+</html>

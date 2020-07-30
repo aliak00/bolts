@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8"/>
+		<title>Enum member isFunctionOver</title>
+		<link rel="stylesheet" type="text/css" href="../../../styles/ddox.css"/>
+		<link rel="stylesheet" href="../../../prettify/prettify.css" type="text/css"/>
+		<script type="text/javascript" src="../../../scripts/jquery.js">/**/</script><script type="text/javascript" src="../../../scripts/ddox.js">/**/</script>
+	</head>
+	<body onload="setupDdox();">
+		<nav id="main-nav">
+			<noscript>
+				<p style="color: red">The search functionality needs JavaScript enabled</p>
+			</noscript>
+			<div id="symbolSearchPane" style="display: none">
+				<form action="#" method="GET">
+					<input id="symbolSearch" type="text" name="q" placeholder="Search for symbols" autocomplete="off" onchange="performSymbolSearch(40);" onkeypress="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();"/>
+				</form>
+				<ul id="symbolSearchResults" class="symbolList" style="display: none"></ul><script type="application/javascript" src="../../../symbols.js"></script><script type="application/javascript">var symbolSearchRootDir = "../../../";
+$('#symbolSearchPane').show();</script>
+			</div>
+			<ul class="tree-view">
+				<li class="tree-view ">
+					<div class="package ">
+						<a href="../../../bolts.html">bolts</a>
+					</div>
+			<ul class="tree-view">
+				<li class="tree-view collapsed">
+					<div class="package ">
+						<a href="../../../bolts/experimental.html">experimental</a>
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/experimental/refraction.html">refraction</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/experimental/signatures.html">signatures</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li class="tree-view ">
+					<div class="package ">
+						<a href="../../../bolts/traits.html">traits</a>
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module selected">
+						<a href="../../../bolts/traits/functions.html">functions</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/traits/has.html">has</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/traits/symbols.html">symbols</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/traits/types.html">types</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/from.html">from</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/iz.html">iz</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/members.html">members</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/meta.html">meta</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/range.html">range</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+			</ul>
+		</nav>
+		<div id="main-contents">
+			<h1>Enum member isFunctionOver</h1><p>Returns true if the passed in function is an n-ary function over the next n parameter arguments
+</p>
+			<div class="prototype">
+				<code class="lang-d">
+					<div class="single-prototype">
+			<span class="kwd">enum</span> <span class="pln">isFunctionOver</span>(T...)
+			 <span class="pun">=</span> <span class="kwd">true</span><span class="pun">;</span>
+					</div>
+				</code>
+			</div>
+			<section><p>Parameter arguments can be any compile time entity that can be typed.
+</p>
+</section>
+
+			<section><h2>Parameters</h2>
+<table><col class="caption"><tr><th>Name</th><th>Description</th></tr>
+<tr><td id="T">T</td><td> The first argument is the function to check, the second are the types it should be called over</td></tr>
+</table>
+</section>
+<section><h2>Example</h2>
+
+<pre class="code"><code class="lang-d"><span class="typ">int </span><span class="pln">i</span><span class="pun">;
+</span><span class="typ">float </span><span class="pln">f</span><span class="pun">;
+</span><span class="typ">void </span><span class="pln">f0</span><span class="pun">() {}
+</span><span class="typ">void </span><span class="pln">f1</span><span class="pun">(</span><span class="typ">int </span><span class="pln">a</span><span class="pun">) {}
+</span><span class="typ">void </span><span class="pln">f2</span><span class="pun">(</span><span class="typ">int </span><span class="pln">a</span><span class="pun">, </span><span class="typ">string </span><span class="pln">b</span><span class="pun">) {}
+</span><span class="typ">void </span><span class="pln">f3</span><span class="pun">(</span><span class="typ">int </span><span class="pln">a</span><span class="pun">, </span><span class="typ">string </span><span class="pln">b</span><span class="pun">, </span><span class="typ">float </span><span class="pln">c</span><span class="pun">) {}
+
+</span><span class="kwd">static assert</span><span class="pun">( </span><span class="pln">isFunctionOver</span><span class="pun">!(</span><span class="pln">f0</span><span class="pun">));
+</span><span class="kwd">static assert</span><span class="pun">(!</span><span class="pln">isFunctionOver</span><span class="pun">!(</span><span class="pln">f0</span><span class="pun">, </span><span class="typ">int</span><span class="pun">));
+
+</span><span class="kwd">static assert</span><span class="pun">(!</span><span class="pln">isFunctionOver</span><span class="pun">!(</span><span class="pln">f1</span><span class="pun">, </span><span class="typ">string</span><span class="pun">));
+</span><span class="kwd">static assert</span><span class="pun">( </span><span class="pln">isFunctionOver</span><span class="pun">!(</span><span class="pln">f1</span><span class="pun">, </span><span class="typ">int</span><span class="pun">));
+</span><span class="kwd">static assert</span><span class="pun">( </span><span class="pln">isFunctionOver</span><span class="pun">!(</span><span class="pln">f1</span><span class="pun">, </span><span class="pln">i</span><span class="pun">));
+</span><span class="kwd">static assert</span><span class="pun">(!</span><span class="pln">isFunctionOver</span><span class="pun">!(</span><span class="pln">f1</span><span class="pun">, </span><span class="pln">f</span><span class="pun">));
+
+</span><span class="kwd">static assert</span><span class="pun">(!</span><span class="pln">isFunctionOver</span><span class="pun">!(</span><span class="pln">f2</span><span class="pun">, </span><span class="typ">int</span><span class="pun">));
+</span><span class="kwd">static assert</span><span class="pun">( </span><span class="pln">isFunctionOver</span><span class="pun">!(</span><span class="pln">f2</span><span class="pun">, </span><span class="typ">int</span><span class="pun">, </span><span class="typ">string</span><span class="pun">));
+</span><span class="kwd">static assert</span><span class="pun">(!</span><span class="pln">isFunctionOver</span><span class="pun">!(</span><span class="pln">f2</span><span class="pun">, </span><span class="typ">int</span><span class="pun">, </span><span class="typ">float</span><span class="pun">));
+</span><span class="kwd">static assert</span><span class="pun">(!</span><span class="pln">isFunctionOver</span><span class="pun">!(</span><span class="pln">f2</span><span class="pun">, </span><span class="typ">int</span><span class="pun">, </span><span class="typ">float</span><span class="pun">, </span><span class="typ">string</span><span class="pun">));
+
+</span><span class="kwd">static assert</span><span class="pun">( </span><span class="pln">isFunctionOver</span><span class="pun">!(</span><span class="pln">f3</span><span class="pun">, </span><span class="typ">int</span><span class="pun">, </span><span class="typ">string</span><span class="pun">, </span><span class="typ">float</span><span class="pun">));
+</span><span class="kwd">static assert</span><span class="pun">(!</span><span class="pln">isFunctionOver</span><span class="pun">!(</span><span class="pln">f3</span><span class="pun">, </span><span class="typ">int</span><span class="pun">, </span><span class="typ">float</span><span class="pun">, </span><span class="typ">string</span><span class="pun">));
+</span><span class="kwd">static assert</span><span class="pun">(!</span><span class="pln">isFunctionOver</span><span class="pun">!(</span><span class="pln">f3</span><span class="pun">, </span><span class="typ">int</span><span class="pun">, </span><span class="typ">float</span><span class="pun">));
+</span><span class="kwd">static assert</span><span class="pun">(!</span><span class="pln">isFunctionOver</span><span class="pun">!(</span><span class="pln">f3</span><span class="pun">, </span><span class="typ">int</span><span class="pun">));
+</span><span class="kwd">static assert</span><span class="pun">(!</span><span class="pln">isFunctionOver</span><span class="pun">!(</span><span class="pln">f3</span><span class="pun">));
+
+</span><span class="kwd">static assert</span><span class="pun">( </span><span class="pln">isFunctionOver</span><span class="pun">!(() =&gt; </span><span class="lit">3</span><span class="pun">));
+</span><span class="kwd">static assert</span><span class="pun">(!</span><span class="pln">isFunctionOver</span><span class="pun">!(() =&gt; </span><span class="lit">3</span><span class="pun">, </span><span class="typ">int</span><span class="pun">));
+</span><span class="kwd">static assert</span><span class="pun">(!</span><span class="pln">isFunctionOver</span><span class="pun">!(</span><span class="pln">a </span><span class="pun">=&gt; </span><span class="pln">a</span><span class="pun">, </span><span class="typ">float</span><span class="pun">, </span><span class="typ">int</span><span class="pun">));
+</span><span class="kwd">static assert</span><span class="pun">( </span><span class="pln">isFunctionOver</span><span class="pun">!(</span><span class="pln">a </span><span class="pun">=&gt; </span><span class="pln">a</span><span class="pun">, </span><span class="typ">float</span><span class="pun">));
+</span><span class="kwd">static assert</span><span class="pun">( </span><span class="pln">isFunctionOver</span><span class="pun">!(</span><span class="pln">a </span><span class="pun">=&gt; </span><span class="pln">a</span><span class="pun">, </span><span class="typ">int</span><span class="pun">));
+</span><span class="kwd">static assert</span><span class="pun">( </span><span class="pln">isFunctionOver</span><span class="pun">!((</span><span class="typ">int </span><span class="pln">a</span><span class="pun">) =&gt; </span><span class="pln">a</span><span class="pun">, </span><span class="typ">short</span><span class="pun">));
+</span><span class="kwd">static assert</span><span class="pun">(!</span><span class="pln">isFunctionOver</span><span class="pun">!((</span><span class="typ">int </span><span class="pln">a</span><span class="pun">) =&gt; </span><span class="pln">a</span><span class="pun">, </span><span class="typ">float</span><span class="pun">));
+</span><span class="kwd">static assert</span><span class="pun">(!</span><span class="pln">isFunctionOver</span><span class="pun">!(</span><span class="pln">a </span><span class="pun">=&gt; </span><span class="pln">a</span><span class="pun">));
+</span><span class="kwd">static assert</span><span class="pun">( </span><span class="pln">isFunctionOver</span><span class="pun">!((</span><span class="pln">a</span><span class="pun">, </span><span class="pln">b</span><span class="pun">) =&gt; </span><span class="pln">a </span><span class="pun">+ </span><span class="pln">b</span><span class="pun">, </span><span class="typ">float</span><span class="pun">, </span><span class="typ">int</span><span class="pun">));
+
+</span><span class="kwd">struct </span><span class="pln">A </span><span class="pun">{}
+</span><span class="kwd">static assert</span><span class="pun">(!</span><span class="pln">isFunctionOver</span><span class="pun">!((</span><span class="pln">a</span><span class="pun">, </span><span class="pln">b</span><span class="pun">) =&gt; </span><span class="pln">a </span><span class="pun">+ </span><span class="pln">b</span><span class="pun">, </span><span class="pln">A</span><span class="pun">, </span><span class="typ">int</span><span class="pun">));
+</span><span class="kwd">static assert</span><span class="pun">( </span><span class="pln">isFunctionOver</span><span class="pun">!((</span><span class="pln">a</span><span class="pun">, </span><span class="pln">b</span><span class="pun">, </span><span class="pln">c</span><span class="pun">, </span><span class="pln">d</span><span class="pun">) =&gt; </span><span class="pln">a</span><span class="pun">+</span><span class="pln">b</span><span class="pun">+</span><span class="pln">c</span><span class="pun">+</span><span class="pln">d</span><span class="pun">, </span><span class="typ">int</span><span class="pun">, </span><span class="typ">int</span><span class="pun">, </span><span class="typ">int </span><span class="pun">,</span><span class="typ">int</span><span class="pun">));
+
+</span><span class="kwd">import </span><span class="pln">std<wbr/></span><span class="pun">.</span><span class="pln">functional</span><span class="pun">: </span><span class="pln">unaryFun</span><span class="pun">;
+</span><span class="kwd">static assert</span><span class="pun">( </span><span class="pln">isFunctionOver</span><span class="pun">!(</span><span class="pln">unaryFun</span><span class="pun">!</span><span class="str">"a"</span><span class="pun">, </span><span class="typ">int</span><span class="pun">));
+</span><span class="kwd">static assert</span><span class="pun">(!</span><span class="pln">isFunctionOver</span><span class="pun">!(</span><span class="pln">unaryFun</span><span class="pun">!</span><span class="str">"a"</span><span class="pun">, </span><span class="typ">int</span><span class="pun">, </span><span class="typ">int</span><span class="pun">));
+
+</span><span class="kwd">import </span><span class="pln">std<wbr/></span><span class="pun">.</span><span class="pln">functional</span><span class="pun">: </span><span class="pln">binaryFun</span><span class="pun">;
+</span><span class="kwd">static assert</span><span class="pun">(!</span><span class="pln">isFunctionOver</span><span class="pun">!(</span><span class="pln">binaryFun</span><span class="pun">!</span><span class="str">"a"</span><span class="pun">, </span><span class="typ">int</span><span class="pun">));
+</span><span class="kwd">static assert</span><span class="pun">( </span><span class="pln">isFunctionOver</span><span class="pun">!(</span><span class="pln">binaryFun</span><span class="pun">!</span><span class="str">"a"</span><span class="pun">, </span><span class="typ">int</span><span class="pun">, </span><span class="typ">int</span><span class="pun">));
+</span><span class="kwd">static assert</span><span class="pun">( </span><span class="pln">isFunctionOver</span><span class="pun">!(</span><span class="pln">binaryFun</span><span class="pun">!</span><span class="str">"a &gt; b"</span><span class="pun">, </span><span class="typ">int</span><span class="pun">, </span><span class="typ">int</span><span class="pun">));
+</span><span class="kwd">static assert</span><span class="pun">(!</span><span class="pln">isFunctionOver</span><span class="pun">!(</span><span class="pln">binaryFun</span><span class="pun">!</span><span class="str">"a &gt; b"</span><span class="pun">, </span><span class="typ">int</span><span class="pun">, </span><span class="typ">int</span><span class="pun">, </span><span class="typ">int</span><span class="pun">));
+
+</span><span class="kwd">class </span><span class="pln">C </span><span class="pun">{}
+</span><span class="kwd">class </span><span class="pln">D </span><span class="pun">: </span><span class="pln">C </span><span class="pun">{}
+</span><span class="typ">void </span><span class="pln">fc</span><span class="pun">(</span><span class="pln">C</span><span class="pun">) {}
+</span><span class="typ">void </span><span class="pln">fd</span><span class="pun">(</span><span class="pln">D</span><span class="pun">) {}
+</span><span class="kwd">static assert</span><span class="pun">( </span><span class="pln">isFunctionOver</span><span class="pun">!(</span><span class="pln">fc</span><span class="pun">, </span><span class="pln">C</span><span class="pun">));
+</span><span class="kwd">static assert</span><span class="pun">( </span><span class="pln">isFunctionOver</span><span class="pun">!(</span><span class="pln">fc</span><span class="pun">, </span><span class="pln">D</span><span class="pun">));
+</span><span class="kwd">static assert</span><span class="pun">(!</span><span class="pln">isFunctionOver</span><span class="pun">!(</span><span class="pln">fd</span><span class="pun">, </span><span class="pln">C</span><span class="pun">));
+</span><span class="kwd">static assert</span><span class="pun">( </span><span class="pln">isFunctionOver</span><span class="pun">!(</span><span class="pln">fd</span><span class="pun">, </span><span class="pln">D</span><span class="pun">));
+
+</span><span class="kwd">import </span><span class="pln">std<wbr/></span><span class="pun">.</span><span class="pln">math</span><span class="pun">: </span><span class="pln">ceil</span><span class="pun">;
+</span><span class="kwd">static assert</span><span class="pun">( </span><span class="pln">isFunctionOver</span><span class="pun">!(</span><span class="pln">ceil</span><span class="pun">, </span><span class="typ">double</span><span class="pun">));
+</span><span class="kwd">static assert</span><span class="pun">(!</span><span class="pln">isFunctionOver</span><span class="pun">!(</span><span class="pln">ceil</span><span class="pun">, </span><span class="typ">double</span><span class="pun">, </span><span class="typ">double</span><span class="pun">));
+
+</span><span class="kwd">static assert</span><span class="pun">(!</span><span class="pln">isFunctionOver</span><span class="pun">!(</span><span class="pln">i</span><span class="pun">));
+</span><span class="kwd">static assert</span><span class="pun">(!</span><span class="pln">isFunctionOver</span><span class="pun">!(</span><span class="pln">i</span><span class="pun">, </span><span class="typ">int</span><span class="pun">));
+</span></code></pre>
+</section>
+
+			<footer>
+				<table class="license-info">
+					<tr>
+						<th>Authors</th>
+						<td>
+							
+						</td>
+					</tr>
+					<tr>
+						<th>Copyright</th>
+						<td>
+							
+						</td>
+					</tr>
+					<tr>
+						<th>License</th>
+						<td>
+							
+						</td>
+					</tr>
+				</table>
+				<p class="faint">Generated using the DDOX documentation generator</p>
+			</footer>
+		</div>
+	</body>
+</html>

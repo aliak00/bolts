@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8"/>
+		<title>Alias Flatten</title>
+		<link rel="stylesheet" type="text/css" href="../../styles/ddox.css"/>
+		<link rel="stylesheet" href="../../prettify/prettify.css" type="text/css"/>
+		<script type="text/javascript" src="../../scripts/jquery.js">/**/</script><script type="text/javascript" src="../../scripts/ddox.js">/**/</script>
+	</head>
+	<body onload="setupDdox();">
+		<nav id="main-nav">
+			<noscript>
+				<p style="color: red">The search functionality needs JavaScript enabled</p>
+			</noscript>
+			<div id="symbolSearchPane" style="display: none">
+				<form action="#" method="GET">
+					<input id="symbolSearch" type="text" name="q" placeholder="Search for symbols" autocomplete="off" onchange="performSymbolSearch(40);" onkeypress="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();"/>
+				</form>
+				<ul id="symbolSearchResults" class="symbolList" style="display: none"></ul><script type="application/javascript" src="../../symbols.js"></script><script type="application/javascript">var symbolSearchRootDir = "../../";
+$('#symbolSearchPane').show();</script>
+			</div>
+			<ul class="tree-view">
+				<li class="tree-view ">
+					<div class="package ">
+						<a href="../../bolts.html">bolts</a>
+					</div>
+			<ul class="tree-view">
+				<li class="tree-view collapsed">
+					<div class="package ">
+						<a href="../../bolts/experimental.html">experimental</a>
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../../bolts/experimental/refraction.html">refraction</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/experimental/signatures.html">signatures</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li class="tree-view collapsed">
+					<div class="package ">
+						<a href="../../bolts/traits.html">traits</a>
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../../bolts/traits/functions.html">functions</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/traits/has.html">has</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/traits/symbols.html">symbols</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/traits/types.html">types</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/from.html">from</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/iz.html">iz</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/members.html">members</a>
+					</div>
+				</li>
+				<li>
+					<div class="module selected">
+						<a href="../../bolts/meta.html">meta</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/range.html">range</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+			</ul>
+		</nav>
+		<div id="main-contents">
+			<h1>Alias Flatten</h1><p>Flattens a list of types to their <code class="lang-d"><span class="typ">ElementType</span></code> or in the case of an AliasPack it's <code class="lang-d"><wbr/><span class="pun">.</span><span class="typ">UnpackDeep</span></code>
+</p>
+			<div class="prototype">
+				<code class="lang-d">
+					<div class="single-prototype">
+			<span class="kwd">alias</span> <span class="pln">Flatten</span>(Values...)
+			 <span class="pun">=</span> <a href="../../bolts/meta/Flatten.html"><span class="typ">Flatten</span></a>!(Head.UnpackDeep,Flatten!Tail)<span class="pun">;</span>
+					</div>
+				</code>
+			</div>
+			<section><p>If a type is a range then its <code class="lang-d"><span class="typ">ElementType</span></code> is used
+</p>
+</section>
+
+			<section><h2>Example</h2>
+
+<pre class="code"><code class="lang-d"><span class="kwd">import </span><span class="pln">std<wbr/></span><span class="pun">.</span><span class="pln">algorithm</span><span class="pun">: </span><span class="pln">filter</span><span class="pun">;
+</span><span class="kwd">import </span><span class="pln">std<wbr/></span><span class="pun">.</span><span class="pln">meta</span><span class="pun">: </span><span class="typ">AliasSeq</span><span class="pun">;
+
+</span><span class="kwd">alias </span><span class="pln">R1 </span><span class="pun">= </span><span class="kwd">typeof</span><span class="pun">([</span><span class="lit">1</span><span class="pun">, </span><span class="lit">2</span><span class="pun">, </span><span class="lit">3</span><span class="pun">]<wbr/>.</span><span class="pln">filter</span><span class="pun">!</span><span class="str">"true"</span><span class="pun">);
+</span><span class="kwd">alias </span><span class="pln">R2 </span><span class="pun">= </span><span class="kwd">typeof</span><span class="pun">([</span><span class="lit">1.0</span><span class="pun">, </span><span class="lit">2.0</span><span class="pun">, </span><span class="lit">3.0</span><span class="pun">]);
+
+</span><span class="kwd">static assert</span><span class="pun">(</span><span class="kwd">is</span><span class="pun">(</span><span class="typ">Flatten</span><span class="pun">!(</span><span class="typ">int</span><span class="pun">, </span><span class="typ">double</span><span class="pun">) == </span><span class="typ">AliasSeq</span><span class="pun">!(</span><span class="typ">int</span><span class="pun">, </span><span class="typ">double</span><span class="pun">)));
+</span><span class="kwd">static assert</span><span class="pun">(</span><span class="kwd">is</span><span class="pun">(</span><span class="typ">Flatten</span><span class="pun">!(</span><span class="typ">int</span><span class="pun">, </span><span class="pln">R1</span><span class="pun">, </span><span class="pln">R2</span><span class="pun">) == </span><span class="typ">AliasSeq</span><span class="pun">!(</span><span class="typ">int</span><span class="pun">, </span><span class="typ">int</span><span class="pun">, </span><span class="typ">double</span><span class="pun">)));
+</span><span class="kwd">static assert</span><span class="pun">(</span><span class="kwd">is</span><span class="pun">(</span><span class="typ">Flatten</span><span class="pun">!(</span><span class="pln">R1</span><span class="pun">, </span><span class="typ">int</span><span class="pun">) == </span><span class="typ">AliasSeq</span><span class="pun">!(</span><span class="typ">int</span><span class="pun">, </span><span class="typ">int</span><span class="pun">)));
+
+</span><span class="kwd">import </span><span class="pln">std<wbr/></span><span class="pun">.</span><span class="pln">traits</span><span class="pun">: </span><span class="typ">CommonType</span><span class="pun">;
+</span><span class="kwd">static assert</span><span class="pun">(</span><span class="kwd">is</span><span class="pun">(</span><span class="typ">CommonType</span><span class="pun">!(</span><span class="typ">Flatten</span><span class="pun">!(</span><span class="typ">int</span><span class="pun">, </span><span class="pln">R1</span><span class="pun">, </span><span class="pln">R2</span><span class="pun">, </span><span class="typ">float</span><span class="pun">)) == </span><span class="typ">double</span><span class="pun">));
+
+</span><span class="kwd">static assert</span><span class="pun">(</span><span class="kwd">is</span><span class="pun">(</span><span class="typ">Flatten</span><span class="pun">!(</span><span class="pln">R1</span><span class="pun">, </span><span class="typ">int</span><span class="pun">, <a href="../../bolts/meta/AliasPack.html"></span><span class="typ">AliasPack</span></a><span class="pun">!(<a href="../../bolts/meta/AliasPack.html"></span><span class="typ">AliasPack</span></a><span class="pun">!(</span><span class="typ">float</span><span class="pun">, </span><span class="typ">int</span><span class="pun">)), </span><span class="typ">int</span><span class="pun">) == </span><span class="typ">AliasSeq</span><span class="pun">!(</span><span class="typ">int</span><span class="pun">, </span><span class="typ">int</span><span class="pun">, </span><span class="typ">float</span><span class="pun">, </span><span class="typ">int</span><span class="pun">, </span><span class="typ">int</span><span class="pun">)));
+</span></code></pre>
+</section>
+
+			<footer>
+				<table class="license-info">
+					<tr>
+						<th>Authors</th>
+						<td>
+							
+						</td>
+					</tr>
+					<tr>
+						<th>Copyright</th>
+						<td>
+							
+						</td>
+					</tr>
+					<tr>
+						<th>License</th>
+						<td>
+							
+						</td>
+					</tr>
+				</table>
+				<p class="faint">Generated using the DDOX documentation generator</p>
+			</footer>
+		</div>
+	</body>
+</html>

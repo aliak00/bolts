@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8"/>
+		<title>Enum member isNonTriviallyCopyConstructable</title>
+		<link rel="stylesheet" type="text/css" href="../../../styles/ddox.css"/>
+		<link rel="stylesheet" href="../../../prettify/prettify.css" type="text/css"/>
+		<script type="text/javascript" src="../../../scripts/jquery.js">/**/</script><script type="text/javascript" src="../../../scripts/ddox.js">/**/</script>
+	</head>
+	<body onload="setupDdox();">
+		<nav id="main-nav">
+			<noscript>
+				<p style="color: red">The search functionality needs JavaScript enabled</p>
+			</noscript>
+			<div id="symbolSearchPane" style="display: none">
+				<form action="#" method="GET">
+					<input id="symbolSearch" type="text" name="q" placeholder="Search for symbols" autocomplete="off" onchange="performSymbolSearch(40);" onkeypress="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();"/>
+				</form>
+				<ul id="symbolSearchResults" class="symbolList" style="display: none"></ul><script type="application/javascript" src="../../../symbols.js"></script><script type="application/javascript">var symbolSearchRootDir = "../../../";
+$('#symbolSearchPane').show();</script>
+			</div>
+			<ul class="tree-view">
+				<li class="tree-view ">
+					<div class="package ">
+						<a href="../../../bolts.html">bolts</a>
+					</div>
+			<ul class="tree-view">
+				<li class="tree-view collapsed">
+					<div class="package ">
+						<a href="../../../bolts/experimental.html">experimental</a>
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/experimental/refraction.html">refraction</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/experimental/signatures.html">signatures</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li class="tree-view ">
+					<div class="package ">
+						<a href="../../../bolts/traits.html">traits</a>
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/traits/functions.html">functions</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/traits/has.html">has</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/traits/symbols.html">symbols</a>
+					</div>
+				</li>
+				<li>
+					<div class="module selected">
+						<a href="../../../bolts/traits/types.html">types</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/from.html">from</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/iz.html">iz</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/members.html">members</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/meta.html">meta</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/range.html">range</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+			</ul>
+		</nav>
+		<div id="main-contents">
+			<h1>Enum member isNonTriviallyCopyConstructable</h1><p>Checks to see if a type is non-trivially copy constructable
+</p>
+			<div class="prototype">
+				<code class="lang-d">
+					<div class="single-prototype">
+			<span class="kwd">enum</span> <span class="pln">isNonTriviallyCopyConstructable</span>(T...)
+			 <span class="pun">=</span> <span class="pln">isCopyConstructable</span><span class="pun">!</span><span class="pln">U </span><span class="pun">&amp;&amp; </span><span class="pln">hasMember</span><span class="pun">!(</span><span class="pln">U</span><span class="pun">, </span><span class="str">"__ctor"</span><span class="pun">)</span><span class="pun">;</span>
+					</div>
+				</code>
+			</div>
+			<section><p>This does not check for postblits
+</p>
+</section>
+
+			<section><h2>Example</h2>
+
+<pre class="code"><code class="lang-d"><span class="kwd">mixin </span><span class="pln">copyConstructableKinds</span><span class="pun">;
+
+</span><span class="kwd">static assert</span><span class="pun">(!</span><span class="pln">isNonTriviallyCopyConstructable</span><span class="pun">!</span><span class="typ">KindPOD</span><span class="pun">);
+</span><span class="kwd">static assert</span><span class="pun">( </span><span class="pln">isNonTriviallyCopyConstructable</span><span class="pun">!</span><span class="typ">KindHasCopyContrustor</span><span class="pun">);
+</span><span class="kwd">static assert</span><span class="pun">(!</span><span class="pln">isNonTriviallyCopyConstructable</span><span class="pun">!</span><span class="typ">KindHasPostBlit</span><span class="pun">);
+</span><span class="kwd">static assert</span><span class="pun">(!</span><span class="pln">isNonTriviallyCopyConstructable</span><span class="pun">!</span><span class="typ">KindContainsPOD</span><span class="pun">);
+</span><span class="kwd">static assert</span><span class="pun">( </span><span class="pln">isNonTriviallyCopyConstructable</span><span class="pun">!</span><span class="typ">KindContainsTypeWithNonTrivialCopyConstructor</span><span class="pun">);
+</span><span class="kwd">static assert</span><span class="pun">(!</span><span class="pln">isNonTriviallyCopyConstructable</span><span class="pun">!</span><span class="typ">KindContainsTypeWithPostBlit</span><span class="pun">);
+</span></code></pre>
+</section>
+
+			<footer>
+				<table class="license-info">
+					<tr>
+						<th>Authors</th>
+						<td>
+							
+						</td>
+					</tr>
+					<tr>
+						<th>Copyright</th>
+						<td>
+							
+						</td>
+					</tr>
+					<tr>
+						<th>License</th>
+						<td>
+							
+						</td>
+					</tr>
+				</table>
+				<p class="faint">Generated using the DDOX documentation generator</p>
+			</footer>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8"/>
+		<title>Function refract</title>
+		<link rel="stylesheet" type="text/css" href="../../../styles/ddox.css"/>
+		<link rel="stylesheet" href="../../../prettify/prettify.css" type="text/css"/>
+		<script type="text/javascript" src="../../../scripts/jquery.js">/**/</script><script type="text/javascript" src="../../../scripts/ddox.js">/**/</script>
+	</head>
+	<body onload="setupDdox();">
+		<nav id="main-nav">
+			<noscript>
+				<p style="color: red">The search functionality needs JavaScript enabled</p>
+			</noscript>
+			<div id="symbolSearchPane" style="display: none">
+				<form action="#" method="GET">
+					<input id="symbolSearch" type="text" name="q" placeholder="Search for symbols" autocomplete="off" onchange="performSymbolSearch(40);" onkeypress="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();"/>
+				</form>
+				<ul id="symbolSearchResults" class="symbolList" style="display: none"></ul><script type="application/javascript" src="../../../symbols.js"></script><script type="application/javascript">var symbolSearchRootDir = "../../../";
+$('#symbolSearchPane').show();</script>
+			</div>
+			<ul class="tree-view">
+				<li class="tree-view ">
+					<div class="package ">
+						<a href="../../../bolts.html">bolts</a>
+					</div>
+			<ul class="tree-view">
+				<li class="tree-view ">
+					<div class="package ">
+						<a href="../../../bolts/experimental.html">experimental</a>
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module selected">
+						<a href="../../../bolts/experimental/refraction.html">refraction</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/experimental/signatures.html">signatures</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li class="tree-view collapsed">
+					<div class="package ">
+						<a href="../../../bolts/traits.html">traits</a>
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/traits/functions.html">functions</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/traits/has.html">has</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/traits/symbols.html">symbols</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/traits/types.html">types</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/from.html">from</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/iz.html">iz</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/members.html">members</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/meta.html">meta</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/range.html">range</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+			</ul>
+		</nav>
+		<div id="main-contents">
+			<h1>Function refract</h1><p>Return a <code class="lang-d"><a href="../../../bolts/experimental/refraction/Function.html"><span class="typ">Function</span></a></code> object that captures all the aspects of <code class="lang-d"><span class="pln">fun</span></code>, using the
+   value of <code class="lang-d"><span class="pln">localName</span></code> to represent the return and parameter types, and the
+   UDAs. Set the <code class="lang-d"><a href="../../../bolts/experimental/refraction/Function.html"><span class="typ">Function</span></a></code>'s <code class="lang-d"><span class="pln">overloadIndex</span></code> property to <code class="lang-d"><span class="pln">index</span></code>, or to -1 if
+   it is not specified.
+</p>
+			<div class="prototype">
+				<code class="lang-d">
+					<div class="single-prototype">
+			<a href="../../../bolts/experimental/refraction/Function.html"><span class="typ">Function</span></a> <span class="pln">refract</span>(alias fun, <span class="typ">string</span> localName, <span class="typ">int</span> overloadIndex<span class="pln"> </span><span class="pun">= </span><span class="pun">-</span><span class="lit">1</span>)<span class="pun">(</span><span class="pun">)</span>
+			<br/>
+			<span class="kwd">if</span> <span class="pun">(</span><span class="kwd">is</span><span class="pun">(</span><span class="kwd">typeof</span><span class="pun">(</span><span class="pln">fun</span><span class="pun">) == </span><span class="kwd">function</span><span class="pun">)</span><span class="pun">);</span>
+					</div>
+				</code>
+			</div>
+			<section><p>The <code class="lang-d"><span class="pln">localName</span></code> parameter is, in general, *not* the function name. Rather,
+   it is a compile-time expression that involves only symbols that exist in the
+   caller's scope, for example a function alias passed as a template
+   parameter. See
+</p>
+</section>
+
+			<section><h2>https</h2>
+<p>//stackoverflow.com/questions/32615733/struct-composition-with-mixin-and-templates/32621854#32621854
+   for a detailed explanation.
+</p>
+</section>
+<section><h2>Parameters</h2>
+<table><col class="caption"><tr><th>Name</th><th>Description</th></tr>
+<tr><td id="fun">fun</td><td> a function</td></tr>
+<tr><td id="localName">localName</td><td> a string that represents <code class="lang-d"><span class="pln">fun</span></code> in the caller's context</td></tr>
+<tr><td id="overloadIndex">overloadIndex</td><td> index of <code class="lang-d"><span class="pln">fun</span></code> in its overload set, or -1</td></tr>
+</table>
+</section>
+<section><h2>Example</h2>
+
+<pre class="code"><code class="lang-d"><span class="kwd">pure @nogc </span><span class="typ">int </span><span class="pln">answer</span><span class="pun">(</span><span class="kwd">lazy </span><span class="typ">string </span><span class="pln">question</span><span class="pun">);
+</span><span class="kwd">alias </span><span class="pln">F </span><span class="pun">= </span><span class="pln">answer</span><span class="pun">; </span><span class="com">// typically F is a template argument
+</span><span class="kwd">static assert</span><span class="pun">(
+    </span><span class="pln">refract</span><span class="pun">!(</span><span class="pln">F</span><span class="pun">, </span><span class="str">"F"</span><span class="pun">)<wbr/>.</span><span class="pln">mixture </span><span class="pun">==
+    </span><span class="str">"pure @nogc @system %s.ReturnType!(F) answer(lazy %s.Parameters!(F)[0] _0);"
+    <wbr/></span><span class="pun">.</span><span class="pln">format</span><span class="pun">(</span><span class="kwd">__MODULE__</span><span class="pun">, </span><span class="kwd">__MODULE__</span><span class="pun">));
+</span></code></pre>
+</section>
+<section><h2>Example</h2>
+
+<pre class="code"><code class="lang-d"><span class="kwd">import </span><span class="pln">std<wbr/></span><span class="pun">.</span><span class="pln">format</span><span class="pun">;
+</span><span class="kwd">import </span><span class="pln">std<wbr/></span><span class="pun">.</span><span class="pln">traits </span><span class="pun">: </span><span class="typ">FunctionAttribute</span><span class="pun">;
+</span><span class="kwd">import <a href="../../../bolts/experimental/refraction.html"></span><span class="pln">bolts<wbr/></span><span class="pun">.</span><span class="pln">experimental<wbr/></span><span class="pun">.</span><span class="pln">refraction</span></a><span class="pun">;
+
+</span><span class="kwd">interface </span><span class="typ">GrandTour </span><span class="pun">{
+    </span><span class="kwd">pure </span><span class="typ">int </span><span class="pln">foo</span><span class="pun">() </span><span class="kwd">immutable</span><span class="pun">;
+    </span><span class="kwd">@nogc @trusted nothrow ref </span><span class="typ">int </span><span class="pln">foo</span><span class="pun">(
+        </span><span class="kwd">out </span><span class="typ">real</span><span class="pun">, </span><span class="kwd">return ref </span><span class="typ">int</span><span class="pun">, </span><span class="kwd">lazy </span><span class="typ">int</span><span class="pun">) </span><span class="kwd">const</span><span class="pun">;
+    </span><span class="kwd">@safe shared scope </span><span class="typ">void </span><span class="pln">bar</span><span class="pun">(</span><span class="kwd">scope </span><span class="typ">Object</span><span class="pun">);
+}
+
+</span><span class="kwd">class </span><span class="typ">Mock</span><span class="pun">(</span><span class="typ">Interface</span><span class="pun">) : </span><span class="typ">Interface </span><span class="pun">{
+    </span><span class="kwd">static foreach </span><span class="pun">(</span><span class="pln">member</span><span class="pun">; </span><span class="kwd">__traits</span><span class="pun">(</span><span class="pln">allMembers</span><span class="pun">, </span><span class="typ">Interface</span><span class="pun">)) {
+        </span><span class="kwd">static foreach </span><span class="pun">(</span><span class="pln">fun</span><span class="pun">; </span><span class="kwd">__traits</span><span class="pun">(</span><span class="pln">getOverloads</span><span class="pun">, </span><span class="typ">Interface</span><span class="pun">, </span><span class="pln">member</span><span class="pun">)) {
+            </span><span class="kwd">mixin</span><span class="pun">({
+                    </span><span class="kwd">enum </span><span class="typ">Model </span><span class="pun">= </span><span class="pln">refract</span><span class="pun">!(</span><span class="pln">fun</span><span class="pun">, </span><span class="str">"fun"</span><span class="pun">);
+                    </span><span class="kwd">if </span><span class="pun">(</span><span class="kwd">is</span><span class="pun">(</span><span class="typ">ReturnType</span><span class="pun">!</span><span class="pln">fun </span><span class="pun">== </span><span class="typ">void</span><span class="pun">)) {
+                        </span><span class="kwd">return </span><span class="typ">Model<wbr/></span><span class="pun">.</span><span class="pln">withBody</span><span class="pun">(</span><span class="str">"{}"</span><span class="pun">)<wbr/>.</span><span class="pln">mixture</span><span class="pun">;
+                    } </span><span class="kwd">else if </span><span class="pun">(</span><span class="typ">Model<wbr/></span><span class="pun">.</span><span class="pln">attributes </span><span class="pun">&amp; </span><span class="typ">FunctionAttribute<wbr/></span><span class="pun">.</span><span class="pln">ref_</span><span class="pun">) {
+                        </span><span class="kwd">return </span><span class="typ">Model<wbr/></span><span class="pun">.</span><span class="pln">withBody</span><span class="pun">(</span><span class="str">q{{
+                                    static %s rv;
+                                    return rv;
+                                }}<wbr/></span><span class="pun">.</span><span class="pln">format</span><span class="pun">(</span><span class="typ">Model<wbr/></span><span class="pun">.</span><span class="pln">returnType</span><span class="pun">))<wbr/>.</span><span class="pln">mixture</span><span class="pun">;
+                    } </span><span class="kwd">else </span><span class="pun">{
+                        </span><span class="kwd">return </span><span class="typ">Model<wbr/></span><span class="pun">.</span><span class="pln">withBody</span><span class="pun">(</span><span class="str">q{{
+                                    return %s.init;
+                                }}<wbr/></span><span class="pun">.</span><span class="pln">format</span><span class="pun">(</span><span class="typ">Model<wbr/></span><span class="pun">.</span><span class="pln">returnType</span><span class="pun">))<wbr/>.</span><span class="pln">mixture</span><span class="pun">;
+                    }
+                }());
+        }
+    }
+}
+
+</span><span class="typ">GrandTour </span><span class="pln">mock </span><span class="pun">= </span><span class="kwd">new </span><span class="typ">Mock</span><span class="pun">!</span><span class="typ">GrandTour</span><span class="pun">;
+</span><span class="typ">real </span><span class="pln">x</span><span class="pun">;
+</span><span class="typ">int </span><span class="pln">i</span><span class="pun">, </span><span class="pln">l</span><span class="pun">;
+</span><span class="pln">mock<wbr/></span><span class="pun">.</span><span class="pln">foo</span><span class="pun">(</span><span class="pln">x</span><span class="pun">, </span><span class="pln">i</span><span class="pun">, </span><span class="pln">l</span><span class="pun">++) = </span><span class="lit">1</span><span class="pun">;
+</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">mock<wbr/></span><span class="pun">.</span><span class="pln">foo</span><span class="pun">(</span><span class="pln">x</span><span class="pun">, </span><span class="pln">i</span><span class="pun">, </span><span class="pln">l</span><span class="pun">++) == </span><span class="lit">1</span><span class="pun">);
+</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">l </span><span class="pun">== </span><span class="lit">0</span><span class="pun">);
+</span></code></pre>
+</section>
+
+			<footer>
+				<table class="license-info">
+					<tr>
+						<th>Authors</th>
+						<td>
+							
+						</td>
+					</tr>
+					<tr>
+						<th>Copyright</th>
+						<td>
+							
+						</td>
+					</tr>
+					<tr>
+						<th>License</th>
+						<td>
+							
+						</td>
+					</tr>
+				</table>
+				<p class="faint">Generated using the DDOX documentation generator</p>
+			</footer>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8"/>
+		<title>Template staticMembersOf</title>
+		<link rel="stylesheet" type="text/css" href="../../styles/ddox.css"/>
+		<link rel="stylesheet" href="../../prettify/prettify.css" type="text/css"/>
+		<script type="text/javascript" src="../../scripts/jquery.js">/**/</script><script type="text/javascript" src="../../scripts/ddox.js">/**/</script>
+	</head>
+	<body onload="setupDdox();">
+		<nav id="main-nav">
+			<noscript>
+				<p style="color: red">The search functionality needs JavaScript enabled</p>
+			</noscript>
+			<div id="symbolSearchPane" style="display: none">
+				<form action="#" method="GET">
+					<input id="symbolSearch" type="text" name="q" placeholder="Search for symbols" autocomplete="off" onchange="performSymbolSearch(40);" onkeypress="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();"/>
+				</form>
+				<ul id="symbolSearchResults" class="symbolList" style="display: none"></ul><script type="application/javascript" src="../../symbols.js"></script><script type="application/javascript">var symbolSearchRootDir = "../../";
+$('#symbolSearchPane').show();</script>
+			</div>
+			<ul class="tree-view">
+				<li class="tree-view ">
+					<div class="package ">
+						<a href="../../bolts.html">bolts</a>
+					</div>
+			<ul class="tree-view">
+				<li class="tree-view collapsed">
+					<div class="package ">
+						<a href="../../bolts/experimental.html">experimental</a>
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../../bolts/experimental/refraction.html">refraction</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/experimental/signatures.html">signatures</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li class="tree-view collapsed">
+					<div class="package ">
+						<a href="../../bolts/traits.html">traits</a>
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../../bolts/traits/functions.html">functions</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/traits/has.html">has</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/traits/symbols.html">symbols</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/traits/types.html">types</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/from.html">from</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/iz.html">iz</a>
+					</div>
+				</li>
+				<li>
+					<div class="module selected">
+						<a href="../../bolts/members.html">members</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/meta.html">meta</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/range.html">range</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+			</ul>
+		</nav>
+		<div id="main-contents">
+			<h1>Template staticMembersOf</h1><p>Returns a list of all the static members of a type
+</p>
+			<div class="prototype">
+				<code class="lang-d">
+					<div class="single-prototype">
+			<span class="kwd">template</span> <span class="pln">staticMembersOf</span>(T)
+			;
+					</div>
+				</code>
+			</div>
+			<section><p>You can retireve them as a sequence of aliases, or strings.
+</p>
+</section>
+
+			<section><h2>Contained Aliases</h2>
+				<table>
+					<col class="caption"/>
+					<tr>
+						<th>Name</th><th>Description</th>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../bolts/members/staticMembersOf.asAliases.html">asAliases</a>
+						</td>
+						<td>Get as a tuple of aliases
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../bolts/members/staticMembersOf.asStrings.html">asStrings</a>
+						</td>
+						<td>Get as tuple of strings
+</td>
+					</tr>
+				</table>
+			</section>
+			<section><h2>See Also</h2>
+<p>- https://forum.dlang.org/post/duvxnpwnuphuxlrkjplh@forum.dlang.org
+</p>
+</section>
+<section><h2>Example</h2>
+
+<pre class="code"><code class="lang-d"><span class="kwd">import </span><span class="pln">std<wbr/></span><span class="pun">.</span><span class="pln">meta</span><span class="pun">: </span><span class="typ">AliasSeq</span><span class="pun">, </span><span class="typ">Alias</span><span class="pun">;
+</span><span class="kwd">import <a href="../../bolts/traits.html"></span><span class="pln">bolts<wbr/></span><span class="pun">.</span><span class="pln">traits</span></a><span class="pun">: </span><span class="typ">TypesOf</span><span class="pun">;
+</span><span class="kwd">struct </span><span class="pln">S </span><span class="pun">{
+    </span><span class="kwd">static </span><span class="typ">void </span><span class="pln">s0</span><span class="pun">() {}
+    </span><span class="kwd">static </span><span class="typ">int </span><span class="pln">s1 </span><span class="pun">= </span><span class="lit">3</span><span class="pun">;
+    </span><span class="kwd">static immutable </span><span class="typ">int </span><span class="pln">s2 </span><span class="pun">= </span><span class="lit">3</span><span class="pun">;
+    </span><span class="kwd">enum </span><span class="pln">e </span><span class="pun">= </span><span class="lit">9</span><span class="pun">;
+    </span><span class="typ">void </span><span class="pln">f</span><span class="pun">() {}
+    </span><span class="typ">int </span><span class="pln">i </span><span class="pun">= </span><span class="lit">3</span><span class="pun">;
+}
+
+</span><span class="kwd">immutable </span><span class="pln">array </span><span class="pun">= [</span><span class="pln">staticMembersOf</span><span class="pun">!</span><span class="pln">S<wbr/></span><span class="pun">.</span><span class="pln">asStrings</span><span class="pun">];
+</span><span class="kwd">alias </span><span class="pln">strings </span><span class="pun">= </span><span class="pln">staticMembersOf</span><span class="pun">!</span><span class="pln">S<wbr/></span><span class="pun">.</span><span class="pln">asStrings</span><span class="pun">;
+</span><span class="kwd">alias </span><span class="pln">aliases </span><span class="pun">= </span><span class="pln">staticMembersOf</span><span class="pun">!</span><span class="pln">S<wbr/></span><span class="pun">.</span><span class="pln">asAliases</span><span class="pun">;
+
+</span><span class="kwd">static assert</span><span class="pun">(</span><span class="pln">array </span><span class="pun">== [</span><span class="str">"s0"</span><span class="pun">, </span><span class="str">"s1"</span><span class="pun">, </span><span class="str">"s2"</span><span class="pun">]);
+</span><span class="kwd">static assert</span><span class="pun">(</span><span class="pln">strings </span><span class="pun">== </span><span class="typ">AliasSeq</span><span class="pun">!(</span><span class="str">"s0"</span><span class="pun">, </span><span class="str">"s1"</span><span class="pun">, </span><span class="str">"s2"</span><span class="pun">));
+
+</span><span class="kwd">static assert</span><span class="pun">(</span><span class="kwd">is</span><span class="pun">(</span><span class="kwd">typeof</span><span class="pun">(</span><span class="pln">array</span><span class="pun">) == </span><span class="kwd">immutable </span><span class="typ">string</span><span class="pun">[]));
+</span><span class="kwd">static assert</span><span class="pun">(</span><span class="kwd">is</span><span class="pun">(</span><span class="kwd">typeof</span><span class="pun">(</span><span class="pln">strings</span><span class="pun">) == </span><span class="typ">AliasSeq</span><span class="pun">!(</span><span class="typ">string</span><span class="pun">, </span><span class="typ">string</span><span class="pun">, </span><span class="typ">string</span><span class="pun">)));
+</span><span class="kwd">static assert</span><span class="pun">(</span><span class="kwd">is</span><span class="pun">(</span><span class="kwd">typeof</span><span class="pun">(</span><span class="pln">aliases</span><span class="pun">) == </span><span class="typ">AliasSeq</span><span class="pun">!(</span><span class="kwd">typeof</span><span class="pun">(</span><span class="pln">S<wbr/></span><span class="pun">.</span><span class="pln">s0</span><span class="pun">), </span><span class="kwd">typeof</span><span class="pun">(</span><span class="pln">S<wbr/></span><span class="pun">.</span><span class="pln">s1</span><span class="pun">), </span><span class="kwd">typeof</span><span class="pun">(</span><span class="pln">S<wbr/></span><span class="pun">.</span><span class="pln">s2</span><span class="pun">))));
+</span></code></pre>
+</section>
+
+			<footer>
+				<table class="license-info">
+					<tr>
+						<th>Authors</th>
+						<td>
+							
+						</td>
+					</tr>
+					<tr>
+						<th>Copyright</th>
+						<td>
+							
+						</td>
+					</tr>
+					<tr>
+						<th>License</th>
+						<td>
+							
+						</td>
+					</tr>
+				</table>
+				<p class="faint">Generated using the DDOX documentation generator</p>
+			</footer>
+		</div>
+	</body>
+</html>

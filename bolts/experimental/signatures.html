@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8"/>
+		<title>Module bolts.experimental.signatures</title>
+		<link rel="stylesheet" type="text/css" href="../../styles/ddox.css"/>
+		<link rel="stylesheet" href="../../prettify/prettify.css" type="text/css"/>
+		<script type="text/javascript" src="../../scripts/jquery.js">/**/</script><script type="text/javascript" src="../../scripts/ddox.js">/**/</script>
+	</head>
+	<body onload="setupDdox();">
+		<nav id="main-nav">
+			<noscript>
+				<p style="color: red">The search functionality needs JavaScript enabled</p>
+			</noscript>
+			<div id="symbolSearchPane" style="display: none">
+				<form action="#" method="GET">
+					<input id="symbolSearch" type="text" name="q" placeholder="Search for symbols" autocomplete="off" onchange="performSymbolSearch(40);" onkeypress="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();"/>
+				</form>
+				<ul id="symbolSearchResults" class="symbolList" style="display: none"></ul><script type="application/javascript" src="../../symbols.js"></script><script type="application/javascript">var symbolSearchRootDir = "../../";
+$('#symbolSearchPane').show();</script>
+			</div>
+			<ul class="tree-view">
+				<li class="tree-view ">
+					<div class="package ">
+						<a href="../../bolts.html">bolts</a>
+					</div>
+			<ul class="tree-view">
+				<li class="tree-view ">
+					<div class="package ">
+						<a href="../../bolts/experimental.html">experimental</a>
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../../bolts/experimental/refraction.html">refraction</a>
+					</div>
+				</li>
+				<li>
+					<div class="module selected">
+						<a href="../../bolts/experimental/signatures.html">signatures</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li class="tree-view collapsed">
+					<div class="package ">
+						<a href="../../bolts/traits.html">traits</a>
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../../bolts/traits/functions.html">functions</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/traits/has.html">has</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/traits/symbols.html">symbols</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/traits/types.html">types</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/from.html">from</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/iz.html">iz</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/members.html">members</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/meta.html">meta</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../bolts/range.html">range</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+			</ul>
+		</nav>
+		<div id="main-contents">
+			<h1>Module bolts.experimental.signatures</h1><p>Provides utilites that allow you to enforce signatures - a specification for a structure
+</p>
+			<section><section><h2>Example</h2>
+
+<pre class="code"><code class="lang-d"><span class="kwd">interface </span><span class="typ">InputRange</span><span class="pun">(</span><span class="pln">T</span><span class="pun">) {
+    </span><span class="kwd">@property </span><span class="typ">bool </span><span class="pln">empty</span><span class="pun">();
+    </span><span class="kwd">@property </span><span class="pln">T front</span><span class="pun">();
+    @<a href="../../bolts/experimental/signatures/ignoreAttributes.html"></span><span class="pln">ignoreAttributes</span></a><span class="pln"> </span><span class="typ">void </span><span class="pln">popFront</span><span class="pun">();
+}
+
+</span><span class="kwd">struct </span><span class="pln">R</span><span class="pun">(</span><span class="pln">T</span><span class="pun">) {
+    </span><span class="kwd">mixin <a href="../../bolts/experimental/signatures/Models.html"></span><span class="typ">Models</span></a><span class="pun">!(</span><span class="typ">InputRange</span><span class="pun">!</span><span class="pln">T</span><span class="pun">);
+
+    </span><span class="pln">T</span><span class="pun">[] </span><span class="pln">values</span><span class="pun">;
+    </span><span class="typ">int </span><span class="pln">index</span><span class="pun">;
+    </span><span class="kwd">this</span><span class="pun">(</span><span class="pln">T</span><span class="pun">[] </span><span class="pln">arr</span><span class="pun">) {
+        </span><span class="pln">values </span><span class="pun">= </span><span class="pln">arr</span><span class="pun">;
+    }
+    </span><span class="kwd">@property </span><span class="typ">bool </span><span class="pln">empty</span><span class="pun">() {
+        </span><span class="kwd">return </span><span class="pln">values<wbr/></span><span class="pun">.</span><span class="pln">length </span><span class="pun">== </span><span class="pln">index</span><span class="pun">;
+    }
+    </span><span class="kwd">@property </span><span class="pln">T front</span><span class="pun">() {
+        </span><span class="kwd">return </span><span class="pln">values</span><span class="pun">[</span><span class="pln">index</span><span class="pun">];
+    }
+    </span><span class="typ">void </span><span class="pln">popFront</span><span class="pun">() {
+        </span><span class="pln">index</span><span class="pun">++;
+    }
+}
+
+</span><span class="kwd">import </span><span class="pln">std<wbr/></span><span class="pun">.</span><span class="pln">range</span><span class="pun">: </span><span class="pln">array</span><span class="pun">;
+</span><span class="kwd">auto </span><span class="pln">r </span><span class="pun">= </span><span class="pln">R</span><span class="pun">!</span><span class="typ">int</span><span class="pun">([</span><span class="lit">1</span><span class="pun">, </span><span class="lit">4</span><span class="pun">, </span><span class="lit">2</span><span class="pun">, </span><span class="lit">3</span><span class="pun">]);
+</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">r<wbr/></span><span class="pun">.</span><span class="pln">array </span><span class="pun">== [</span><span class="lit">1</span><span class="pun">, </span><span class="lit">4</span><span class="pun">, </span><span class="lit">2</span><span class="pun">, </span><span class="lit">3</span><span class="pun">]);
+</span></code></pre>
+</section>
+</section>
+			<section>
+				<h2>Structs</h2>
+				<table>
+					<col class="caption"/>
+					<tr>
+						<th>Name</th><th>Description</th>
+					</tr>
+					<tr>
+						<td>
+							<code>
+								<a id="ignoreAttributes" class="public" href="../../bolts/experimental/signatures/ignoreAttributes.html">ignoreAttributes</a>
+							</code>
+						</td>
+						<td>Attribute that can be applied on identifiers in a signature that will let the model checker know not to
+    take attributes in to account
+</td>
+					</tr>
+					<tr>
+						<td>
+							<code>
+								<a id="ignoreQualifiers" class="public" href="../../bolts/experimental/signatures/ignoreQualifiers.html">ignoreQualifiers</a>
+							</code>
+						</td>
+						<td>Attribute that can be applied on identifiers in a signature that will let the model checker know not to
+    take type qualifiers in to account
+</td>
+					</tr>
+				</table>
+			</section>
+			<section>
+				<h2>Templates</h2>
+				<table>
+					<col class="caption"/>
+					<tr>
+						<th>Name</th><th>Description</th>
+					</tr>
+					<tr>
+						<td>
+							<code>
+								<a id="Models" class="public" href="../../bolts/experimental/signatures/Models.html">Models</a>
+							</code>
+						</td>
+						<td>Mixin that ensures a type models the desired signature of a structure
+</td>
+					</tr>
+				</table>
+			</section>
+			<section>
+				<h2>Manifest constants</h2>
+				<table>
+					<col class="caption"/>
+					<tr>
+						<th>Name</th><th>Type</th><th>Description</th>
+					</tr>
+					<tr>
+						<td>
+							<a id="AssertModelOf" class="public" href="../../bolts/experimental/signatures/AssertModelOf.html">
+								<code>AssertModelOf</code>
+							</a>
+						</td>
+						<td>
+						</td>
+						<td>Asserts that the given model follows the specification of the given signature
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="isModelOf" class="public" href="../../bolts/experimental/signatures/isModelOf.html">
+								<code>isModelOf</code>
+							</a>
+						</td>
+						<td>
+						</td>
+						<td>Checks if type <code class="lang-d"><span class="typ">Model</span></code> is a model of type <code class="lang-d"><span class="typ">Sig</span></code>
+</td>
+					</tr>
+				</table>
+			</section>
+			<footer>
+				<table class="license-info">
+					<tr>
+						<th>Authors</th>
+						<td>
+							
+						</td>
+					</tr>
+					<tr>
+						<th>Copyright</th>
+						<td>
+							
+						</td>
+					</tr>
+					<tr>
+						<th>License</th>
+						<td>
+							
+						</td>
+					</tr>
+				</table>
+				<p class="faint">Generated using the DDOX documentation generator</p>
+			</footer>
+		</div>
+	</body>
+</html>

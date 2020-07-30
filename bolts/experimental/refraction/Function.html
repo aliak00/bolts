@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8"/>
+		<title>Struct Function</title>
+		<link rel="stylesheet" type="text/css" href="../../../styles/ddox.css"/>
+		<link rel="stylesheet" href="../../../prettify/prettify.css" type="text/css"/>
+		<script type="text/javascript" src="../../../scripts/jquery.js">/**/</script><script type="text/javascript" src="../../../scripts/ddox.js">/**/</script>
+	</head>
+	<body onload="setupDdox();">
+		<nav id="main-nav">
+			<noscript>
+				<p style="color: red">The search functionality needs JavaScript enabled</p>
+			</noscript>
+			<div id="symbolSearchPane" style="display: none">
+				<form action="#" method="GET">
+					<input id="symbolSearch" type="text" name="q" placeholder="Search for symbols" autocomplete="off" onchange="performSymbolSearch(40);" onkeypress="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();"/>
+				</form>
+				<ul id="symbolSearchResults" class="symbolList" style="display: none"></ul><script type="application/javascript" src="../../../symbols.js"></script><script type="application/javascript">var symbolSearchRootDir = "../../../";
+$('#symbolSearchPane').show();</script>
+			</div>
+			<ul class="tree-view">
+				<li class="tree-view ">
+					<div class="package ">
+						<a href="../../../bolts.html">bolts</a>
+					</div>
+			<ul class="tree-view">
+				<li class="tree-view ">
+					<div class="package ">
+						<a href="../../../bolts/experimental.html">experimental</a>
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module selected">
+						<a href="../../../bolts/experimental/refraction.html">refraction</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/experimental/signatures.html">signatures</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li class="tree-view collapsed">
+					<div class="package ">
+						<a href="../../../bolts/traits.html">traits</a>
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/traits/functions.html">functions</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/traits/has.html">has</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/traits/symbols.html">symbols</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/traits/types.html">types</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/from.html">from</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/iz.html">iz</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/members.html">members</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/meta.html">meta</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../bolts/range.html">range</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+			</ul>
+		</nav>
+		<div id="main-contents">
+			<h1>Struct Function</h1><p>A struct capturing all the aspects of a function necessary to produce a
+   string mixin that re-creates the function (excepting the body).
+</p>
+			<div class="prototype">
+				<code class="lang-d">
+					<div class="single-prototype">
+			<span class="kwd">struct</span> <span class="typ">Function</span>
+			<span class="pun">;</span>
+					</div>
+				</code>
+			</div>
+			
+			<section><h2>Fields</h2>
+				<table>
+					<col class="caption"/>
+					<tr>
+						<th>Name</th><th>Type</th><th>Description</th>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../../bolts/experimental/refraction/Function.attributes.html" class="public"><code>attributes</code></a>
+						</td>
+						<td class="typecol"><code class="prettyprint lang-d"><span class="kwd">immutable</span><span class="pun">(</span><span class="typ">ulong</span><span class="pun">)</span></code></td><td>Function attributes.
+       Initial value: <code class="lang-d"><span class="pln">std<wbr/></span><span class="pun">.</span><span class="pln">traits<wbr/></span><span class="pun">.</span><span class="pln">functionAttributes</span><span class="pun">!</span><span class="pln">fun</span></code>
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../../bolts/experimental/refraction/Function.body_.html" class="public"><code>body_</code></a>
+						</td>
+						<td class="typecol"><code class="prettyprint lang-d"><span class="kwd">immutable</span><span class="pun">(</span><span class="typ">char</span><span class="pun">[]</span><span class="pun">)</span></code></td><td>Function body. Initial value: <code class="lang-d"><span class="pun">;</span></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../../bolts/experimental/refraction/Function.localName.html" class="public"><code>localName</code></a>
+						</td>
+						<td class="typecol"><code class="prettyprint lang-d"><span class="kwd">immutable</span><span class="pun">(</span><span class="typ">char</span><span class="pun">[]</span><span class="pun">)</span></code></td><td>A string that evaluates to a symbol representing the function in the
+       local context.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../../bolts/experimental/refraction/Function.name.html" class="public"><code>name</code></a>
+						</td>
+						<td class="typecol"><code class="prettyprint lang-d"><span class="kwd">immutable</span><span class="pun">(</span><span class="typ">char</span><span class="pun">[]</span><span class="pun">)</span></code></td><td>Function name. Initial value: <code class="lang-d"><span class="kwd">__traits</span><span class="pun">(</span><span class="pln">identifier</span><span class="pun">, </span><span class="pln">fun</span><span class="pun">)</span></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../../bolts/experimental/refraction/Function.overloadIndex.html" class="public"><code>overloadIndex</code></a>
+						</td>
+						<td class="typecol"><code class="prettyprint lang-d"><span class="kwd">immutable</span><span class="pun">(</span><span class="typ">int</span><span class="pun">)</span></code></td><td>Index of function in its overload set, if created by <code class="lang-d"><a href="../../../bolts/experimental/refraction/functionsOf.html"><span class="pln">functionsOf</span></a></code>, or
+       -1.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../../bolts/experimental/refraction/Function.parameters.html" class="public"><code>parameters</code></a>
+						</td>
+						<td class="typecol"><code class="prettyprint lang-d"><span class="kwd">immutable</span><span class="pun">(</span><a href="../../../bolts/experimental/refraction/Parameter.html"><span class="typ">Parameter</span></a><span class="pun">[]</span><span class="pun">)</span></code></td><td>Function parameters. Initial value: from the refracted function.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../../bolts/experimental/refraction/Function.returnType.html" class="public"><code>returnType</code></a>
+						</td>
+						<td class="typecol"><code class="prettyprint lang-d"><span class="kwd">immutable</span><span class="pun">(</span><span class="typ">char</span><span class="pun">[]</span><span class="pun">)</span></code></td><td>Return type. Initial value:
+       <code class="lang-d"><span class="pln">bolts<wbr/></span><span class="pun">.</span><span class="pln">experimental<wbr/></span><span class="pun">.</span><span class="pln">refraction<wbr/></span><span class="pun">.</span><span class="typ">ReturnType</span><span class="pun">!</span><span class="pln">fun</span></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../../bolts/experimental/refraction/Function.static_.html" class="public"><code>static_</code></a>
+						</td>
+						<td class="typecol"><code class="prettyprint lang-d"><span class="kwd">immutable</span><span class="pun">(</span><span class="typ">bool</span><span class="pun">)</span></code></td><td>If <code class="lang-d"><span class="kwd">true</span></code>, prefix generated function with <code class="lang-d"><span class="kwd">static</span></code>. Initial value:
+       <code class="lang-d"><span class="kwd">true</span></code> if the refracted function is a static *member* function inside a
+       struct, class, interface, or union.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../../bolts/experimental/refraction/Function.udas.html" class="public"><code>udas</code></a>
+						</td>
+						<td class="typecol"><code class="prettyprint lang-d"><span class="kwd">immutable</span><span class="pun">(</span><span class="typ">char</span><span class="pun">[]</span><span class="pun">[]</span><span class="pun">)</span></code></td><td>User defined attributes.
+       Initial value:
+       <code class="lang-d"><a href="../../../bolts/experimental/refraction/ParameterAttribute.html" title="bolts.experimental.refraction.ParameterAttribute"><span class="typ">ParameterAttribute</span></a><span class="pun">!(</span><span class="pln">fun</span><span class="pun">, </span><span class="pln">parameterIndex</span><span class="pun">..., </span><span class="pln">attributeIndex</span><span class="pun">...)</span></code>.
+</td>
+					</tr>
+				</table>
+			</section>
+			<section><h2>Methods</h2>
+				<table>
+					<col class="caption"/>
+					<tr>
+						<th>Name</th><th>Description</th>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../../bolts/experimental/refraction/Function.argumentMixture.html" class="public">
+								<code>argumentMixture</code>
+							</a>
+							<span class="tableEntryAnnotation">()</span>
+						</td>
+						<td>Return the argument list as a string.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../../bolts/experimental/refraction/Function.argumentMixtureArray.html" class="public">
+								<code>argumentMixtureArray</code>
+							</a>
+							<span class="tableEntryAnnotation">()</span>
+						</td>
+						<td>Return the argument list as an array of strings.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../../bolts/experimental/refraction/Function.attributeMixture.html" class="public">
+								<code>attributeMixture</code>
+							</a>
+							<span class="tableEntryAnnotation">()</span>
+						</td>
+						<td>Return the attribute list as a string.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../../bolts/experimental/refraction/Function.attributeMixtureArray.html" class="public">
+								<code>attributeMixtureArray</code>
+							</a>
+							<span class="tableEntryAnnotation">()</span>
+						</td>
+						<td>Return the attribute list as an array of strings.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../../bolts/experimental/refraction/Function.mixture.html" class="public">
+								<code>mixture</code>
+							</a>
+							<span class="tableEntryAnnotation">()</span>
+						</td>
+						<td>Return mixin code for this <code class="lang-d"><a href="../../../bolts/experimental/refraction/Function.html"><span class="typ">Function</span></a></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../../bolts/experimental/refraction/Function.withAttributes.html" class="public">
+								<code>withAttributes</code>
+							</a>
+							<span class="tableEntryAnnotation">(value)</span>
+						</td>
+						<td>Return a new <code class="lang-d"><a href="../../../bolts/experimental/refraction/Function.html"><span class="typ">Function</span></a></code> object with the <code class="lang-d"><a href="../../../bolts/experimental/refraction/Function.attributes.html"><span class="pln">attributes</span></a></code> attribute set to
+       <code class="lang-d"><a href="../../../bolts/experimental/refraction/Function.withAttributes.html#value"><span class="pln">value</span></a></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../../bolts/experimental/refraction/Function.withBody.html" class="public">
+								<code>withBody</code>
+							</a>
+							<span class="tableEntryAnnotation">(value)</span>
+						</td>
+						<td>Return a new <code class="lang-d"><a href="../../../bolts/experimental/refraction/Function.html"><span class="typ">Function</span></a></code> object with the <code class="lang-d"><a href="../../../bolts/experimental/refraction/Function.body_.html"><span class="pln">body_</span></a></code> attribute set to
+       <code class="lang-d"><a href="../../../bolts/experimental/refraction/Function.withBody.html#value"><span class="pln">value</span></a></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../../bolts/experimental/refraction/Function.withName.html" class="public">
+								<code>withName</code>
+							</a>
+							<span class="tableEntryAnnotation">(value)</span>
+						</td>
+						<td>Return a new <code class="lang-d"><a href="../../../bolts/experimental/refraction/Function.html"><span class="typ">Function</span></a></code> object with the <code class="lang-d"><a href="../../../bolts/experimental/refraction/Function.name.html"><span class="pln">name</span></a></code> attribute set to <code class="lang-d"><a href="../../../bolts/experimental/refraction/Function.withName.html#value"><span class="pln">value</span></a></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../../bolts/experimental/refraction/Function.withParameters.html" class="public">
+								<code>withParameters</code>
+							</a>
+							<span class="tableEntryAnnotation">(value)</span>
+						</td>
+						<td>Return a new <code class="lang-d"><a href="../../../bolts/experimental/refraction/Function.html"><span class="typ">Function</span></a></code> object with the parameters attribute set to
+       <code class="lang-d"><a href="../../../bolts/experimental/refraction/Function.withParameters.html#value"><span class="pln">value</span></a></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../../bolts/experimental/refraction/Function.withParametersAt.html" class="public">
+								<code>withParametersAt</code>
+							</a>
+							<span class="tableEntryAnnotation">(index, newParameters)</span>
+						</td>
+						<td>Return a new <code class="lang-d"><a href="../../../bolts/experimental/refraction/Function.html"><span class="typ">Function</span></a></code> object with <code class="lang-d"><a href="../../../bolts/experimental/refraction/Function.withParametersAt.html#newParameters"><span class="pln">newParameters</span></a></code> inserted at the
+       specified <code class="lang-d"><a href="../../../bolts/experimental/refraction/Function.withParametersAt.html#index"><span class="pln">index</span></a></code> in the <code class="lang-d"><a href="../../../bolts/experimental/refraction/Function.attributes.html"><span class="pln">attributes</span></a></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../../bolts/experimental/refraction/Function.withReturnType.html" class="public">
+								<code>withReturnType</code>
+							</a>
+							<span class="tableEntryAnnotation">(value)</span>
+						</td>
+						<td>Return a new <code class="lang-d"><a href="../../../bolts/experimental/refraction/Function.html"><span class="typ">Function</span></a></code> object with the <code class="lang-d"><a href="../../../bolts/experimental/refraction/Function.returnType.html"><span class="pln">returnType</span></a></code> attribute set to
+       <code class="lang-d"><a href="../../../bolts/experimental/refraction/Function.withReturnType.html#value"><span class="pln">value</span></a></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../../bolts/experimental/refraction/Function.withStatic.html" class="public">
+								<code>withStatic</code>
+							</a>
+							<span class="tableEntryAnnotation">(value)</span>
+						</td>
+						<td>Return a new <code class="lang-d"><a href="../../../bolts/experimental/refraction/Function.html"><span class="typ">Function</span></a></code> object with the <code class="lang-d"><a href="../../../bolts/experimental/refraction/Function.static_.html"><span class="pln">static_</span></a></code> attribute set to
+       <code class="lang-d"><a href="../../../bolts/experimental/refraction/Function.withStatic.html#value"><span class="pln">value</span></a></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../../bolts/experimental/refraction/Function.withUdas.html" class="public">
+								<code>withUdas</code>
+							</a>
+							<span class="tableEntryAnnotation">(value)</span>
+						</td>
+						<td>Return a new <code class="lang-d"><a href="../../../bolts/experimental/refraction/Function.html"><span class="typ">Function</span></a></code> object with the <code class="lang-d"><a href="../../../bolts/experimental/refraction/Function.udas.html"><span class="pln">udas</span></a></code> attribute set to <code class="lang-d"><a href="../../../bolts/experimental/refraction/Function.withUdas.html#value"><span class="pln">value</span></a></code>.
+</td>
+					</tr>
+				</table>
+			</section>
+			
+			<footer>
+				<table class="license-info">
+					<tr>
+						<th>Authors</th>
+						<td>
+							
+						</td>
+					</tr>
+					<tr>
+						<th>Copyright</th>
+						<td>
+							
+						</td>
+					</tr>
+					<tr>
+						<th>License</th>
+						<td>
+							
+						</td>
+					</tr>
+				</table>
+				<p class="faint">Generated using the DDOX documentation generator</p>
+			</footer>
+		</div>
+	</body>
+</html>
