@@ -7,7 +7,7 @@ This module helps building functions from other functions.
  parameter storage classes and user-defined attributes, this requires building
  a string mixin. In addition, the mixed-in code must refer only to local names,
  if it is to work across module boundaires. This problem and its solution are
- by Adam D. Ruppe in a Tip of the Week, available here:
+described  by Adam D. Ruppe in a Tip of the Week, available here:
  https://stackoverflow.com/questions/32615733/struct-composition-with-mixin-and-templates/32621854#32621854
 
  This module facilitates the  creation of such mixins.
@@ -55,6 +55,10 @@ if (is(typeof(fun) == function)) {
     localName: localName,
     returnType: __MODULE__~".ReturnType!("~localName~")",
     parameters: refractParameterList!(fun, localName),
+    compactParameters: (
+        Parameters!fun.length > 0
+        ? [ Parameter("_0", "%s.Parameters!(%s)".format(__MODULE__, localName)) ]
+        : null),
     udas: __traits(getAttributes, fun)
     .length.iota.map!(
         formatIndex!(
@@ -74,7 +78,7 @@ unittest {
     alias F = answer; // typically F is a template argument
     static assert(
         refract!(F, "F").mixture ==
-        "pure @nogc @system %s.ReturnType!(F) answer(lazy %s.Parameters!(F)[0] _0);"
+        "pure @nogc @system %s.ReturnType!(F) answer(%s.Parameters!(F) _0);"
         .format(__MODULE__, __MODULE__));
 }
 
@@ -198,7 +202,7 @@ private enum isAggregate(T...) =
     is(T[0] == struct) || is(T[0] == union) || is(T[0] == class)
     || is(T[0] == interface);
 
-private mixin template replaceAttribute(string Name) {
+private mixin template replaceAttribute(NameValues...) {
     alias Struct = typeof(this);
     mixin(
         "Struct copy = {",
@@ -206,8 +210,13 @@ private mixin template replaceAttribute(string Name) {
             string[] mixture;
             foreach (member; __traits(allMembers, Struct)) {
                 if (__traits(getOverloads, Struct, member).length == 0) {
-                    mixture ~= member ~ ":"
-                        ~ (member == Name ? "value" : member);
+                    string valueMixture = member;
+                    static foreach (NameValue; NameValues) {
+                        if (member == NameValue.split(",")[0]) {
+                            valueMixture = NameValue.split(",")[1];
+                        }
+                    }
+                    mixture ~= member ~ ":" ~ valueMixture;
                 }
             }
             return mixture.join(",\n");
@@ -221,15 +230,23 @@ unittest {
         string question;
         int answer;
         QA withQuestion(string value) {
-            mixin replaceAttribute!"question";
+            mixin replaceAttribute!"question,value";
+            return copy;
+        }
+        QA withQuestionAnswer(string q, int a) {
+            mixin replaceAttribute!("question,q", "answer,a");
             return copy;
         }
     }
-    QA deflt = { answer: 42 };
+
+    QA a42 = { answer: 42 };
     enum question = "How many roads must a man walk down?";
-    auto result = deflt.withQuestion(question);
-    assert(result.question == question);
-    assert(result.answer == 42);
+    assert(a42.withQuestion(question).question == question);
+    assert(a42.withQuestion(question).answer == 42);
+
+    QA def = { };
+    assert(def.withQuestionAnswer(question, 42).question == question);
+    assert(def.withQuestionAnswer(question, 42).answer == 42);
 }
 
 /**
@@ -257,7 +274,7 @@ immutable struct Function {
     */
 
     Function withName(string value) {
-        mixin replaceAttribute!"name";
+        mixin replaceAttribute!"name,value";
         return copy;
     }
 
@@ -290,7 +307,7 @@ immutable struct Function {
     */
 
     Function withReturnType(string value) {
-        mixin replaceAttribute!"returnType";
+        mixin replaceAttribute!"returnType,value";
         return copy;
     }
 
@@ -312,13 +329,20 @@ immutable struct Function {
 
     Parameter[] parameters;
 
+    // Starts off as Parameters!fun, set to null if parameter list is edited.
+    private Parameter[] compactParameters;
+
+    private auto bestParameters() {
+        return compactParameters != null ? compactParameters : parameters;
+    }
+
     /**
        Return a new `Function` object with the parameters attribute set to
        `value`.
     */
 
     Function withParameters(immutable(Parameter)[] value) {
-        mixin replaceAttribute!"parameters";
+        mixin replaceAttribute!("parameters,value", "compactParameters,null");
         return copy;
     }
 
@@ -345,7 +369,7 @@ immutable struct Function {
         auto value = index == parameters.length ? parameters ~ newParameters
             : index == 0 ? newParameters ~ parameters
             : parameters[0..index] ~ newParameters ~ parameters[index..$];
-        mixin replaceAttribute!"parameters";
+        mixin replaceAttribute!("parameters,value", "compactParameters,null");
         return copy;
     }
 
@@ -361,7 +385,7 @@ immutable struct Function {
     */
 
     Function withBody(string value) {
-        mixin replaceAttribute!"body_";
+        mixin replaceAttribute!"body_,value";
         return copy;
     }
 
@@ -388,7 +412,7 @@ immutable struct Function {
     */
 
     Function withAttributes(uint value) {
-        mixin replaceAttribute!"attributes";
+        mixin replaceAttribute!"attributes,value";
         return copy;
     }
 
@@ -421,7 +445,7 @@ immutable struct Function {
     */
 
     Function withStatic(bool value) {
-        mixin replaceAttribute!"static_";
+        mixin replaceAttribute!"static_,value";
         return copy;
     }
 
@@ -441,7 +465,7 @@ immutable struct Function {
     /**
        User defined attributes.
        Initial value:
-       `bolts.experimental.refraction.ParameterAttribute!(fun, parameterIndex..., attributeIndex...)`.
+       `bolts.experimental.refraction.ParameterAttributes!(fun, parameterIndex)...[attributeIndex...])`.
     */
 
     string[] udas;
@@ -451,7 +475,7 @@ immutable struct Function {
     */
 
     Function withUdas(immutable(string)[] value) {
-        mixin replaceAttribute!"udas";
+        mixin replaceAttribute!"udas,value";
         return copy;
     }
 
@@ -479,13 +503,25 @@ immutable struct Function {
             attributeMixtureArray() ~
             [
                 returnType,
-                name ~ "(" ~ parameterListMixtureArray.join(", ") ~ ")",
+                name ~ "(" ~ parameterListMixture ~ ")",
             ], " ") ~
             body_;
     }
 
+    /**
+       Return the parameter list as an array of strings.
+    */
+
     string[] parameterListMixtureArray() {
-        return map!(p => p.mixture)(parameters).array;
+        return map!(p => p.mixture)(bestParameters()).array;
+    }
+
+    /**
+       Return the parameter list as a strings.
+    */
+
+    string parameterListMixture() {
+        return parameterListMixtureArray.join(", ");
     }
 
     /**
@@ -493,14 +529,14 @@ immutable struct Function {
     */
 
     const(string)[] argumentMixtureArray() {
-        return parameters.map!(p => p.name).array;
+        return bestParameters.map!(p => p.name).array;
     }
 
     ///
     unittest {
         int add(int a, int b);
         static assert(
-            refract!(add, "add").argumentMixtureArray == [ "_0", "_1" ]);
+            refract!(add, "add").argumentMixtureArray == [ "_0" ]);
     }
 
     /**
@@ -514,7 +550,7 @@ immutable struct Function {
     ///
     unittest {
         int add(int a, int b);
-        static assert(refract!(add, "add").argumentMixture == "_0, _1");
+        static assert(refract!(add, "add").argumentMixture == "_0");
     }
 
     /**
@@ -584,7 +620,7 @@ immutable struct Parameter {
     */
 
     Parameter withName(string value) {
-        mixin replaceAttribute!"name";
+        mixin replaceAttribute!("name,value");
         return copy;
     }
 
@@ -602,7 +638,7 @@ immutable struct Parameter {
     */
 
     Parameter withType(string value) {
-        mixin replaceAttribute!"type";
+        mixin replaceAttribute!("type,value", "compactMixture,null");
         return copy;
     }
 
@@ -620,13 +656,13 @@ immutable struct Parameter {
     */
 
     Parameter withStorageClasses(immutable(string)[] value) {
-        mixin replaceAttribute!"storageClasses";
+        mixin replaceAttribute!("storageClasses,value", "compactMixture,null");
         return copy;
     }
 
     /**
        Parameter UDAs. Initial value:
-       `[@(bolts.experimental.refraction.ParameterAttribute!(fun,i, j...))]`,
+       `[@(bolts.experimental.refraction.ParameterAttribute!(fun,i)[j...])]`,
        where where `fun` is the refracted function, `i` is the position of the
        parameter, and `j...` are the positions of the UDAs.
     */
@@ -639,12 +675,20 @@ immutable struct Parameter {
     */
 
     Parameter withUdas(immutable(string)[] value) {
-        mixin replaceAttribute!"udas";
+        mixin replaceAttribute!("udas,value", "compactMixture,null");
         return copy;
     }
 
+    // Parameters!fun[i..i+1].
+    private string[] compactMixture;
+
     string mixture() {
-        return join(udas ~ storageClasses ~ [ type, name ], " ");
+        auto typeMixture = compactMixture != null
+            ? compactMixture
+            : udas ~ storageClasses ~ [ type ];
+        return join(
+            name.length > 0 ? typeMixture ~ [ name ] : typeMixture,
+            " ");
     }
 }
 
@@ -652,7 +696,7 @@ private Parameter refractParameter(alias Fun, string mixture, uint index)() {
     static if (is(typeof(Fun) parameters == __parameters)) {
         alias parameter = parameters[index .. index + 1];
         static if (__traits(compiles,  __traits(getAttributes, parameter))) {
-            enum udaFormat = "@(%s.ParameterAttribute!(%s, %d, %%d))".format(
+            enum udaFormat = "@(%s.ParameterAttributes!(%s, %d)[%%d])".format(
                 __MODULE__, mixture, index);
             enum udas = __traits(getAttributes, parameter).length.iota.map!(
                 formatIndex!udaFormat).array;
@@ -661,7 +705,10 @@ private Parameter refractParameter(alias Fun, string mixture, uint index)() {
         }
 
         Parameter p = {
-        type: `%s.Parameters!(%s)[%d]`.format(__MODULE__, mixture, index),
+            compactMixture: [
+                "%s.Parameters!(%s)[%d..%d]".format(__MODULE__, mixture, index, index + 1)
+            ],
+            type: `%s.Parameters!(%s)[%d]`.format(__MODULE__, mixture, index),
             name: "_%d".format(index),
             storageClasses: [__traits(getParameterStorageClasses, Fun, index)],
             udas: udas,
@@ -694,16 +741,76 @@ private string formatIndex(string f)(ulong i) {
    j = zero-based index of a user-defined attribute of i-th parameter fun
 */
 
-template ParameterAttribute(alias fun, int i, int j) {
+template ParameterAttributes(alias fun, int i) {
     static if (is(typeof(fun) P == __parameters)) {
-        alias ParameterAttribute =
-            Alias!(__traits(getAttributes, P[i..i+1])[j]);
+        alias ParameterAttributes =
+            __traits(getAttributes, P[i..i+1]);
     }
 }
 
 unittest {
     struct virtual;
     void kick(int times, @virtual @("Animal") Object animal);
-    static assert(is(ParameterAttribute!(kick, 1, 0) == virtual));
-    static assert(ParameterAttribute!(kick, 1, 1) == "Animal");
+
+    static assert(ParameterAttributes!(kick, 1).length == 2);
+    static assert(is(ParameterAttributes!(kick, 1)[0] == virtual));
+    static assert(ParameterAttributes!(kick, 1)[1] == "Animal");
+
+    import bolts.experimental.refraction;
+    enum kickModel = refract!(kick, "kick");
+
+    mixin(kickModel.withName("pet").mixture);
+    static assert(is(typeof(pet) == typeof(kick)));
+
+    mixin(
+        kickModel
+        .withName("feed")
+        .withParameters(
+            [ kickModel.parameters[0].withUdas(kickModel.parameters[1].udas),
+              kickModel.parameters[1].withUdas(kickModel.parameters[0].udas) ])
+        .mixture);
+
+    static assert(
+        ParameterAttributes!(feed, 0).stringof ==
+        ParameterAttributes!(kick, 1).stringof);
+    static assert(
+        ParameterAttributes!(feed, 1).stringof ==
+        ParameterAttributes!(kick, 0).stringof);
+}
+
+unittest {
+    int answer();
+    enum answerModel = refract!(answer, "answer");
+    static assert(answerModel.parameterListMixture == "");
+
+    mixin(answerModel.withName("copy").mixture);
+    static assert(is(typeof(answer) == typeof(copy)));
+}
+
+unittest {
+    // Test compact parameters.
+    @system int answer(lazy string question);
+    enum answerModel = refract!(answer, "answer");
+
+    // Parameters not modified: use compact mixture.
+    static assert(
+        answerModel.parameterListMixture ==
+        "%s.Parameters!(answer) _0".format(__MODULE__));
+
+    mixin(answerModel.withName("copy").mixture);
+    static assert(is(typeof(answer) == typeof(copy)));
+
+    // Edit parameter list: use compact mixture for original parameter.
+    static assert(
+        answerModel
+        .withParametersAt(0, Parameter().withType("int"))
+        .parameterListMixture ==
+        "int, %s.Parameters!(answer)[0..1] _0".format(__MODULE__));
+
+    // Edit storage class: just use the type from the original parameter.
+    static assert(
+        answerModel.parameters[0]
+        .withStorageClasses([ "ref" ])
+        .mixture ==
+        "ref %s.Parameters!(answer)[0] _0".format(__MODULE__));
 }
